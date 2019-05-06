@@ -1,0 +1,7 @@
+<div class="ssi-buttons-list">
+    <button *ngFor="let provider of providers"
+            (click)="signIn(provider)"
+            class="ssi-button ssi-button--{{ provider.id }}">
+        <span class="ssi-button__label">{{ 'social-signin-button.label.signin-with' | translate }} {{ provider.name }}</span>
+    </button>
+</div>

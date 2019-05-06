@@ -1,6 +1,6 @@
 <div>
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <h1 jhiTranslate="register.title">Registration</h1>
 
             <div class="alert alert-success" *ngIf="success" jhiTranslate="register.messages.success">
@@ -25,6 +25,9 @@
         </div>
     </div>
     <div class="row justify-content-center">
+        <div class="col-md-4">
+            <btw-social-signin-buttons></btw-social-signin-buttons>
+        </div>
         <div class="col-md-8">
             <form name="form" role="form" (ngSubmit)="register()" #registerForm="ngForm" *ngIf="!success">
                 <div class="form-group">
