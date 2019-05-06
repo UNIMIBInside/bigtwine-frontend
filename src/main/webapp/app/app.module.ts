@@ -16,7 +16,6 @@ import { BigtwineCoreModule } from 'app/core';
 import { BigtwineAppRoutingModule } from './app-routing.module';
 import { BigtwineHomeModule } from './home/home.module';
 import { BigtwineAccountModule } from './account/account.module';
-import { BigtwineEntityModule } from './entities/entity.module';
 import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { BtwMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
@@ -38,7 +37,6 @@ import { BtwMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
         BigtwineHomeModule,
         BigtwineAccountModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
-        BigtwineEntityModule
     ],
     declarations: [BtwMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
     providers: [
