@@ -42,7 +42,8 @@ module.exports = (options) => webpackMerge(commonConfig({ env: ENV }), {
         stats: options.stats,
         watchOptions: {
             ignored: /node_modules/
-        }
+        },
+        historyApiFallback: true
     },
     entry: {
         polyfills: './src/main/webapp/app/polyfills',
