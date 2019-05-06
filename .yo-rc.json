@@ -24,6 +24,7 @@
       "en",
       "it"
     ],
-    "skipServer": true
+    "skipServer": true,
+    "serverPort": 9000
   }
 }
