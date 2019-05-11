@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
+import { AgmCoreModule } from '@agm/core';
 import { Ng2Webstorage } from 'ngx-webstorage';
 import { NgJhipsterModule } from 'ng-jhipster';
 
@@ -16,10 +17,12 @@ import { BigtwineCoreModule } from 'app/core';
 import { BigtwineAppRoutingModule } from './app-routing.module';
 import { BigtwineHomeModule } from './home/home.module';
 import { BigtwineAccountModule } from './account/account.module';
+import { BigtwineAnalysisModule } from './analysis/analysis.module';
 import { BigtwineSocialSignInModule } from './social-signin/social-signin.module';
 import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { BtwMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
+import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';
 
 @NgModule({
     imports: [
@@ -33,6 +36,8 @@ import { BtwMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
             i18nEnabled: true,
             defaultI18nLang: 'en'
         }),
+        AgmCoreModule.forRoot({ apiKey: 'AIzaSyCa8K1bf4lBsJcZEuy6dQUt_DXj7K-bOt8' }),
+        AgmJsMarkerClustererModule,
         BigtwineSharedModule.forRoot(),
         BigtwineCoreModule,
         BigtwineHomeModule,
