@@ -42,6 +42,7 @@ import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';
         BigtwineCoreModule,
         BigtwineHomeModule,
         BigtwineAccountModule,
+        BigtwineAnalysisModule,
         BigtwineSocialSignInModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
