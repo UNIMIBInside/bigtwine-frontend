@@ -16,7 +16,7 @@
     },
     "schematics": {
         "@schematics/angular:component": {
-            "inlineStyle": true,
+            "inlineStyle": false,
             "inlineTemplate": false,
             "spec": false,
             "prefix": "btw",
