@@ -6,4 +6,5 @@ export * from './components/document-toolbar/document-toolbar.component';
 export * from './components/document-upload/document-upload.component';
 export * from './components/map-results-viewer/map-results-viewer.component';
 export * from './components/list-results-viewer/list-results-viewer.component';
+export * from './store';
 export * from './twitter-neel.route';
