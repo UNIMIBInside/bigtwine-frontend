@@ -1,8 +1,8 @@
 import { ILinkedEntity, INeelProcessedTweet, IResource, ITwitterStatus } from '../models/neel-processed-tweet.model';
 import { ILocation, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
-import { AnalysisState, initAnalysisState } from 'app/analysis/store';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-export interface TwitterNeelState extends AnalysisState {
+export interface TwitterNeelState {
     listeningAnalysisId: string;
     tweets: INeelProcessedTweet[];
     statuses: {
@@ -31,7 +31,6 @@ export interface TwitterNeelState extends AnalysisState {
 
 export const initTwitterNeelState: () => TwitterNeelState = () => {
     return {
-        ...initAnalysisState(),
         listeningAnalysisId: null,
         tweets: [],
         statuses: {
@@ -62,3 +61,30 @@ export const initTwitterNeelState: () => TwitterNeelState = () => {
         },
     };
 };
+
+export const selectTwitterNeelState = createFeatureSelector('twitterNeel');
+
+export const selectAllStatuses = createSelector(
+    selectTwitterNeelState,
+    (state: TwitterNeelState) => state.statuses.all,
+);
+
+export const selectAllResources = createSelector(
+    selectTwitterNeelState,
+    (state: TwitterNeelState) => state.resources.all,
+);
+
+export const selectNilEntities = createSelector(
+    selectTwitterNeelState,
+    (state: TwitterNeelState) => state.entities.nil,
+);
+
+export const selectLinkedEntities = createSelector(
+    selectTwitterNeelState,
+    (state: TwitterNeelState) => state.entities.linked,
+);
+
+export const selectAllLocations = createSelector(
+    selectTwitterNeelState,
+    (state: TwitterNeelState) => state.locations.all,
+);

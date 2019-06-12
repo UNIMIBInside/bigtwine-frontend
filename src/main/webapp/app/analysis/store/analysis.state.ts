@@ -1,5 +1,5 @@
 import { IAnalysis } from 'app/analysis';
-import { createSelector } from '@ngrx/store';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 export interface AnalysisState {
     analyses: IAnalysis[];
@@ -17,22 +17,24 @@ export const initAnalysisState = (): AnalysisState => {
     });
 };
 
+export const selectAnalysisState = createFeatureSelector('analysis');
+
 export const selectCurrentAnalysis = createSelector(
-    (state: AnalysisState) => state,
+    selectAnalysisState,
     (state: AnalysisState) => state.currentAnalysis,
 );
 
 export const selectAllAnalyses = createSelector(
-    (state: AnalysisState) => state,
+    selectAnalysisState,
     (state: AnalysisState) => state.analyses,
 );
 
 export const selectAnalysesByType = createSelector(
-    (state: AnalysisState) => state.analyses,
+    selectAnalysisState,
     (analyses: IAnalysis[], analysisType: string) => analyses.filter(a => a.type === analysisType),
 );
 
 export const selectLastError = createSelector(
-    (state: AnalysisState) => state,
+    selectAnalysisState,
     (state: AnalysisState) => state.lastError,
 );

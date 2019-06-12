@@ -4,6 +4,8 @@ export interface IAnalysis {
     inputType?: string;
     owner?: string;
     status?: string;
+    query?: string;
+    documentId?: string;
 }
 
 export class Analysis implements IAnalysis {

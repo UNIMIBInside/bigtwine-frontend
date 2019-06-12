@@ -21,7 +21,8 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
             return {
                 ...state,
                 lastError: null,
-                analyses: [(action as AnalysisActions.CreateAnalysisSuccess).analysis, ...state.analyses]
+                analyses: [(action as AnalysisActions.CreateAnalysisSuccess).analysis, ...state.analyses],
+                currentAnalysis: (action as AnalysisActions.CreateAnalysisSuccess).analysis
             };
         case AnalysisActions.ActionTypes.UpdateAnalysisSuccess:
             const updatedAnalysis = (action as AnalysisActions.UpdateAnalysisSuccess).analysis;
