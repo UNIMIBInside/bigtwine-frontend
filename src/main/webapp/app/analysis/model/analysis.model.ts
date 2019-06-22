@@ -1,3 +1,18 @@
+export enum AnalysisStatus {
+    Ready = 'ready',
+    Stopped = 'stopped',
+    Running = 'running',
+}
+
+export enum AnalysisInputType {
+    Query = 'query',
+    Document = 'document',
+}
+
+export enum AnalysisType {
+    TwitterNeel = 'twitter-neel',
+}
+
 export interface IAnalysis {
     id?: string;
     type?: string;
