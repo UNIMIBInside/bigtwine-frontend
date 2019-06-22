@@ -5,7 +5,7 @@ import { Observable, timer } from 'rxjs';
 import { SERVER_API_URL } from 'app/app.constants';
 import { IAnalysis } from '../';
 import { RxStompService } from '@stomp/ng2-stompjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AnalysisService {
@@ -39,6 +39,10 @@ export class AnalysisService {
         return this.updateAnalysis(analysisId, {status: 'start'});
     }
 
+    updateAnalysis(analysisId: string, changes: IAnalysis): Observable<IAnalysis> {
+        return this.http.patch(`${this.ANALYSIS_API}/analyses/${analysisId}`, changes) as Observable<IAnalysis>;
+    }
+
     listenAnalysisStatusChanges(analysisId: string): Observable<IAnalysis> {
         if (analysisId in this.listenedAnalyses) {
             return this.listenedAnalyses[analysisId];
@@ -54,9 +58,5 @@ export class AnalysisService {
         return timer(1000, 1000).pipe(
             map((n: number) => ({id: n, text: 'Prova ' + n + ' (' + analysisId + ')', analysisId}))
         );
-    }
-
-    private updateAnalysis(analysisId: string, analysis: IAnalysis): Observable<IAnalysis> {
-        return this.http.patch(`${this.ANALYSIS_API}/analyses/${analysisId}`, analysis) as Observable<IAnalysis>;
     }
 }
