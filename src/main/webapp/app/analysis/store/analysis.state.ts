@@ -1,8 +1,11 @@
-import { IAnalysis } from 'app/analysis';
+import { AnalysisType, IAnalysis } from 'app/analysis';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 export interface AnalysisState {
-    analyses: IAnalysis[];
+    analyses: {
+        all: IAnalysis[],
+        byId: {[key: string]: IAnalysis},
+    };
     currentAnalysis: IAnalysis;
     changesListeningAnalysisId: string;
     resultsListeningAnalysisId: string;
@@ -12,7 +15,10 @@ export interface AnalysisState {
 
 export const initAnalysisState = (): AnalysisState => {
     return ({
-        analyses: [],
+        analyses: {
+            all: [],
+            byId: {},
+        },
         currentAnalysis: null,
         changesListeningAnalysisId: null,
         resultsListeningAnalysisId: null,
@@ -35,7 +41,7 @@ export const selectAllAnalyses = createSelector(
 
 export const selectAnalysesByType = createSelector(
     selectAnalysisFeature,
-    (state: AnalysisState) => state.analyses,
+    (state: AnalysisState) => state.analyses.all,
     (state: AnalysisState, analyses: IAnalysis[], analysisType: string) => analyses.filter(a => a.type === analysisType),
 );
 

@@ -4,7 +4,7 @@ import { GenericAnalysisError } from './analysis.action';
 
 export const initialState: AnalysisState = initAnalysisState();
 
-function pushAnalysisError(state: AnalysisState, errAction: GenericAnalysisError) {
+function pushLastError(state: AnalysisState, errAction: GenericAnalysisError) {
     const err = {
         type: errAction.type,
         error: errAction.error
@@ -16,39 +16,59 @@ function pushAnalysisError(state: AnalysisState, errAction: GenericAnalysisError
     };
 }
 
+function clearLastError(state: AnalysisState) {
+    return {
+        ...state,
+        lastError: null,
+    };
+}
+
 export function AnalysisReducer(state = initialState, action: AnalysisActions.All): AnalysisState {
     switch (action.type) {
         case AnalysisActions.ActionTypes.GetAnalysisSuccess:
             return {
-                ...state,
-                lastError: null,
+                ...clearLastError(state),
                 currentAnalysis: (action as AnalysisActions.GetAnalysisSuccess).analysis
             };
         case AnalysisActions.ActionTypes.GetAnalysesSuccess:
+            const act = action as AnalysisActions.GetAnalysesSuccess;
+            const analysesById = {...state.analyses.byId, ...act.analyses.reduce((o: any, a) => { o[a.id] = a; return o; }, {})};
             return {
-                ...state,
-                lastError: null,
-                analyses: (action as AnalysisActions.GetAnalysesSuccess).analyses
+                ...clearLastError(state),
+                analyses: {
+                    ...state.analyses,
+                    all: Object.keys(analysesById).map(k => analysesById[k]),
+                    byId: analysesById,
+                }
             };
         case AnalysisActions.ActionTypes.CreateAnalysisSuccess:
+            const analysis = (action as AnalysisActions.CreateAnalysisSuccess).analysis;
             return {
-                ...state,
-                lastError: null,
-                analyses: [(action as AnalysisActions.CreateAnalysisSuccess).analysis, ...state.analyses],
-                currentAnalysis: (action as AnalysisActions.CreateAnalysisSuccess).analysis
+                ...clearLastError(state),
+                analyses: {
+                    ...state.analyses,
+                    all: [...state.analyses.all, analysis],
+                    byId: {...state.analyses.byId, ...{[analysis.id]: analysis}}
+                },
+                currentAnalysis: analysis
             };
+        case AnalysisActions.ActionTypes.StartAnalysisSuccess:
+        case AnalysisActions.ActionTypes.StopAnalysisSuccess:
         case AnalysisActions.ActionTypes.AnalysisChangeReceived:
         case AnalysisActions.ActionTypes.UpdateAnalysisSuccess:
-            const updatedAnalysis = (action as AnalysisActions.UpdateAnalysisSuccess).analysis;
+            const updatedAnalysis = (action as AnalysisActions.ActionWithAnalysis).analysis;
             let currentAnalysis = state.currentAnalysis;
             if (currentAnalysis && currentAnalysis.id === updatedAnalysis.id) {
                 currentAnalysis = {...currentAnalysis, ...updatedAnalysis};
             }
 
             return {
-                ...state,
-                lastError: null,
-                analyses: state.analyses.map(a => (a.id === updatedAnalysis.id) ? updatedAnalysis : a),
+                ...clearLastError(state),
+                analyses: {
+                    ...state.analyses,
+                    all: state.analyses.all.map(a => (a.id === updatedAnalysis.id) ? updatedAnalysis : a),
+                    byId: {...state.analyses.byId, ...{[updatedAnalysis.id]: updatedAnalysis}},
+                },
                 currentAnalysis
             };
         case AnalysisActions.ActionTypes.StartListenAnalysisChanges:
@@ -73,12 +93,12 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
             };
         case AnalysisActions.ActionTypes.ListeningAnalysisChangesError:
             return {
-                ...pushAnalysisError(state, (action as AnalysisActions.GenericAnalysisError)),
+                ...pushLastError(state, (action as AnalysisActions.GenericAnalysisError)),
                 changesListeningAnalysisId: null
             };
         case AnalysisActions.ActionTypes.ListeningAnalysisResultsError:
             return {
-                ...pushAnalysisError(state, (action as AnalysisActions.GenericAnalysisError)),
+                ...pushLastError(state, (action as AnalysisActions.GenericAnalysisError)),
                 resultsListeningAnalysisId: null
             };
         case AnalysisActions.ActionTypes.GetAnalysisError:
@@ -87,7 +107,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
         case AnalysisActions.ActionTypes.StartAnalysisError:
         case AnalysisActions.ActionTypes.StopAnalysisError:
         case AnalysisActions.ActionTypes.GenericAnalysisError:
-            return pushAnalysisError(state, (action as AnalysisActions.GenericAnalysisError));
+            return pushLastError(state, (action as AnalysisActions.GenericAnalysisError));
         default:
             return state;
     }

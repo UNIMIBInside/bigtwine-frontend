@@ -31,24 +31,28 @@ export enum ActionTypes {
     GenericAnalysisError = '[Analysis] GENERIC_ANALYSIS_ERROR',
 }
 
+export interface ActionWithAnalysis {
+    readonly analysis: IAnalysis;
+}
+
 export class GenericAnalysisError implements Action {
-    constructor(readonly type = ActionTypes.GenericAnalysisError, public error: any) {}
+    constructor(readonly type = ActionTypes.GenericAnalysisError, readonly error: any) {}
 }
 
 export class GetAnalysis implements Action {
     readonly type = ActionTypes.GetAnalysis;
 
-    constructor(public analysisId: string) {}
+    constructor(readonly analysisId: string) {}
 }
 
-export class GetAnalysisSuccess implements Action {
+export class GetAnalysisSuccess implements Action, ActionWithAnalysis {
     readonly type = ActionTypes.GetAnalysisSuccess;
 
-    constructor(public analysis: IAnalysis) {}
+    constructor(readonly analysis: IAnalysis) {}
 }
 
 export class GetAnalysisError extends GenericAnalysisError {
-    constructor(public error: any) {
+    constructor(readonly error: any) {
         super(ActionTypes.GetAnalysisError, error);
     }
 }
@@ -60,29 +64,29 @@ export class GetAnalyses implements Action {
 export class GetAnalysesSuccess implements Action {
     readonly type = ActionTypes.GetAnalysesSuccess;
 
-    constructor(public analyses: IAnalysis[]) {}
+    constructor(readonly analyses: IAnalysis[]) {}
 }
 
 export class GetAnalysesError extends GenericAnalysisError {
-    constructor(public error: any) {
+    constructor(readonly error: any) {
         super(ActionTypes.GetAnalysesError, error);
     }
 }
 
-export class CreateAnalysis implements Action {
+export class CreateAnalysis implements Action, ActionWithAnalysis {
     readonly type = ActionTypes.CreateAnalysis;
 
-    constructor(public analysis: IAnalysis) {}
+    constructor(readonly analysis: IAnalysis) {}
 }
 
-export class CreateAnalysisSuccess implements Action {
+export class CreateAnalysisSuccess implements Action, ActionWithAnalysis {
     readonly type = ActionTypes.CreateAnalysisSuccess;
 
-    constructor(public analysis: IAnalysis) {}
+    constructor(readonly analysis: IAnalysis) {}
 }
 
 export class CreateAnalysisError extends GenericAnalysisError {
-    constructor(public error: any) {
+    constructor(readonly error: any) {
         super(ActionTypes.CreateAnalysisError, error);
     }
 }
@@ -90,17 +94,17 @@ export class CreateAnalysisError extends GenericAnalysisError {
 export class StopAnalysis implements Action {
     readonly type = ActionTypes.StopAnalysis;
 
-    constructor(public analysisId: string) {}
+    constructor(readonly analysisId: string) {}
 }
 
-export class StopAnalysisSuccess implements Action {
+export class StopAnalysisSuccess implements Action, ActionWithAnalysis {
     readonly type = ActionTypes.StopAnalysisSuccess;
 
-    constructor(public analysis: IAnalysis) {}
+    constructor(readonly analysis: IAnalysis) {}
 }
 
 export class StopAnalysisError extends GenericAnalysisError {
-    constructor(public error: any) {
+    constructor(readonly error: any) {
         super(ActionTypes.StopAnalysisError, error);
     }
 }
@@ -108,17 +112,17 @@ export class StopAnalysisError extends GenericAnalysisError {
 export class StartAnalysis implements Action {
     readonly type = ActionTypes.StartAnalysis;
 
-    constructor(public analysisId: string) {}
+    constructor(readonly analysisId: string) {}
 }
 
-export class StartAnalysisSuccess implements Action {
+export class StartAnalysisSuccess implements Action, ActionWithAnalysis {
     readonly type = ActionTypes.StartAnalysisSuccess;
 
-    constructor(public analysis: IAnalysis) {}
+    constructor(readonly analysis: IAnalysis) {}
 }
 
 export class StartAnalysisError extends GenericAnalysisError {
-    constructor(public error: any) {
+    constructor(readonly error: any) {
         super(ActionTypes.StartAnalysisError, error);
     }
 }
@@ -126,17 +130,17 @@ export class StartAnalysisError extends GenericAnalysisError {
 export class UpdateAnalysis implements Action {
     readonly type = ActionTypes.UpdateAnalysis;
 
-    constructor(public analysisId: string, public changes: IAnalysis) {}
+    constructor(readonly analysisId: string, public changes: IAnalysis) {}
 }
 
-export class UpdateAnalysisSuccess implements Action {
+export class UpdateAnalysisSuccess implements Action, ActionWithAnalysis {
     readonly type = ActionTypes.UpdateAnalysisSuccess;
 
-    constructor(public analysis: IAnalysis) {}
+    constructor(readonly analysis: IAnalysis) {}
 }
 
 export class UpdateAnalysisError extends GenericAnalysisError {
-    constructor(public error: any) {
+    constructor(readonly error: any) {
         super(ActionTypes.UpdateAnalysisError, error);
     }
 }
@@ -144,7 +148,7 @@ export class UpdateAnalysisError extends GenericAnalysisError {
 export class StartListenAnalysisChanges implements Action {
     readonly type = ActionTypes.StartListenAnalysisChanges;
 
-    constructor(public analysisId: string) {}
+    constructor(readonly analysisId: string) {}
 }
 
 export class StopListenAnalysisChanges implements Action {
@@ -154,17 +158,17 @@ export class StopListenAnalysisChanges implements Action {
      * pass null to stop listen any analysis
      * @param analysisId
      */
-    constructor(public analysisId?: string) {}
+    constructor(readonly analysisId?: string) {}
 }
 
-export class AnalysisChangeReceived implements Action {
+export class AnalysisChangeReceived implements Action, ActionWithAnalysis {
     readonly type = ActionTypes.AnalysisChangeReceived;
 
-    constructor(public analysis: IAnalysis) {}
+    constructor(readonly analysis: IAnalysis) {}
 }
 
 export class ListeningAnalysisChangesError extends GenericAnalysisError {
-    constructor(public error: any) {
+    constructor(readonly error: any) {
         super(ActionTypes.ListeningAnalysisChangesError, error);
     }
 }
@@ -172,7 +176,7 @@ export class ListeningAnalysisChangesError extends GenericAnalysisError {
 export class StartListenAnalysisResults implements Action {
     readonly type = ActionTypes.StartListenAnalysisResults;
 
-    constructor(public analysisId: string) {}
+    constructor(readonly analysisId: string) {}
 }
 
 export class StopListenAnalysisResults implements Action {
@@ -182,17 +186,17 @@ export class StopListenAnalysisResults implements Action {
      * pass null to stop listen any analysis
      * @param analysisId
      */
-    constructor(public analysisId?: string) {}
+    constructor(readonly analysisId?: string) {}
 }
 
 export class AnalysisResultsReceived implements Action {
     readonly type = ActionTypes.AnalysisResultsReceived;
 
-    constructor(public results: any[]) {}
+    constructor(readonly results: any[]) {}
 }
 
 export class ListeningAnalysisResultsError extends GenericAnalysisError {
-    constructor(public error: any) {
+    constructor(readonly error: any) {
         super(ActionTypes.ListeningAnalysisResultsError, error);
     }
 }
