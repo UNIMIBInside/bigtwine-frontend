@@ -1,7 +1,9 @@
 import { ICoordinates } from 'app/analysis/twitter-neel/models/coordinates.model';
 
 export enum LocationSource {
-    TwitterUser, Resource, Status
+    TwitterUser = 'twitter-user',
+    Resource = 'resource',
+    Status = 'status',
 }
 
 export interface ILocation {
