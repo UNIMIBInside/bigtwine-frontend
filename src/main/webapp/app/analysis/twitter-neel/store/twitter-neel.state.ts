@@ -7,22 +7,22 @@ export interface TwitterNeelState {
     tweets: INeelProcessedTweet[];
     statuses: {
         all: ITwitterStatus[],
-        byId: Map<string, ITwitterStatus>,
+        byId: {[key: string]: ITwitterStatus},
     };
     entities: {
         all: ILinkedEntity[],
         linked: ILinkedEntity[],
         nil: ILinkedEntity[],
-        byLink: Map<string, ILinkedEntity>,
-        byStatusId: Map<string, ILinkedEntity[]>,
+        byLink: {[key: string]: ILinkedEntity},
+        byStatusId: {[key: string]: ILinkedEntity},
     };
     resources: {
         all: IResource[],
-        byUrl: Map<string, IResource>,
+        byUrl: {[key: string]: IResource},
     };
     locations: {
         all: ILocation[],
-        bySource: Map<LocationSource, ILocation[]>,
+        bySource: {[key in LocationSource]: ILocation[]},
         /*byStatusId: Map<string, ILocation>,
         byResource: Map<string, ILocation>,
         byTwitterUserId: Map<string, ILocation>,*/
@@ -35,26 +35,26 @@ export const initTwitterNeelState: () => TwitterNeelState = () => {
         tweets: [],
         statuses: {
             all: [],
-            byId: new Map<string, ITwitterStatus>(),
+            byId: {},
         },
         entities: {
             all: [],
             linked: [],
             nil: [],
-            byLink: new Map<string, ILinkedEntity>(),
-            byStatusId: new Map<string, ILinkedEntity[]>(),
+            byLink: {},
+            byStatusId: {},
         },
         resources: {
             all: [],
-            byUrl: new Map<string, IResource>(),
+            byUrl: {},
         },
         locations: {
             all: [],
-            bySource: new Map([
-               [LocationSource.Status, []],
-               [LocationSource.TwitterUser, []],
-               [LocationSource.Resource, []],
-            ]),
+            bySource: {
+               [LocationSource.Status]: [],
+               [LocationSource.TwitterUser]: [],
+               [LocationSource.Resource]: [],
+            },
             /*byStatusId: new Map<string, ILocation>(),
             byResource: new Map<string, ILocation>(),
             byTwitterUserId: new Map<string, ILocation>(),*/
@@ -87,4 +87,10 @@ export const selectLinkedEntities = createSelector(
 export const selectAllLocations = createSelector(
     selectTwitterNeelState,
     (state: TwitterNeelState) => state.locations.all,
+);
+
+export const selectLocationsBySource = createSelector(
+    selectTwitterNeelState,
+    (state: TwitterNeelState) => state.locations.bySource,
+    (locations: Map<LocationSource, ILocation[]>, props: any) => locations.get(props.source)
 );

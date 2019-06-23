@@ -1,7 +1,6 @@
 import { initTwitterNeelState, TwitterNeelState } from './twitter-neel.state';
 import * as TwitterNeelActions from './twitter-neel.action';
 import { ActionTypes } from './twitter-neel.action';
-import { ILinkedEntity, IResource, ITwitterStatus } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
 import { Location, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
 
 export const initialState: TwitterNeelState = initTwitterNeelState();
@@ -40,28 +39,28 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
                 statuses: {
                     ...state.statuses,
                     all: [...statuses, ...state.statuses.all],
-                    byId: new Map([...state.statuses.byId, ...statuses.map(t => [t.id, t] as [string, ITwitterStatus])]),
+                    byId: {...state.statuses.byId, ...statuses.reduce((o, t) => { o[t.id] = t; return o; } , {})},
                 },
                 entities: {
                     ...state.entities,
                     all: [...entities, ...state.entities.all],
                     linked: [...linkedEntities, ...state.entities.linked],
                     nil: [...nilEntities, ...state.entities.nil],
-                    byStatusId: new Map([...state.entities.byStatusId, ...tweets.map(t => [t.status.id, t.entities] as [string, ILinkedEntity[]])]),
-                    byLink: new Map([...state.entities.byLink, ...entities.filter(e => !e.isNil).map(e => [e.link, e] as [string, ILinkedEntity])]),
+                    byStatusId: {...state.entities.byStatusId, ...tweets.reduce((o, t) => { o[t.status.id] = t.entities; return o; }, {})},
+                    byLink: {...state.entities.byLink, ...entities.filter(e => !e.isNil).reduce((o, e) => { o[e.link] = e; return o; }, {})},
                 },
                 resources: {
                     ...state.resources,
                     all: [...linkedEntities.map(e => e.resource), ...state.resources.all],
-                    byUrl: new Map([...state.resources.byUrl, ...linkedEntities.map(e => [e.resource.url, e.resource] as [string, IResource])]),
+                    byUrl: {...state.resources.byUrl, ...linkedEntities.reduce((o, e) => { o[e.resource.url] = e.resource; return o; }, {})},
                 },
                 locations: {
                     all: [...statusesLocations, ...usersLocations, ...resourcesLocations, ...state.locations.all],
-                    bySource: new Map([
-                        [LocationSource.Status, [...state.locations.bySource.get(LocationSource.Status), ...statusesLocations]],
-                        [LocationSource.TwitterUser, [...state.locations.bySource.get(LocationSource.TwitterUser), ...usersLocations]],
-                        [LocationSource.Resource, [...state.locations.bySource.get(LocationSource.Resource), ...resourcesLocations]],
-                    ]),
+                    bySource: {
+                        [LocationSource.Status]: [...state.locations.bySource[LocationSource.Status], ...statusesLocations],
+                        [LocationSource.TwitterUser]: [...state.locations.bySource[LocationSource.TwitterUser], ...usersLocations],
+                        [LocationSource.Resource]: [...state.locations.bySource[LocationSource.Resource], ...resourcesLocations],
+                    },
                 }
             };
         case ActionTypes.ClearTwitterNeelResults:
