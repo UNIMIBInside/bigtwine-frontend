@@ -62,35 +62,39 @@ export const initTwitterNeelState: () => TwitterNeelState = () => {
     };
 };
 
-export const selectTwitterNeelState = createFeatureSelector('twitterNeel');
+export const selectTwitterNeelFeature = createFeatureSelector<TwitterNeelState>('twitterNeel');
+
+export const selectAllTweets = createSelector(
+    selectTwitterNeelFeature,
+    (state: TwitterNeelState) => state.tweets.all,
+);
 
 export const selectAllStatuses = createSelector(
-    selectTwitterNeelState,
+    selectTwitterNeelFeature,
     (state: TwitterNeelState) => state.statuses.all,
 );
 
 export const selectAllResources = createSelector(
-    selectTwitterNeelState,
+    selectTwitterNeelFeature,
     (state: TwitterNeelState) => state.resources.all,
 );
 
 export const selectNilEntities = createSelector(
-    selectTwitterNeelState,
+    selectTwitterNeelFeature,
     (state: TwitterNeelState) => state.entities.nil,
 );
 
 export const selectLinkedEntities = createSelector(
-    selectTwitterNeelState,
+    selectTwitterNeelFeature,
     (state: TwitterNeelState) => state.entities.linked,
 );
 
 export const selectAllLocations = createSelector(
-    selectTwitterNeelState,
+    selectTwitterNeelFeature,
     (state: TwitterNeelState) => state.locations.all,
 );
 
-export const selectLocationsBySource = createSelector(
-    selectTwitterNeelState,
-    (state: TwitterNeelState) => state.locations.bySource,
-    (locations: Map<LocationSource, ILocation[]>, props: any) => locations.get(props.source)
+export const selectLocationsBySource = (source: LocationSource) => createSelector(
+    selectTwitterNeelFeature,
+    (state: TwitterNeelState) => state.locations.bySource[source],
 );
