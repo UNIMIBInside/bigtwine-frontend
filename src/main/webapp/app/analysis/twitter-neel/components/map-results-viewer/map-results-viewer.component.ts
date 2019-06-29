@@ -19,17 +19,16 @@ import { map, throttleTime } from 'rxjs/operators';
 @Component({
     templateUrl: './map-results-viewer.component.html',
     styleUrls: ['./map-results-viewer.component.scss'],
+    selector: 'btw-map-results-viewer',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapResultsViewerComponent extends ResultsViewerComponent implements OnInit {
 
     currentAnalysis$: Observable<IAnalysis>;
     tweets$: Observable<INeelProcessedTweet[]>;
-    // statuses$: Observable<ITwitterStatus[]>;
     nilEntities$: Observable<INilEntity[]>;
     linkedEntities$: Observable<ILinkedEntity[]>;
     resources$: Observable<IResource[]>;
-    // locations$: Observable<ILocation[]>;
     statusLocations$: Observable<ILocation[]>;
     userLocations$: Observable<ILocation[]>;
     resourceLocations$: Observable<ILocation[]>;
