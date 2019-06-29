@@ -34,6 +34,7 @@ describe('TwitterNeelReducer', () => {
         },
         entities: [
             {
+                value: 'nil1',
                 link: null,
                 confidence: 1,
                 category: 'generic',
@@ -46,6 +47,7 @@ describe('TwitterNeelReducer', () => {
                 resource: null
             },
             {
+                value: 'resource1',
                 link: 'http://dbpedia.com/resource1',
                 confidence: 1,
                 category: 'generic',
@@ -87,6 +89,7 @@ describe('TwitterNeelReducer', () => {
         },
         entities: [
             {
+                value: 'resource2',
                 link: 'http://dbpedia.com/resource2',
                 confidence: 1,
                 category: 'generic',
@@ -139,8 +142,8 @@ describe('TwitterNeelReducer', () => {
 
         const updatedState = TwitterNeelReducer(initialState, new TwitterNeelResultsReceived(results));
 
-        expect(initialState.tweets.length).toBe(0);
-        expect(updatedState.tweets.length).toBe(1);
+        expect(initialState.tweets.all.length).toBe(0);
+        expect(updatedState.tweets.all.length).toBe(1);
     });
 
     it('adds single result to the state', () => {
@@ -148,18 +151,12 @@ describe('TwitterNeelReducer', () => {
 
         const updatedState = TwitterNeelReducer(initialState, new TwitterNeelResultsReceived(results));
 
-        expect(updatedState.tweets.length).toBe(1);
-        expect(updatedState.entities.all.length).toBe(2);
-        expect(updatedState.entities.linked.length).toBe(1);
-        expect(updatedState.entities.linked.filter(e => e.isNil).length).toBe(0);
-        expect(updatedState.entities.nil.length).toBe(1);
-        expect(updatedState.entities.nil.filter(e => e.isNil).length).toBe(1);
-        expect(updatedState.locations.all.length).toBe(3);
-        expect(updatedState.locations.bySource.get(LocationSource.Resource).length).toBe(1);
-        expect(updatedState.locations.bySource.get(LocationSource.Resource)[0].coordinates).toBe(tweet1.entities[1].resource.coordinates);
-        expect(updatedState.locations.bySource.get(LocationSource.TwitterUser).length).toBe(1);
-        expect(updatedState.locations.bySource.get(LocationSource.Status).length).toBe(1);
-        expect(updatedState.entities.byLink.get('http://dbpedia.com/resource1')).not.toBeNull();
+        expect(updatedState.tweets.all.length).toBe(1);
+        expect(updatedState.nilEntities.all.length).toBe(2);
+        expect(updatedState.locations.bySource[LocationSource.Resource].length).toBe(1);
+        expect(updatedState.locations.bySource[LocationSource.Resource][0].coordinates).toBe(tweet1.entities[1].resource.coordinates);
+        expect(updatedState.locations.bySource[LocationSource.TwitterUser].length).toBe(1);
+        expect(updatedState.locations.bySource[LocationSource.Status].length).toBe(1);
     });
 
     it('adds multiple results to the state', () => {
@@ -167,16 +164,11 @@ describe('TwitterNeelReducer', () => {
 
         const updatedState = TwitterNeelReducer(initialState, new TwitterNeelResultsReceived(results));
 
-        expect(updatedState.tweets.length).toBe(2);
-        expect(updatedState.entities.all.length).toBe(3);
-        expect(updatedState.entities.linked.length).toBe(2);
-        expect(updatedState.entities.nil.length).toBe(1);
-        expect(updatedState.locations.all.length).toBe(6);
-        expect(updatedState.locations.bySource.get(LocationSource.Resource).length).toBe(2);
-        expect(updatedState.locations.bySource.get(LocationSource.TwitterUser).length).toBe(2);
-        expect(updatedState.locations.bySource.get(LocationSource.Status).length).toBe(2);
-        expect(updatedState.entities.byLink.get('http://dbpedia.com/resource1')).not.toBeNull();
-        expect(updatedState.entities.byLink.get('http://dbpedia.com/resource2')).not.toBeNull();
+        expect(updatedState.tweets.all.length).toBe(2);
+        expect(updatedState.nilEntities.all.length).toBe(3);
+        expect(updatedState.locations.bySource[LocationSource.Resource].length).toBe(2);
+        expect(updatedState.locations.bySource[LocationSource.TwitterUser].length).toBe(2);
+        expect(updatedState.locations.bySource[LocationSource.Status].length).toBe(2);
     });
 
     it('should clear the state', () => {
@@ -184,11 +176,11 @@ describe('TwitterNeelReducer', () => {
 
         const updatedState = TwitterNeelReducer(initialState, new TwitterNeelResultsReceived(results));
 
-        expect(updatedState.tweets.length).toBe(1);
+        expect(updatedState.tweets.all.length).toBe(1);
 
         const clearedState = TwitterNeelReducer(updatedState, new ClearTwitterNeelResults());
 
-        expect(clearedState.tweets.length).toBe(0);
+        expect(clearedState.tweets.all.length).toBe(0);
     });
 
 });

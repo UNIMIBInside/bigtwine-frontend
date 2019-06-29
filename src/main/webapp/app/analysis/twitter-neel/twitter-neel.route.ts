@@ -42,7 +42,7 @@ export const twitterNeelState: Routes = [
                 component: QueryNewComponent,
             },
             {
-                path: 'view/:analisysId',
+                path: 'view/:analysisId',
                 component: QueryViewComponent,
                 children: viewerModes
             },
@@ -61,7 +61,7 @@ export const twitterNeelState: Routes = [
                 component: DocumentUploadComponent,
             },
             {
-                path: 'view/:analisysId',
+                path: 'view/:analysisId',
                 component: DocumentViewComponent,
                 children: viewerModes
             },

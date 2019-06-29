@@ -11,6 +11,8 @@ import { MockAccountService } from './helpers/mock-account.service';
 import { MockActivatedRoute, MockRouter } from './helpers/mock-route.service';
 import { MockActiveModal } from './helpers/mock-active-modal.service';
 import { MockEventManager } from './helpers/mock-event-manager.service';
+import { RxStompService } from '@stomp/ng2-stompjs';
+import { MockRxStompService } from './helpers/mock-rx-stomp.service';
 
 @NgModule({
     providers: [
@@ -69,7 +71,11 @@ import { MockEventManager } from './helpers/mock-event-manager.service';
         {
             provide: NgbModal,
             useValue: null
-        }
+        },
+        {
+            provide: RxStompService,
+            useClass: MockRxStompService
+        },
     ],
     imports: [HttpClientTestingModule]
 })
