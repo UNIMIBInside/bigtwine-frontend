@@ -1,5 +1,5 @@
 import { AnalysisStatus, IAnalysis } from 'app/analysis';
-import { EMPTY, interval, Observable, of, Subject } from 'rxjs';
+import { interval, Observable, of, Subject, throwError } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
 import { ILinkedEntity, INeelProcessedTweet } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
 import { ICoordinates } from 'app/analysis/twitter-neel/models/coordinates.model';
@@ -50,7 +50,7 @@ export class MockAnalysisService {
         if (this.analysisDb.has(analysisId)) {
             return of(this.analysisDb.get(analysisId)).pipe(delay(this.rms));
         } else {
-            return EMPTY.pipe(delay(this.rms));
+            return throwError('Not found').pipe(delay(this.rms));
         }
     }
 
@@ -156,9 +156,10 @@ export class MockAnalysisService {
 
             let d: ILinkedEntity;
 
-            if (Math.random() > 0.66) {
-                const url = 'http://dbpedia.org/resource/' + Math.random();
+            if (Math.random() > 0.33) {
+                const url = 'http://dbpedia.org/resource/' + word;
                 d = {
+                    value: word,
                     isNil: false,
                     confidence: 1,
                     category: 'general',
@@ -166,7 +167,7 @@ export class MockAnalysisService {
                     nilCluster: null,
                     position: {start: text.indexOf(word), end: text.indexOf(word) + word.length},
                     resource: {
-                        name: 'Entity: ' + Math.random(),
+                        name: 'Entity: ' + word,
                         shortDesc: '',
                         thumb: '',
                         thumbLarge: '',
@@ -176,12 +177,13 @@ export class MockAnalysisService {
                 };
             } else {
                 d = {
+                    value: word,
                     isNil: true,
                     confidence: 1,
                     category: 'general',
                     link: null,
                     nilCluster: '1',
-                    position: {start: 1, end: 5},
+                    position: {start: text.indexOf(word), end: text.indexOf(word) + word.length},
                     resource: null
                 };
             }

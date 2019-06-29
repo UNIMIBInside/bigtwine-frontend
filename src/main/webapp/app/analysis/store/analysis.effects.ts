@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AnalysisService } from 'app/analysis';
 import { of, Observable } from 'rxjs';
-import { bufferTime, catchError, filter, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { bufferTime, catchError, filter, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
