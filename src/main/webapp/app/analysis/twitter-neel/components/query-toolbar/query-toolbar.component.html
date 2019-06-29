@@ -1,5 +1,14 @@
-<p>
-  query-toolbar works!
-</p>
-<button (click)="switchViewMode('map');">Map</button>
-<button (click)="switchViewMode('list')">List</button>
+<div class="row">
+    <div class="col">
+        <input type="text" [(ngModel)]="query" (change)="onQueryChange" name="query">
+    </div>
+    <div class="col" *ngIf="showCreateButton">
+        <button (click)="onCreateBtnClick()" name="create">Create</button>
+    </div>
+    <div class="col" *ngIf="showStartStopButton">
+        <button (click)="onToggleAnalysisBtnClick()" name="start-stop">{{(currentAnalysis$ | async)?.status === 'running' ? 'Stop' : 'Start'}}</button>
+    </div>
+    <div class="col" *ngIf="showResultsViewerButton">
+        <button (click)="onToggleViewModeBtnClick();">{{currentViewMode === 'map' ? 'List' : 'Map'}}</button>
+    </div>
+</div>
