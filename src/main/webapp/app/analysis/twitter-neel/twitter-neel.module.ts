@@ -17,8 +17,10 @@ import {
     QueryNewComponent,
     QueryToolbarComponent,
     QueryViewComponent,
+    NeelProcessedTweetComponent,
+    HighlightedTweetTextComponent,
     TwitterNeelReducer,
-    TwitterNeelEffects
+    TwitterNeelEffects,
 } from './';
 
 @NgModule({
@@ -30,7 +32,9 @@ import {
       MapResultsViewerComponent,
       QueryNewComponent,
       QueryToolbarComponent,
-      QueryViewComponent
+      QueryViewComponent,
+      NeelProcessedTweetComponent,
+      HighlightedTweetTextComponent,
   ],
   imports: [
       CommonModule,

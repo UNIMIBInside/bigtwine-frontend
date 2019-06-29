@@ -1,0 +1,4 @@
+<ng-container *ngFor="let part of getTextParts()">
+    <ng-container *ngIf="part.type === 'text'">{{part.content}}</ng-container>
+    <span *ngIf="part.type === 'entity'" class="entity" [class]="part.entity.isNil ? 'entity nil' : 'entity'">{{part.content}}</span>
+</ng-container>

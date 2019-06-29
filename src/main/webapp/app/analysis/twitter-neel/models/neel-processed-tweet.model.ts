@@ -31,13 +31,19 @@ export interface ITwitterStatus {
 }
 
 export interface ILinkedEntity {
+    value: string;
+    position: ITextRange;
     link: string;
     confidence: number;
     category: string;
     isNil: boolean;
     nilCluster: string;
-    position: ITextRange;
     resource: IResource;
+}
+
+export interface INilEntity {
+    value: string;
+    nilCluster: string;
 }
 
 export interface INeelProcessedTweet {

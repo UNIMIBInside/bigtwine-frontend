@@ -1,0 +1,7 @@
+::shadow .entity {
+    background: green;
+
+    &.nil {
+        background: red;
+    }
+}
