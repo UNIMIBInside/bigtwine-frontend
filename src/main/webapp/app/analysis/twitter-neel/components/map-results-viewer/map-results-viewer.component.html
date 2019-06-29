@@ -1,32 +1,141 @@
 
-<agm-map
-    [latitude]="lat"
-    [longitude]="lng"
-    [zoom]="zoom"
-    [disableDefaultUI]="false"
-    [zoomControl]="false"
-    (mapClick)="mapClicked($event)">
-    <agm-marker-cluster imagePath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m">
-        <agm-marker
-            *ngFor="let m of markers; let i = index"
-            (markerClick)="clickedMarker(m.label, i)"
-            [latitude]="m.lat"
-            [longitude]="m.lng"
-            [label]="m.label"
-            [markerDraggable]="m.draggable"
-            (dragEnd)="markerDragEnd(m, $event)">
+<div class="row">
+    <div class="col col-md-3" style="border-right: 2px solid #333;">
+        <div style="max-height: 70vh; overflow-y: auto;">
+            <ul class="tweets-list">
+                <ng-container *ngIf="selectedNilEntity === null && selectedResource === null; else filteredTweetsList">
+                    <li *ngFor="let tweet of paginatedTweets$ | async"
+                        (click)="onTweetClick(tweet)"
+                        [class]="tweetCssClass(tweet)">
+                        <btw-neel-processed-tweet [tweet]="tweet"></btw-neel-processed-tweet>
+                    </li>
+                </ng-container>
+                <ng-template #filteredTweetsList>
+                    <li *ngFor="let tweet of filteredTweets$ | async">
+                        <btw-neel-processed-tweet [tweet]="tweet"></btw-neel-processed-tweet>
+                    </li>
+                </ng-template>
+            </ul>
+        </div>
+    </div>
+    <div class="col col-md-3">
+        <div style="max-height: 35vh; overflow-y: auto; border-bottom: 2px solid #333;">
+            <ng-container *ngIf="selectedTweet === null; else tweetEntitiesList">
+                <div *ngFor="let resource of resources$ | async"
+                     (click)="onResourceClick(resource)"
+                     [class]="resourceCssClass(resource)">
+                    <p>{{resource.name}} ({{ resourcesCounter[resource.url] }})</p>
+                    <hr>
+                </div>
+            </ng-container>
+            <ng-template #tweetEntitiesList>
+                <div *ngFor="let entity of selectedTweetLinkedEntities()">
+                    <p>{{entity.resource.name}} - {{ entity.category }} ({{ entity.confidence }})</p>
+                    <hr>
+                </div>
+            </ng-template>
+        </div>
+        <div style="max-height: 35vh; overflow-y: auto;">
+            <ng-container *ngIf="selectedTweet === null; else tweetNilList">
+                <div *ngFor="let entity of nilEntities$ | async"
+                     (click)="onNilEntityClick(entity)"
+                     [class]="nilEntityCssClass(entity)">
+                    <p>{{entity.value}} ({{ nilEntityTweetsCount(entity) }})</p>
+                    <hr>
+                </div>
+            </ng-container>
+            <ng-template #tweetNilList>
+                <div *ngFor="let entity of selectedTweetNilEntities()">
+                    <p>{{entity.value}} - {{ entity.category }} ({{ entity.confidence }})</p>
+                    <hr>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    <div class="col col-md-6">
+        <agm-map
+            [latitude]="0"
+            [longitude]="0"
+            [zoom]="2"
+            [disableDefaultUI]="false"
+            [zoomControl]="true">
 
-            <agm-info-window>
-                <strong>InfoWindow content</strong>
-            </agm-info-window>
+            <ng-container *ngIf="selectedTweet === null; else selectedTweetMarkers">
+                <agm-marker-cluster
+                    [gridSize]="256"
+                    imagePath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m2.png?v="
+                    imageExtension="">
+                    <ng-container *ngFor="let l of statusLocations$ | async">
+                        <agm-marker
+                            *ngIf="l.source === 'status'"
+                            [latitude]="l.coordinates.latitude"
+                            [longitude]="l.coordinates.longitude"
+                            [label]="''"
+                            [markerDraggable]="false"
+                            iconUrl="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png">
+                        </agm-marker>
+                    </ng-container>
 
-        </agm-marker>
-    </agm-marker-cluster>
-    <agm-circle [latitude]="lat + 0.3" [longitude]="lng"
-                [radius]="5000"
-                [fillColor]="'red'"
-                [circleDraggable]="true"
-                [editable]="true">
-    </agm-circle>
+                </agm-marker-cluster>
 
-</agm-map>
+                <agm-marker-cluster
+                    [gridSize]="256"
+                    imagePath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m4.png?v="
+                    imageExtension="">
+                    <agm-marker
+                        *ngFor="let l of resourceLocations$ | async"
+                        [latitude]="l.coordinates.latitude"
+                        [longitude]="l.coordinates.longitude"
+                        [label]="''"
+                        [markerDraggable]="false"
+                        iconUrl="http://maps.google.com/mapfiles/ms/icons/pink-dot.png">
+                    </agm-marker>
+                </agm-marker-cluster>
+
+                <agm-marker-cluster
+                    [gridSize]="256"
+                    imagePath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png?v="
+                    imageExtension="">
+                    <agm-marker
+                        *ngFor="let l of userLocations$ | async"
+                        [latitude]="l.coordinates.latitude"
+                        [longitude]="l.coordinates.longitude"
+                        [label]="''"
+                        [markerDraggable]="false"
+                        iconUrl="http://maps.google.com/mapfiles/ms/icons/blue-dot.png">
+                    </agm-marker>
+                </agm-marker-cluster>
+            </ng-container>
+            <ng-template #selectedTweetMarkers>
+                <agm-marker
+                    *ngIf="selectedTweet.status.coordinates"
+                    [latitude]="selectedTweet.status.coordinates.latitude"
+                    [longitude]="selectedTweet.status.coordinates.longitude"
+                    [label]="''"
+                    [markerDraggable]="false"
+                    iconUrl="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png">
+                </agm-marker>
+
+                <agm-marker
+                    *ngIf="selectedTweet.status.user.coordinates"
+                    [latitude]="selectedTweet.status.user.coordinates.latitude"
+                    [longitude]="selectedTweet.status.user.coordinates.longitude"
+                    [label]="''"
+                    [markerDraggable]="false"
+                    iconUrl="http://maps.google.com/mapfiles/ms/icons/pink-dot.png">
+                </agm-marker>
+
+                <ng-container *ngFor="let entity of selectedTweet.entities">
+                    <agm-marker
+                        *ngIf="entity.resource && entity.resource.coordinates"
+                        [latitude]="entity.resource.coordinates.latitude"
+                        [longitude]="entity.resource.coordinates.longitude"
+                        [label]="''"
+                        [markerDraggable]="false"
+                        iconUrl="http://maps.google.com/mapfiles/ms/icons/blue-dot.png">
+                    </agm-marker>
+                </ng-container>
+            </ng-template>
+        </agm-map>
+    </div>
+</div>
