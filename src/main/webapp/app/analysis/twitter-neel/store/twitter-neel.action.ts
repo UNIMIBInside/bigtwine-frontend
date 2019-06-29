@@ -7,6 +7,7 @@ export enum ActionTypes {
     StopListenTwitterNeelResults = '[TwitterNeel] StopListenTwitterNeelResults',
     TwitterNeelResultsReceived = '[TwitterNeel] TwitterNeelResultsReceived',
     ClearTwitterNeelResults = '[TwitterNeel] ClearTwitterNeelResults',
+    SortTwitterNeelResults = '[TwitterNeel] SortTwitterNeelResults',
 }
 
 export class StartListenTwitterNeelResults implements Action {
@@ -33,4 +34,11 @@ export class ClearTwitterNeelResults implements Action {
     constructor() {}
 }
 
-export type All = StartListenTwitterNeelResults | StopListenTwitterNeelResults | TwitterNeelResultsReceived | ClearTwitterNeelResults;
+export class SortTwitterNeelResults implements Action {
+    readonly type = ActionTypes.SortTwitterNeelResults;
+
+    constructor() {}
+}
+
+export type All = StartListenTwitterNeelResults | StopListenTwitterNeelResults |
+    TwitterNeelResultsReceived | ClearTwitterNeelResults | SortTwitterNeelResults;

@@ -142,6 +142,20 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
                     _flags: updateLocationsFlags(state.locations._flags, statusesLocations.concat(usersLocations, resourcesLocations)),
                 }
             };
+        case ActionTypes.SortTwitterNeelResults:
+            return {
+                ...state,
+                nilEntities: {
+                    ...state.nilEntities,
+                    all: [...state.nilEntities.all]
+                        .sort((a, b) => nilEntityComparator(state.nilEntities.tweetsCount, a, b))
+                },
+                resources: {
+                    ...state.resources,
+                    all: [...state.resources.all]
+                        .sort((a, b) => resourceComparator(state.resources.tweetsCount, a, b))
+                }
+            };
         case ActionTypes.ClearTwitterNeelResults:
             return {
                 ...initTwitterNeelState(),
