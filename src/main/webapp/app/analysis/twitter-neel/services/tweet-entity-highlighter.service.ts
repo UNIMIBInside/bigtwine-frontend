@@ -7,7 +7,7 @@ export interface IStatusTextPart {
     entity?: ILinkedEntity;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class TweetEntityHighlighterService {
     private _cache: {[key: string]: IStatusTextPart[]} = {};
 

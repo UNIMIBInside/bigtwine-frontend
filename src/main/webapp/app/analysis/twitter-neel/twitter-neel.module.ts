@@ -22,28 +22,36 @@ import {
     TwitterNeelReducer,
     TwitterNeelEffects,
 } from './';
+import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/services/tweet-entity-highlighter.service';
 
 @NgModule({
-  declarations: [
-      DocumentToolbarComponent,
-      DocumentUploadComponent,
-      DocumentViewComponent,
-      ListResultsViewerComponent,
-      MapResultsViewerComponent,
-      QueryNewComponent,
-      QueryToolbarComponent,
-      QueryViewComponent,
-      NeelProcessedTweetComponent,
-      HighlightedTweetTextComponent,
-  ],
-  imports: [
-      CommonModule,
-      BigtwineSharedModule,
-      RouterModule.forChild(twitterNeelState),
-      StoreModule.forFeature('twitterNeel', TwitterNeelReducer),
-      EffectsModule.forFeature([TwitterNeelEffects]),
-      AgmCoreModule,
-      AgmJsMarkerClustererModule
-  ]
+    declarations: [
+        DocumentToolbarComponent,
+        DocumentUploadComponent,
+        DocumentViewComponent,
+        ListResultsViewerComponent,
+        MapResultsViewerComponent,
+        QueryNewComponent,
+        QueryToolbarComponent,
+        QueryViewComponent,
+        NeelProcessedTweetComponent,
+        HighlightedTweetTextComponent,
+    ],
+    imports: [
+        CommonModule,
+        BigtwineSharedModule,
+        RouterModule.forChild(twitterNeelState),
+        StoreModule.forFeature('twitterNeel', TwitterNeelReducer),
+        EffectsModule.forFeature([TwitterNeelEffects]),
+        AgmCoreModule,
+        AgmJsMarkerClustererModule
+    ],
+    providers: [
+        {
+            provide: TweetEntityHighlighterService,
+            useClass: TweetEntityHighlighterService,
+        }
+    ]
 })
-export class TwitterNeelModule { }
+export class TwitterNeelModule {
+}

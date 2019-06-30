@@ -5,14 +5,15 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
 
+import { MockAnalysisService} from './services/mock-analysis.service';
+import { AnalysisService} from './services/analysis.service';
+
 import { AuthServerProvider, WindowRef } from 'app/core';
 import {
-    AnalysisService,
     analysisState,
     AnalysisReducer,
     AnalysisEffects,
     rxStompConfigFactory,
-    MockAnalysisService,
 } from './';
 
 @NgModule({

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AnalysisState } from 'app/analysis/store';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
+import { AnalysisState } from 'app/analysis/store';
 
 @Component({
     selector: 'btw-query-new',

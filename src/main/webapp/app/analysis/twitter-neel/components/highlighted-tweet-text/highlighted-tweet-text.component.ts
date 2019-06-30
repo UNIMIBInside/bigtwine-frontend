@@ -1,9 +1,8 @@
 import { Component, Input } from '@angular/core';
 import {
-    IStatusTextPart,
-    TweetEntityHighlighterService,
     INeelProcessedTweet,
 } from 'app/analysis/twitter-neel';
+import { TweetEntityHighlighterService, IStatusTextPart } from 'app/analysis/twitter-neel/services/tweet-entity-highlighter.service';
 
 @Component({
     selector: 'btw-highlighted-tweet-text',

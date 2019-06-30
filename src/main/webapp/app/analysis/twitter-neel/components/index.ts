@@ -8,4 +8,4 @@ export * from './document-view/document-view.component';
 export * from './document-upload/document-upload.component';
 export * from './neel-processed-tweet/neel-processed-tweet.component';
 export * from './highlighted-tweet-text/highlighted-tweet-text.component';
-export * from './results-viewer.component';
+// export * from './results-viewer.component';

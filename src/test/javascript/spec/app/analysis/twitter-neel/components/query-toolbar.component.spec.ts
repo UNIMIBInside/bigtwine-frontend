@@ -6,10 +6,11 @@ import * as fromAnalysis from 'app/analysis/store';
 import * as fromTwitterNeel from 'app/analysis/twitter-neel/store';
 import { BigtwineSharedLibsModule } from 'app/shared';
 import { of } from 'rxjs';
-import { AnalysisService, IAnalysis } from 'app/analysis';
+import { IAnalysis } from 'app/analysis';
 import { EffectsModule } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { AnalysisService } from 'app/analysis/services/analysis.service';
 
 describe('QueryToolbar Component', () => {
     let component: QueryToolbarComponent;

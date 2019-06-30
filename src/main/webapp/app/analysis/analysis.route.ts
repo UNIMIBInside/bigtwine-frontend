@@ -7,6 +7,7 @@ export const analysisState: Routes = [
             {
                 path: 'twitter-neel',
                 loadChildren: './twitter-neel/twitter-neel.module#TwitterNeelModule'
+                // children: twitterNeelState
             }
         ]
     },
