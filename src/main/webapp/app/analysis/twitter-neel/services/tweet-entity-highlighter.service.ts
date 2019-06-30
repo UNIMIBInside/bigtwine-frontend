@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ILinkedEntity, INeelProcessedTweet } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
+import { ILinkedEntity, INeelProcessedTweet } from 'app/analysis/twitter-neel';
 
 export interface IStatusTextPart {
     type: string;

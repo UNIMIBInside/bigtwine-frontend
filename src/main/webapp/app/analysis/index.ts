@@ -1,3 +1,5 @@
 export * from './analysis.route';
-export * from './model/analysis.model';
-export * from './service/analysis.service';
+export * from './models';
+export * from './services';
+export * from './configs';
+export * from './store';
