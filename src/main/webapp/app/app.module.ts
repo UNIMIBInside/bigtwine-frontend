@@ -2,6 +2,7 @@ import './vendor.ts';
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { AgmCoreModule } from '@agm/core';
@@ -51,6 +52,7 @@ import { DEBUG_INFO_ENABLED } from 'app/app.constants';
         BigtwineAccountModule,
         BigtwineAnalysisModule,
         BigtwineSocialSignInModule,
+        NoopAnimationsModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [BtwMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],

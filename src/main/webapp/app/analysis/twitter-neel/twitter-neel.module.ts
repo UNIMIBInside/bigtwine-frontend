@@ -6,6 +6,7 @@ import { AgmCoreModule } from '@agm/core';
 import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { TagInputModule } from 'ngx-chips';
 
 import {
     twitterNeelState,
@@ -17,6 +18,7 @@ import {
     QueryNewComponent,
     QueryToolbarComponent,
     QueryViewComponent,
+    QueryInputComponent,
     NeelProcessedTweetComponent,
     HighlightedTweetTextComponent,
     TwitterNeelReducer,
@@ -25,6 +27,16 @@ import {
 import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/services/tweet-entity-highlighter.service';
 
 @NgModule({
+    imports: [
+        CommonModule,
+        BigtwineSharedModule,
+        RouterModule.forChild(twitterNeelState),
+        StoreModule.forFeature('twitterNeel', TwitterNeelReducer),
+        EffectsModule.forFeature([TwitterNeelEffects]),
+        AgmCoreModule,
+        AgmJsMarkerClustererModule,
+        TagInputModule,
+    ],
     declarations: [
         DocumentToolbarComponent,
         DocumentUploadComponent,
@@ -34,17 +46,9 @@ import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/service
         QueryNewComponent,
         QueryToolbarComponent,
         QueryViewComponent,
+        QueryInputComponent,
         NeelProcessedTweetComponent,
         HighlightedTweetTextComponent,
-    ],
-    imports: [
-        CommonModule,
-        BigtwineSharedModule,
-        RouterModule.forChild(twitterNeelState),
-        StoreModule.forFeature('twitterNeel', TwitterNeelReducer),
-        EffectsModule.forFeature([TwitterNeelEffects]),
-        AgmCoreModule,
-        AgmJsMarkerClustererModule
     ],
     providers: [
         {

@@ -14,7 +14,6 @@ import { filter, take } from 'rxjs/operators';
 export class QueryToolbarComponent implements OnInit, OnDestroy {
 
     @Input() mode = 'new';
-    @Output() queryChange = new EventEmitter();
     private query: string;
     private currentViewMode: string;
 
@@ -70,8 +69,8 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    onQueryChange() {
-        this.queryChange.emit(this.query);
+    onQueryChange(query) {
+        this.query = query;
     }
 
     onCreateBtnClick() {
