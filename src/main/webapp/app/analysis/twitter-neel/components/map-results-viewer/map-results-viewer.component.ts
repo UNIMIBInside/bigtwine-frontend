@@ -1,20 +1,23 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/results-viewer.component';
-import { ILocation, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Observable, ReplaySubject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, tap, takeUntil, throttleTime } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
+import {
+    IAnalysis,
+    AnalysisState,
+    selectCurrentAnalysis
+} from 'app/analysis';
 import {
     buildNilEntityIdentifier,
     selectAllResources,
     selectAllTweets, selectLocationsBySource,
     selectNilEntities, selectNilEntitiesTweetsCount,
     selectResourcesTweetsCount,
-    TwitterNeelState
+    TwitterNeelState,
+    ILinkedEntity, INeelProcessedTweet, INilEntity, IResource, ILocation, LocationSource
 } from 'app/analysis/twitter-neel';
-import { Observable } from 'rxjs';
-import { IAnalysis } from 'app/analysis';
-import { AnalysisState, selectCurrentAnalysis } from 'app/analysis/store';
-import { ILinkedEntity, INeelProcessedTweet, INilEntity, IResource } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
-import { map, throttleTime } from 'rxjs/operators';
+import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/results-viewer.component';
 
 @Component({
     templateUrl: './map-results-viewer.component.html',
@@ -22,7 +25,9 @@ import { map, throttleTime } from 'rxjs/operators';
     selector: 'btw-map-results-viewer',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MapResultsViewerComponent extends ResultsViewerComponent implements OnInit {
+export class MapResultsViewerComponent extends ResultsViewerComponent implements OnInit, OnDestroy {
+
+    private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
     currentAnalysis$: Observable<IAnalysis>;
     tweets$: Observable<INeelProcessedTweet[]>;
@@ -39,6 +44,9 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
     selectedTweet: INeelProcessedTweet = null;
     selectedResource: IResource = null;
     selectedNilEntity: INilEntity = null;
+
+    tweetsSearchFormControl = new FormControl('');
+    filterQuery: string = null;
 
     filteredTweets$: Observable<INeelProcessedTweet[]>;
     paginatedTweets$: Observable<INeelProcessedTweet[]>;
@@ -62,17 +70,36 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
             map(tweets => tweets.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize))
         );
 
-        this.tNeelStore.pipe(select(selectResourcesTweetsCount)).subscribe(counters => {
-            this.resourcesCounter = counters;
-        });
-
-        this.tNeelStore.pipe(select(selectNilEntitiesTweetsCount)).subscribe(counters => {
-            this.nilEntitiesCounter = counters;
-        });
-
         this.statusLocations$ = this.tNeelStore.pipe(select(selectLocationsBySource(LocationSource.Status)));
         this.resourceLocations$ = this.tNeelStore.pipe(select(selectLocationsBySource(LocationSource.Resource)));
         this.userLocations$ = this.tNeelStore.pipe(select(selectLocationsBySource(LocationSource.TwitterUser)));
+
+        this.tNeelStore.pipe(
+            select(selectResourcesTweetsCount),
+            takeUntil(this.destroyed$),
+        ).subscribe(counters => {
+            this.resourcesCounter = counters;
+        });
+
+        this.tNeelStore.pipe(
+            select(selectNilEntitiesTweetsCount),
+            takeUntil(this.destroyed$),
+        ).subscribe(counters => {
+            this.nilEntitiesCounter = counters;
+        });
+
+        this.tweetsSearchFormControl.valueChanges.pipe(
+            debounceTime(500),
+            distinctUntilChanged(),
+            takeUntil(this.destroyed$),
+        ).subscribe((query: string) => {
+            this.onTweetsFilterQueryChange(query);
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
     }
 
     stringifyTweetEntities(entities: ILinkedEntity[]) {
@@ -90,6 +117,7 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
             this.selectedTweet = tweet;
             this.selectedNilEntity = null;
             this.selectedResource = null;
+            this.filterQuery = null;
         }
     }
 
@@ -100,6 +128,7 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
             this.selectedTweet = null;
             this.selectedNilEntity = null;
             this.selectedResource = resource;
+            this.filterQuery = null;
 
             this.filteredTweets$ = this.tweets$
                 .pipe(
@@ -120,6 +149,7 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
             this.selectedTweet = null;
             this.selectedNilEntity = entity;
             this.selectedResource = null;
+            this.filterQuery = null;
 
             this.filteredTweets$ = this.tweets$
                 .pipe(
@@ -127,6 +157,25 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
                     map(allTweets => allTweets.filter(t => t.entities && t.entities
                         .some(e => e.isNil && e.value === entity.value && e.nilCluster === entity.nilCluster))),
                     map(tweets => tweets.slice(0, this.pageSize)),
+                );
+        }
+    }
+
+    onTweetsFilterQueryChange(query: string) {
+        this.filterQuery = query ? query : null;
+        console.log('Query: ', this.filterQuery);
+
+        if (this.filterQuery) {
+            this.selectedTweet = null;
+            this.selectedNilEntity = null;
+            this.selectedResource = null;
+
+            this.filteredTweets$ = this.tweets$
+                .pipe(
+                    throttleTime(5000),
+                    map(allTweets => allTweets.filter(t => t.status.text.indexOf(this.filterQuery) >= 0)),
+                    map(tweets => tweets.slice(0, this.pageSize)),
+                    tap(tweets => console.log('Count: ', tweets.length))
                 );
         }
     }
