@@ -59,11 +59,15 @@ export class MockAnalysisService {
     }
 
     stopAnalysis(analysisId: string): Observable<IAnalysis> {
-        return this.updateAnalysis(analysisId, {status: 'stopped'});
+        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Stopped});
     }
 
     startAnalysis(analysisId: string): Observable<IAnalysis> {
-        return this.updateAnalysis(analysisId, {status: 'running'});
+        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Running});
+    }
+
+    completeAnalysis(analysisId: string): Observable<IAnalysis> {
+        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Completed});
     }
 
     updateAnalysis(analysisId: string, changes: IAnalysis): Observable<IAnalysis> {

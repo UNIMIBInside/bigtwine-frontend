@@ -1,7 +1,16 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterEvent } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { AnalysisState, CreateAnalysis, selectCurrentAnalysis, StartAnalysis, StartListenAnalysisChanges, StopAnalysis, StopListenAnalysisChanges } from 'app/analysis/store';
+import {
+    AnalysisState,
+    CompleteAnalysis,
+    CreateAnalysis,
+    selectCurrentAnalysis,
+    StartAnalysis,
+    StartListenAnalysisChanges,
+    StopAnalysis,
+    StopListenAnalysisChanges
+} from 'app/analysis/store';
 import { Observable, Subscription } from 'rxjs';
 import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis } from 'app/analysis';
 import { filter, take } from 'rxjs/operators';
@@ -34,7 +43,11 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
     }
 
     get showStartStopButton() {
-        return !this.showCreateButton;
+        return !this.showCreateButton && this.currentAnalysis && this.currentAnalysis.status !== AnalysisStatus.Completed;
+    }
+
+    get showCompleteButton() {
+        return this.mode === 'view' && this.currentAnalysis && this.currentAnalysis.status === AnalysisStatus.Running;
     }
 
     get showResultsViewerButton() {
@@ -87,6 +100,12 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         }
     }
 
+    onCompleteBtnClick() {
+        if (this.currentAnalysis && this.currentAnalysis.status === AnalysisStatus.Running) {
+            this.completeAnalysis(this.currentAnalysis);
+        }
+    }
+
     onToggleViewModeBtnClick() {
         const currentMode = this.currentViewMode;
         const isMapView = currentMode === 'map';
@@ -126,6 +145,10 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
 
     stopAnalysis(analysis: IAnalysis) {
         this.analysisStore.dispatch(new StopAnalysis(analysis.id));
+    }
+
+    completeAnalysis(analysis: IAnalysis) {
+        this.analysisStore.dispatch(new CompleteAnalysis(analysis.id));
     }
 
     startListenAnalysisChanges(analysis: IAnalysis) {

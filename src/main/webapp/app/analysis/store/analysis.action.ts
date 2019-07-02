@@ -17,6 +17,9 @@ export enum ActionTypes {
     StartAnalysis = '[Analysis] START_ANALYSIS',
     StartAnalysisSuccess = '[Analysis] START_ANALYSIS_SUCCESS',
     StartAnalysisError = '[Analysis] START_ANALYSIS_ERROR',
+    CompleteAnalysis = '[Analysis] COMPLETE_ANALYSIS',
+    CompleteAnalysisSuccess = '[Analysis] COMPLETE_ANALYSIS_SUCCESS',
+    CompleteAnalysisError = '[Analysis] COMPLETE_ANALYSIS_ERROR',
     UpdateAnalysis = '[Analysis] UPDATE_ANALYSIS',
     UpdateAnalysisSuccess = '[Analysis] UPDATE_ANALYSIS_SUCCESS',
     UpdateAnalysisError = '[Analysis] UPDATE_ANALYSIS_ERROR',
@@ -127,6 +130,24 @@ export class StartAnalysisError extends GenericAnalysisError {
     }
 }
 
+export class CompleteAnalysis implements Action {
+    readonly type = ActionTypes.CompleteAnalysis;
+
+    constructor(readonly analysisId: string) {}
+}
+
+export class CompleteAnalysisSuccess implements Action, ActionWithAnalysis {
+    readonly type = ActionTypes.CompleteAnalysisSuccess;
+
+    constructor(readonly analysis: IAnalysis) {}
+}
+
+export class CompleteAnalysisError extends GenericAnalysisError {
+    constructor(readonly error: any) {
+        super(ActionTypes.CompleteAnalysisError, error);
+    }
+}
+
 export class UpdateAnalysis implements Action {
     readonly type = ActionTypes.UpdateAnalysis;
 
@@ -206,6 +227,7 @@ export type All = GetAnalysis | GetAnalysisSuccess | GetAnalysisError |
     CreateAnalysis | CreateAnalysisSuccess | CreateAnalysisError |
     StartAnalysis | StartAnalysisSuccess | StartAnalysisError |
     StopAnalysis | StopAnalysisSuccess | StopAnalysisError |
+    CompleteAnalysis | CompleteAnalysisSuccess | CompleteAnalysisError |
     UpdateAnalysis | UpdateAnalysisSuccess | UpdateAnalysisError |
     StartListenAnalysisChanges | StopListenAnalysisChanges | AnalysisChangeReceived | ListeningAnalysisChangesError |
     StartListenAnalysisResults | StopListenAnalysisResults | AnalysisResultsReceived | ListeningAnalysisResultsError |

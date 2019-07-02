@@ -54,6 +54,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
             };
         case AnalysisActions.ActionTypes.StartAnalysisSuccess:
         case AnalysisActions.ActionTypes.StopAnalysisSuccess:
+        case AnalysisActions.ActionTypes.CompleteAnalysisSuccess:
         case AnalysisActions.ActionTypes.AnalysisChangeReceived:
         case AnalysisActions.ActionTypes.UpdateAnalysisSuccess:
             const updatedAnalysis = (action as AnalysisActions.ActionWithAnalysis).analysis;
@@ -106,6 +107,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
         case AnalysisActions.ActionTypes.CreateAnalysisError:
         case AnalysisActions.ActionTypes.StartAnalysisError:
         case AnalysisActions.ActionTypes.StopAnalysisError:
+        case AnalysisActions.ActionTypes.CompleteAnalysisError:
         case AnalysisActions.ActionTypes.GenericAnalysisError:
             return pushLastError(state, (action as AnalysisActions.GenericAnalysisError));
         default:

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
-import { IAnalysis } from '../';
+import { AnalysisStatus, IAnalysis } from '../';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { map } from 'rxjs/operators';
 
@@ -32,11 +32,15 @@ export class AnalysisService {
     }
 
     stopAnalysis(analysisId: string): Observable<IAnalysis> {
-        return this.updateAnalysis(analysisId, {status: 'stopped'});
+        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Stopped});
     }
 
     startAnalysis(analysisId: string): Observable<IAnalysis> {
-        return this.updateAnalysis(analysisId, {status: 'start'});
+        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Running});
+    }
+
+    completeAnalysis(analysisId: string): Observable<IAnalysis> {
+        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Completed});
     }
 
     updateAnalysis(analysisId: string, changes: IAnalysis): Observable<IAnalysis> {

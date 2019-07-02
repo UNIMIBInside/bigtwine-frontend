@@ -2,6 +2,7 @@ export enum AnalysisStatus {
     Ready = 'ready',
     Stopped = 'stopped',
     Running = 'running',
+    Completed = 'completed',
 }
 
 export enum AnalysisInputType {
