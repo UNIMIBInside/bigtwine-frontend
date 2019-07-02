@@ -163,7 +163,6 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
 
     onTweetsFilterQueryChange(query: string) {
         this.filterQuery = query ? query : null;
-        console.log('Query: ', this.filterQuery);
 
         if (this.filterQuery) {
             this.selectedTweet = null;
@@ -175,7 +174,6 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
                     throttleTime(5000),
                     map(allTweets => allTweets.filter(t => t.status.text.indexOf(this.filterQuery) >= 0)),
                     map(tweets => tweets.slice(0, this.pageSize)),
-                    tap(tweets => console.log('Count: ', tweets.length))
                 );
         }
     }

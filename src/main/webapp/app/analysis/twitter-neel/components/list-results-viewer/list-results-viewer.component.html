@@ -1,3 +1,16 @@
-<p>
-  list-results-viewer works!
-</p>
+<div class="row">
+    <div class="col">
+        <input type="text" [formControl]="tweetsSearchFormControl">
+        <ul class="tweets-list">
+            <ng-container *ngIf="filterQuery === null; else filteredTweetsList">
+                <li *ngFor="let tweet of paginatedTweets$ | async">
+                    <btw-neel-processed-tweet-large [tweet]="tweet"></btw-neel-processed-tweet-large>
+                </li>
+            </ng-container>
+            <ng-template #filteredTweetsList>
+                <li *ngFor="let tweet of filteredTweets$ | async">
+                    <btw-neel-processed-tweet-large [tweet]="tweet"></btw-neel-processed-tweet-large>
+                </li>
+            </ng-template>
+    </div>
+</div>

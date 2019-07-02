@@ -8,5 +8,6 @@ export * from './document-toolbar/document-toolbar.component';
 export * from './document-view/document-view.component';
 export * from './document-upload/document-upload.component';
 export * from './neel-processed-tweet/neel-processed-tweet.component';
+export * from './neel-processed-tweet-large/neel-processed-tweet-large.component';
 export * from './highlighted-tweet-text/highlighted-tweet-text.component';
 // export * from './results-viewer.component';

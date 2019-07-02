@@ -23,6 +23,7 @@ import {
     HighlightedTweetTextComponent,
     TwitterNeelReducer,
     TwitterNeelEffects,
+    NeelProcessedTweetLargeComponent,
 } from './';
 import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/services/tweet-entity-highlighter.service';
 
@@ -48,6 +49,7 @@ import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/service
         QueryViewComponent,
         QueryInputComponent,
         NeelProcessedTweetComponent,
+        NeelProcessedTweetLargeComponent,
         HighlightedTweetTextComponent,
     ],
     providers: [
