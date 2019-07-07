@@ -4,6 +4,19 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 export interface TwitterNeelState {
     listeningAnalysisId: string;
+    pagination: {
+        enabled: boolean;
+        currentPage: number;
+        pageSize: number;
+    };
+    search: {
+        query: any;
+        pagination: {
+            enabled: boolean;
+            currentPage: number;
+            pageSize: number;
+        };
+    };
     tweets: {
         all: INeelProcessedTweet[],
     };
@@ -25,6 +38,19 @@ export interface TwitterNeelState {
 export const initTwitterNeelState: () => TwitterNeelState = () => {
     return {
         listeningAnalysisId: null,
+        pagination: {
+            enabled: false,
+            currentPage: null,
+            pageSize: 250,
+        },
+        search: {
+            query: null,
+            pagination: {
+                enabled: false,
+                currentPage: null,
+                pageSize: 250,
+            }
+        },
         tweets: {
             all: [],
         },
@@ -48,6 +74,11 @@ export const initTwitterNeelState: () => TwitterNeelState = () => {
 };
 
 export const selectTwitterNeelFeature = createFeatureSelector<TwitterNeelState>('twitterNeel');
+
+export const selectListeningAnalysisId = createSelector(
+    selectTwitterNeelFeature,
+    (state: TwitterNeelState)  => state.listeningAnalysisId
+);
 
 export const selectAllTweets = createSelector(
     selectTwitterNeelFeature,
@@ -77,4 +108,19 @@ export const selectNilEntities = createSelector(
 export const selectLocationsBySource = (source: LocationSource) => createSelector(
     selectTwitterNeelFeature,
     (state: TwitterNeelState) => state.locations.bySource[source],
+);
+
+export const selectPagination = createSelector(
+    selectTwitterNeelFeature,
+    (state: TwitterNeelState) => state.pagination,
+);
+
+export const selectSearchPagination = createSelector(
+    selectTwitterNeelFeature,
+    (state: TwitterNeelState) => state.search.pagination,
+);
+
+export const selectSearchQuery = createSelector(
+    selectTwitterNeelFeature,
+    (state: TwitterNeelState) => state.search.query,
 );

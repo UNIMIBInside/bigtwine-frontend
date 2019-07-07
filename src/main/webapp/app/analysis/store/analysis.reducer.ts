@@ -1,10 +1,9 @@
 import { initAnalysisState, AnalysisState } from './analysis.state';
 import * as AnalysisActions from './analysis.action';
-import { GenericAnalysisError } from './analysis.action';
 
 export const initialState: AnalysisState = initAnalysisState();
 
-function pushLastError(state: AnalysisState, errAction: GenericAnalysisError) {
+function pushLastError(state: AnalysisState, errAction: AnalysisActions.GenericAnalysisError) {
     const err = {
         type: errAction.type,
         error: errAction.error
@@ -108,6 +107,8 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
         case AnalysisActions.ActionTypes.StartAnalysisError:
         case AnalysisActions.ActionTypes.StopAnalysisError:
         case AnalysisActions.ActionTypes.CompleteAnalysisError:
+        case AnalysisActions.ActionTypes.SearchAnalysisResultsError:
+        case AnalysisActions.ActionTypes.GetAnalysisResultsError:
         case AnalysisActions.ActionTypes.GenericAnalysisError:
             return pushLastError(state, (action as AnalysisActions.GenericAnalysisError));
         default:

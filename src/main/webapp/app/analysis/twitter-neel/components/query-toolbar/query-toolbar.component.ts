@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterEvent } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import {
     AnalysisState,
@@ -13,7 +13,7 @@ import {
 } from 'app/analysis/store';
 import { Observable, Subscription } from 'rxjs';
 import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis } from 'app/analysis';
-import { filter, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'btw-query-toolbar',
@@ -24,7 +24,6 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
 
     @Input() mode = 'new';
     private query: string;
-    private currentViewMode: string;
 
     currentAnalysis$: Observable<IAnalysis>;
     subscriptions = new Subscription();
@@ -50,10 +49,6 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         return this.mode === 'view' && this.currentAnalysis && this.currentAnalysis.status === AnalysisStatus.Running;
     }
 
-    get showResultsViewerButton() {
-        return this.mode === 'view';
-    }
-
     constructor(private router: Router, private route: ActivatedRoute, private analysisStore: Store<AnalysisState>) {
     }
 
@@ -64,14 +59,7 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
             this.onCurrentAnalysisChange(analysis);
         });
 
-        const s2 = this.router.events.pipe(filter(e => e instanceof RouterEvent)).subscribe((e: RouterEvent) => {
-            this.onRouteChange(e);
-        });
-
-        this.onRouteChange(null);
-
         this.subscriptions.add(s1);
-        this.subscriptions.add(s2);
 
         if (this.currentAnalysis && this.mode === 'view') {
             this.query = this.currentAnalysis.query;
@@ -106,23 +94,12 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         }
     }
 
-    onToggleViewModeBtnClick() {
-        const currentMode = this.currentViewMode;
-        const isMapView = currentMode === 'map';
-
-        this.switchViewMode(isMapView ? 'list' : 'map');
-    }
-
     onCurrentAnalysisChange(analysis: IAnalysis) {
         if (this.isSupportedAnalysis(analysis)) {
             this.router
                 .navigate(['/analysis/twitter-neel/query/view/' + analysis.id])
                 .catch(e => console.error(e));
         }
-    }
-
-    onRouteChange(event: RouterEvent) {
-        this.currentViewMode = this.getCurrentViewMode();
     }
 
     isSupportedAnalysis(analysis: IAnalysis) {
@@ -158,20 +135,5 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
     stopListenAnalysisChanges(analysis?: IAnalysis) {
         const analysisId = analysis ? analysis.id : null;
         this.analysisStore.dispatch(new StopListenAnalysisChanges(analysisId));
-    }
-
-    getCurrentViewMode(): string {
-        const path = this.route.snapshot.children
-            .filter(r => r.outlet === 'results-viewer')
-            .map(r => r.routeConfig.path)
-            .shift();
-
-        return path === '' ? 'map' : path;
-    }
-
-    switchViewMode(mode: string) {
-        this.router
-            .navigate([{'outlets': {'results-viewer': mode}}], {relativeTo: this.route})
-            .catch(e => console.error(e));
     }
 }

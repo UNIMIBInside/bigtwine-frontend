@@ -6,12 +6,9 @@
         <button class="btn btn-sm btn-outline-primary" (click)="onCreateBtnClick()" name="create">Create</button>
     </div>
     <div class="col" *ngIf="showStartStopButton">
-        <button class="btn btn-sm btn-outline-primary" (click)="onToggleAnalysisBtnClick()" name="start-stop">{{(currentAnalysis$ | async)?.status === 'running' ? 'Stop' : 'Start'}}</button>
+        <button class="btn btn-sm btn-outline-primary" (click)="onToggleAnalysisBtnClick()" name="start-stop">{{(currentAnalysis$ | async)?.status === 'running' ? 'Pause' : 'Start'}}</button>
     </div>
     <div class="col" *ngIf="showCompleteButton">
-        <button class="btn btn-sm btn-outline-primary" (click)="onCompleteBtnClick()" name="complete">complete</button>
-    </div>
-    <div class="col" *ngIf="showResultsViewerButton">
-        <button class="btn btn-sm btn-outline-primary" (click)="onToggleViewModeBtnClick();">{{currentViewMode === 'map' ? 'List' : 'Map'}}</button>
+        <button class="btn btn-sm btn-outline-primary" (click)="onCompleteBtnClick()" name="complete">Complete</button>
     </div>
 </div>

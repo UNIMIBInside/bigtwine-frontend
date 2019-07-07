@@ -3,6 +3,8 @@ import { interval, Observable, of, Subject, throwError } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
 import { ILinkedEntity, INeelProcessedTweet } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
 import { ICoordinates } from 'app/analysis/twitter-neel/models/coordinates.model';
+import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
+import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-count.model';
 
 export class MockAnalysisService {
     private analysisDb: Map<string, IAnalysis> = new Map();
@@ -102,6 +104,43 @@ export class MockAnalysisService {
         return interval(this.rms).pipe(map(() => {
             return this.createProcessedTweet(analysisId);
         }));
+    }
+
+    getAnalysisResults(analysisId: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
+        const tweets = [];
+        for (let i = 0; i < pageSize; ++i) {
+            tweets.push(this.createProcessedTweet(analysisId));
+        }
+        return of({
+            page,
+            pageSize,
+            totalCount: pageSize * 5,
+            count: pageSize,
+            objects: tweets
+        }).pipe(delay(this.rms));
+    }
+
+    searchAnalysisResults(analysisId: string, query: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
+        const tweets = [];
+        for (let i = 0; i < pageSize; ++i) {
+            tweets.push(this.createProcessedTweet(analysisId));
+        }
+        return of({
+            page,
+            pageSize,
+            totalCount: pageSize * 2,
+            count: pageSize,
+            objects: tweets
+        }).pipe(delay(this.rms * 3));
+    }
+
+    countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount> {
+        const response = {
+            analysisId,
+            count: Math.round(Math.random() * 1000),
+            timestamp: (new Date()).toISOString()
+        };
+        return of(response).pipe(delay(this.rms));
     }
 
     private tweetText(len: number) {

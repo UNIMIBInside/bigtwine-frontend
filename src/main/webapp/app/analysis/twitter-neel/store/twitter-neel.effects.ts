@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { map, withLatestFrom, filter, mergeMap, bufferTime, catchError, takeUntil } from 'rxjs/operators';
+import { map, withLatestFrom, filter, mergeMap, takeUntil } from 'rxjs/operators';
 import * as TwitterNeelActions from './twitter-neel.action';
 import * as AnalysisActions from 'app/analysis/store/analysis.action';
-import { Action, createFeatureSelector, createSelector, Store } from '@ngrx/store';
-import { TwitterNeelState } from 'app/analysis/twitter-neel';
-import { interval, Observable, of } from 'rxjs';
+import { Action, Store } from '@ngrx/store';
+import { selectListeningAnalysisId, TwitterNeelState } from 'app/analysis/twitter-neel';
+import { interval, Observable } from 'rxjs';
+import { AnalysisState, IAnalysis, selectCurrentAnalysis } from 'app/analysis';
 
 @Injectable()
 export class TwitterNeelEffects {
@@ -24,10 +25,30 @@ export class TwitterNeelEffects {
     @Effect()
     twitterNeelResultReceived$ = this.action$.pipe(
         ofType(AnalysisActions.ActionTypes.AnalysisResultsReceived),
-        withLatestFrom(this.store$.select(createSelector(createFeatureSelector('twitterNeel'), (state: TwitterNeelState)  => state.listeningAnalysisId))),
+        withLatestFrom(this.store$.select(selectListeningAnalysisId)),
         filter(([action, listeningAnalysisId]: [AnalysisActions.AnalysisResultsReceived, string]) =>
-                (listeningAnalysisId != null && action.results.length > 0 && action.results[0].analysisId === listeningAnalysisId)),
+            (listeningAnalysisId != null && action.results.length > 0 && action.results[0].analysisId === listeningAnalysisId)),
         map(([action]: [AnalysisActions.AnalysisResultsReceived, string]) => (new TwitterNeelActions.TwitterNeelResultsReceived(action.results))),
+    );
+
+    @Effect()
+    twitterNeelSearchResultsReceived$ = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.SearchAnalysisResultsSuccess),
+        withLatestFrom(this.analysisStore$.select(selectCurrentAnalysis)),
+        filter(([action, currentAnalysis]: [AnalysisActions.SearchAnalysisResultsSuccess, IAnalysis]) =>
+            (currentAnalysis != null && action.results.length > 0 && action.results[0].analysisId === currentAnalysis.id)),
+        map(([action]: [AnalysisActions.SearchAnalysisResultsSuccess, IAnalysis]) => (
+            new TwitterNeelActions.TwitterNeelSearchResultsReceived(action.results, action.page))),
+    );
+
+    @Effect()
+    twitterNeelPagedResultsReceived$ = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.GetAnalysisResultsSuccess),
+        withLatestFrom(this.analysisStore$.select(selectCurrentAnalysis)),
+        filter(([action, currentAnalysis]: [AnalysisActions.GetAnalysisResultsSuccess, IAnalysis]) =>
+            (currentAnalysis != null && action.results.length > 0 && action.results[0].analysisId === currentAnalysis.id)),
+        map(([action]: [AnalysisActions.GetAnalysisResultsSuccess, IAnalysis]) => (
+            new TwitterNeelActions.TwitterNeelPagedResultsReceived(action.results, action.page))),
     );
 
     @Effect()
@@ -45,5 +66,5 @@ export class TwitterNeelEffects {
             ))
     );
 
-    constructor(private action$: Actions, private store$: Store<TwitterNeelState>) {}
+    constructor(private action$: Actions, private store$: Store<TwitterNeelState>, private analysisStore$: Store<AnalysisState>) {}
 }

@@ -6,6 +6,8 @@ export enum ActionTypes {
     StartListenTwitterNeelResults = '[TwitterNeel] StartListenTwitterNeelResults',
     StopListenTwitterNeelResults = '[TwitterNeel] StopListenTwitterNeelResults',
     TwitterNeelResultsReceived = '[TwitterNeel] TwitterNeelResultsReceived',
+    TwitterNeelSearchResultsReceived = '[TwitterNeel] TwitterNeelSearchResultsReceived',
+    TwitterNeelPagedResultsReceived = '[TwitterNeel] TwitterNeelPagedResultsReceived',
     ClearTwitterNeelResults = '[TwitterNeel] ClearTwitterNeelResults',
     SortTwitterNeelResults = '[TwitterNeel] SortTwitterNeelResults',
 }
@@ -28,6 +30,18 @@ export class TwitterNeelResultsReceived implements Action {
     constructor(public results: INeelProcessedTweet[]) {}
 }
 
+export class TwitterNeelSearchResultsReceived implements Action {
+    readonly type = ActionTypes.TwitterNeelSearchResultsReceived;
+
+    constructor(public results: INeelProcessedTweet[], public page: number) {}
+}
+
+export class TwitterNeelPagedResultsReceived implements Action {
+    readonly type = ActionTypes.TwitterNeelPagedResultsReceived;
+
+    constructor(public results: INeelProcessedTweet[], public page: number) {}
+}
+
 export class ClearTwitterNeelResults implements Action {
     readonly type = ActionTypes.ClearTwitterNeelResults;
 
@@ -41,4 +55,5 @@ export class SortTwitterNeelResults implements Action {
 }
 
 export type All = StartListenTwitterNeelResults | StopListenTwitterNeelResults |
-    TwitterNeelResultsReceived | ClearTwitterNeelResults | SortTwitterNeelResults;
+    TwitterNeelResultsReceived | TwitterNeelPagedResultsReceived | TwitterNeelSearchResultsReceived |
+    ClearTwitterNeelResults | SortTwitterNeelResults;

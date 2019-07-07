@@ -30,6 +30,12 @@ export enum ActionTypes {
     StartListenAnalysisResults = '[Analysis] START_LISTEN_ANALYSIS_RESULTS',
     StopListenAnalysisResults = '[Analysis] STOP_LISTEN_ANALYSIS_RESULTS',
     ListeningAnalysisResultsError = '[Analysis] LISTENING_ANALYSIS_RESULTS_ERROR',
+    GetAnalysisResults = '[Analysis] GET_ANALYSIS_RESULTS',
+    GetAnalysisResultsSuccess = '[Analysis] GET_ANALYSIS_RESULTS_SUCCESS',
+    GetAnalysisResultsError = '[Analysis] GET_ANALYSIS_RESULTS_ERROR',
+    SearchAnalysisResults = '[Analysis] SEARCH_ANALYSIS_RESULTS',
+    SearchAnalysisResultsSuccess = '[Analysis] SEARCH_ANALYSIS_RESULTS_SUCCESS',
+    SearchAnalysisResultsError = '[Analysis] SEARCH_ANALYSIS_RESULTS_ERROR',
     AnalysisResultsReceived = '[Analysis] ANALYSIS_RESULTS_RECEIVED',
     GenericAnalysisError = '[Analysis] GENERIC_ANALYSIS_ERROR',
 }
@@ -208,6 +214,42 @@ export class StopListenAnalysisResults implements Action {
      * @param analysisId
      */
     constructor(readonly analysisId?: string) {}
+}
+
+export class GetAnalysisResults implements Action {
+    readonly type = ActionTypes.GetAnalysisResults;
+
+    constructor(readonly analysisId: string, readonly page: number, readonly pageSize: number) {}
+}
+
+export class GetAnalysisResultsSuccess implements Action {
+    readonly type = ActionTypes.GetAnalysisResultsSuccess;
+
+    constructor(readonly results: any[], readonly page: number) {}
+}
+
+export class GetAnalysisResultsError extends GenericAnalysisError {
+    constructor(readonly error: any) {
+        super(ActionTypes.GetAnalysisResultsError, error);
+    }
+}
+
+export class SearchAnalysisResults implements Action {
+    readonly type = ActionTypes.SearchAnalysisResults;
+
+    constructor(readonly analysisId: string, readonly query: any, readonly page: number, readonly pageSize: number) {}
+}
+
+export class SearchAnalysisResultsSuccess implements Action {
+    readonly type = ActionTypes.SearchAnalysisResultsSuccess;
+
+    constructor(readonly results: any[], readonly page: number) {}
+}
+
+export class SearchAnalysisResultsError extends GenericAnalysisError {
+    constructor(readonly error: any) {
+        super(ActionTypes.SearchAnalysisResultsError, error);
+    }
 }
 
 export class AnalysisResultsReceived implements Action {

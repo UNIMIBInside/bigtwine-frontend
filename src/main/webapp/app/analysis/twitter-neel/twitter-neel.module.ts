@@ -10,6 +10,8 @@ import { TagInputModule } from 'ngx-chips';
 
 import {
     twitterNeelState,
+    TwitterNeelReducer,
+    TwitterNeelEffects,
     DocumentToolbarComponent,
     DocumentUploadComponent,
     DocumentViewComponent,
@@ -21,11 +23,11 @@ import {
     QueryInputComponent,
     NeelProcessedTweetComponent,
     HighlightedTweetTextComponent,
-    TwitterNeelReducer,
-    TwitterNeelEffects,
+    ResultsToolbarComponent,
     NeelProcessedTweetLargeComponent,
 } from './';
 import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/services/tweet-entity-highlighter.service';
+import { ResultsFilterService } from 'app/analysis/twitter-neel/services/results-filter.service';
 
 @NgModule({
     imports: [
@@ -51,12 +53,17 @@ import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/service
         NeelProcessedTweetComponent,
         NeelProcessedTweetLargeComponent,
         HighlightedTweetTextComponent,
+        ResultsToolbarComponent,
     ],
     providers: [
         {
             provide: TweetEntityHighlighterService,
             useClass: TweetEntityHighlighterService,
-        }
+        },
+        {
+            provide: ResultsFilterService,
+            useClass: ResultsFilterService,
+        },
     ]
 })
 export class TwitterNeelModule {

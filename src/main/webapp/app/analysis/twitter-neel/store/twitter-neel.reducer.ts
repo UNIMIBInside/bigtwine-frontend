@@ -2,7 +2,7 @@ import { initTwitterNeelState, TwitterNeelState } from './twitter-neel.state';
 import * as TwitterNeelActions from './twitter-neel.action';
 import { ActionTypes } from './twitter-neel.action';
 import { ILocation, Location, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
-import { ILinkedEntity, INilEntity, IResource } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
+import { ILinkedEntity, INeelProcessedTweet, INilEntity, IResource } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
 
 export const initialState: TwitterNeelState = initTwitterNeelState();
 
@@ -63,13 +63,81 @@ const resourceComparator = (counters: {[key: string]: number}, a: IResource, b: 
     return bCount - aCount;
 };
 
+const reduceNewTweets = (state: TwitterNeelState, tweets: INeelProcessedTweet[]) => {
+    const entities = tweets
+        .filter(t => t.entities && t.entities.length)
+        .reduce((a, t) => a.concat(t.entities), []) as ILinkedEntity[];
+    const linkedEntities = entities.filter(e => !e.isNil);
+    const nilEntities = entities
+        .filter(e => e.isNil)
+        .map(e => ({value: e.value, nilCluster: e.nilCluster}));
+    const resources = linkedEntities
+        .map(e => e.resource)
+        .filter(removeResourceDuplicates);
+
+    const statuses = tweets.map(t => t.status);
+    const statusesLocations = statuses
+        .filter(t => t.coordinates)
+        .map(t => new Location(t.coordinates, LocationSource.Status, t.id))
+        .filter(removeLocationDuplicates);
+    const usersLocations = statuses
+        .filter(t => t.user && t.user.coordinates)
+        .map(t => new Location(t.user.coordinates, LocationSource.TwitterUser, t.user.id))
+        .filter(removeLocationDuplicates);
+    const resourcesLocations = linkedEntities
+        .filter(e => e.resource && e.resource.coordinates)
+        .map(e => new Location(e.resource.coordinates, LocationSource.Resource, e.resource.url))
+        .filter(removeLocationDuplicates);
+
+    return {
+        ...state,
+        tweets: {
+            ...state.tweets,
+            all: [...tweets, ...state.tweets.all],
+        },
+        nilEntities: {
+            ...state.nilEntities,
+            all: [
+                ...state.nilEntities.all,
+                ...nilEntities
+                    .filter(e => !state.nilEntities.tweetsCount[buildNilEntityIdentifier(e)]),
+            ],
+            tweetsCount: updateNilEntitiesTweetsCount(state.nilEntities.tweetsCount, nilEntities),
+        },
+        resources: {
+            ...state.resources,
+            all: [
+                ...state.resources.all,
+                ...resources.filter(r => !state.resources.tweetsCount[r.url]),
+            ],
+            tweetsCount: updateResourcesTweetsCount(state.resources.tweetsCount, linkedEntities),
+        },
+        locations: {
+            ...state.locations,
+            bySource: {
+                ...state.locations.bySource,
+                [LocationSource.Status]: [...state.locations.bySource[LocationSource.Status], ...statusesLocations],
+                [LocationSource.TwitterUser]: [
+                    ...state.locations.bySource[LocationSource.TwitterUser],
+                    ...usersLocations.filter(l => !state.locations._flags[l.source + l.ref])
+                ],
+                [LocationSource.Resource]: [
+                    ...state.locations.bySource[LocationSource.Resource],
+                    ...resourcesLocations.filter(l => !state.locations._flags[l.source + l.ref])
+                ],
+            },
+            _flags: updateLocationsFlags(state.locations._flags, statusesLocations.concat(usersLocations, resourcesLocations)),
+        }
+    };
+};
+
 export function TwitterNeelReducer(state = initialState, action: TwitterNeelActions.All): TwitterNeelState {
     switch (action.type) {
         case TwitterNeelActions.ActionTypes.StartListenTwitterNeelResults:
             return {...state, listeningAnalysisId: (action as TwitterNeelActions.StartListenTwitterNeelResults).analysisId};
         case TwitterNeelActions.ActionTypes.StopListenTwitterNeelResults:
             return {...state, listeningAnalysisId: null};
-        case TwitterNeelActions.ActionTypes.TwitterNeelResultsReceived:
+        case TwitterNeelActions.ActionTypes.TwitterNeelResultsReceived: {
             if (state.listeningAnalysisId === null) {
                 return state;
             }
@@ -77,71 +145,60 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
             const tweets = (action as TwitterNeelActions.TwitterNeelResultsReceived).results
                 .filter(t => t.analysisId === state.listeningAnalysisId);
 
-            const entities = tweets
-                .filter(t => t.entities && t.entities.length)
-                .reduce((a, t) => a.concat(t.entities), []) as ILinkedEntity[];
-            const linkedEntities = entities.filter(e => !e.isNil);
-            const nilEntities = entities
-                .filter(e => e.isNil)
-                .map(e => ({value: e.value, nilCluster: e.nilCluster}));
-            const resources = linkedEntities
-                .map(e => e.resource)
-                .filter(removeResourceDuplicates);
-
-            const statuses = tweets.map(t => t.status);
-            const statusesLocations = statuses
-                .filter(t => t.coordinates)
-                .map(t => new Location(t.coordinates, LocationSource.Status, t.id))
-                .filter(removeLocationDuplicates);
-            const usersLocations = statuses
-                .filter(t => t.user && t.user.coordinates)
-                .map(t => new Location(t.user.coordinates, LocationSource.TwitterUser, t.user.id))
-                .filter(removeLocationDuplicates);
-            const resourcesLocations = linkedEntities
-                .filter(e => e.resource && e.resource.coordinates)
-                .map(e => new Location(e.resource.coordinates, LocationSource.Resource, e.resource.url))
-                .filter(removeLocationDuplicates);
-
             return {
-                ...state,
-                tweets: {
-                    ...state.tweets,
-                    all: [...tweets, ...state.tweets.all],
+                ...reduceNewTweets(state, tweets),
+                pagination: {
+                    ...state.pagination,
+                    enabled: false,
                 },
-                nilEntities: {
-                    ...state.nilEntities,
-                    all: [
-                        ...state.nilEntities.all,
-                        ...nilEntities
-                            .filter(e => !state.nilEntities.tweetsCount[buildNilEntityIdentifier(e)]),
-                    ],
-                    tweetsCount: updateNilEntitiesTweetsCount(state.nilEntities.tweetsCount, nilEntities),
-                },
-                resources: {
-                    ...state.resources,
-                    all: [
-                        ...state.resources.all,
-                        ...resources.filter(r => !state.resources.tweetsCount[r.url]),
-                    ],
-                    tweetsCount: updateResourcesTweetsCount(state.resources.tweetsCount, linkedEntities),
-                },
-                locations: {
-                    ...state.locations,
-                    bySource: {
-                        ...state.locations.bySource,
-                        [LocationSource.Status]: [...state.locations.bySource[LocationSource.Status], ...statusesLocations],
-                        [LocationSource.TwitterUser]: [
-                            ...state.locations.bySource[LocationSource.TwitterUser],
-                            ...usersLocations.filter(l => !state.locations._flags[l.source + l.ref])
-                        ],
-                        [LocationSource.Resource]: [
-                            ...state.locations.bySource[LocationSource.Resource],
-                            ...resourcesLocations.filter(l => !state.locations._flags[l.source + l.ref])
-                        ],
-                    },
-                    _flags: updateLocationsFlags(state.locations._flags, statusesLocations.concat(usersLocations, resourcesLocations)),
+                search: {
+                    ...state.search,
+                    query: null,
                 }
             };
+        }
+        case TwitterNeelActions.ActionTypes.TwitterNeelSearchResultsReceived: {
+            const act = (action as TwitterNeelActions.TwitterNeelSearchResultsReceived);
+
+            return {
+                ...reduceNewTweets(initialState, act.results),
+                listeningAnalysisId: state.listeningAnalysisId,
+                pagination: {
+                    ...state.pagination,
+                    enabled: true,
+                    currentPage: null
+                },
+                search: {
+                    ...state.search,
+                    query: null,
+                    pagination: {
+                        ...state.search.pagination,
+                        currentPage: act.page
+                    }
+                }
+            };
+        }
+        case TwitterNeelActions.ActionTypes.TwitterNeelPagedResultsReceived: {
+            const act = (action as TwitterNeelActions.TwitterNeelPagedResultsReceived);
+
+            return {
+                ...reduceNewTweets(initialState, act.results),
+                listeningAnalysisId: state.listeningAnalysisId,
+                pagination: {
+                    ...state.pagination,
+                    enabled: true,
+                    currentPage: null
+                },
+                search: {
+                    ...state.search,
+                    query: null,
+                    pagination: {
+                        ...state.search.pagination,
+                        currentPage: act.page
+                    }
+                }
+            };
+        }
         case ActionTypes.SortTwitterNeelResults:
             return {
                 ...state,

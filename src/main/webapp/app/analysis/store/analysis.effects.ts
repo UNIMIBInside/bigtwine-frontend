@@ -114,5 +114,25 @@ export class AnalysisEffects {
             ))
     );
 
+    @Effect()
+    getAnalysisResults$: Observable<Action> = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.GetAnalysisResults),
+        mergeMap((action: AnalysisActions.GetAnalysisResults) => this.analysisService.getAnalysisResults(action.analysisId, action.page, action.pageSize)
+            .pipe(
+                map(response => new AnalysisActions.GetAnalysisResultsSuccess(response.objects, response.page)),
+                catchError(e => of(new AnalysisActions.GetAnalysisResultsError(e)))
+            ))
+    );
+
+    @Effect()
+    searchAnalysisResults$: Observable<Action> = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.SearchAnalysisResults),
+        mergeMap((action: AnalysisActions.SearchAnalysisResults) => this.analysisService.searchAnalysisResults(action.analysisId, action.query, action.page, action.pageSize)
+            .pipe(
+                map(response => new AnalysisActions.SearchAnalysisResultsSuccess(response.objects, response.page)),
+                catchError(e => of(new AnalysisActions.SearchAnalysisResultsError(e)))
+            ))
+    );
+
     constructor(private analysisService: AnalysisService, private action$: Actions) {}
 }

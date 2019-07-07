@@ -3,8 +3,8 @@ import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/res
 import { Observable, ReplaySubject } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { selectAllTweets, TwitterNeelState, INeelProcessedTweet } from 'app/analysis/twitter-neel';
-import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, map, takeUntil, tap, throttleTime } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { IResultsFilterQuery, ResultsFilterService } from 'app/analysis/twitter-neel/services/results-filter.service';
 
 @Component({
     selector: 'btw-list-results-viewer',
@@ -17,8 +17,7 @@ export class ListResultsViewerComponent extends ResultsViewerComponent implement
 
     tweets$: Observable<INeelProcessedTweet[]>;
 
-    tweetsSearchFormControl = new FormControl('');
-    filterQuery: string = null;
+    filterQuery: IResultsFilterQuery = null;
 
     filteredTweets$: Observable<INeelProcessedTweet[]>;
     paginatedTweets$: Observable<INeelProcessedTweet[]>;
@@ -26,7 +25,12 @@ export class ListResultsViewerComponent extends ResultsViewerComponent implement
     currentPage = 1;
     pageSize = 250;
 
-    constructor(private tNeelStore: Store<TwitterNeelState>) {
+    get isFilteringEnabled() {
+        return this.filterQuery !== null;
+    }
+
+    constructor(private tNeelStore: Store<TwitterNeelState>,
+                private resultsFilterService: ResultsFilterService) {
         super();
     }
 
@@ -36,12 +40,8 @@ export class ListResultsViewerComponent extends ResultsViewerComponent implement
             map(tweets => tweets.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize))
         );
 
-        this.tweetsSearchFormControl.valueChanges.pipe(
-            debounceTime(500),
-            distinctUntilChanged(),
-            takeUntil(this.destroyed$),
-        ).subscribe((query: string) => {
-            this.onTweetsFilterQueryChange(query);
+        this.resultsFilterService.currentQuery$.subscribe(q => {
+            this.onTweetsFilterQueryChange(q);
         });
     }
 
@@ -50,16 +50,11 @@ export class ListResultsViewerComponent extends ResultsViewerComponent implement
         this.destroyed$.complete();
     }
 
-    onTweetsFilterQueryChange(query: string) {
-        this.filterQuery = query ? query : null;
+    onTweetsFilterQueryChange(query: IResultsFilterQuery) {
+        this.filterQuery = query;
 
-        if (this.filterQuery) {
-            this.filteredTweets$ = this.tweets$
-                .pipe(
-                    throttleTime(5000),
-                    map(allTweets => allTweets.filter(t => t.status.text.indexOf(this.filterQuery) >= 0)),
-                    map(tweets => tweets.slice(0, this.pageSize)),
-                );
+        if (query) {
+            this.filteredTweets$ = this.resultsFilterService.filteredTweets$;
         }
     }
 

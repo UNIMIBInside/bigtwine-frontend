@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, timer } from 'rxjs';
+import { EMPTY, Observable, timer } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { AnalysisStatus, IAnalysis } from '../';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { map } from 'rxjs/operators';
+import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
+import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-count.model';
 
 @Injectable({ providedIn: 'root' })
 export class AnalysisService {
@@ -62,5 +64,17 @@ export class AnalysisService {
         return timer(1000, 1000).pipe(
             map((n: number) => ({id: n, text: 'Prova ' + n + ' (' + analysisId + ')', analysisId}))
         );
+    }
+
+    getAnalysisResults(analysisId: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
+        return EMPTY;
+    }
+
+    searchAnalysisResults(analysisId: string, query: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
+        return EMPTY;
+    }
+
+    countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount> {
+        return EMPTY;
     }
 }

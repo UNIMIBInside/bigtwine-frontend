@@ -1,4 +1,4 @@
-import { AnalysisType, IAnalysis } from 'app/analysis';
+import { IAnalysis } from 'app/analysis';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 export interface AnalysisState {
