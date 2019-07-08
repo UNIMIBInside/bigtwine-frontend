@@ -5,8 +5,9 @@ import { ILinkedEntity, INeelProcessedTweet } from 'app/analysis/twitter-neel/mo
 import { ICoordinates } from 'app/analysis/twitter-neel/models/coordinates.model';
 import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
 import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-count.model';
+import { IAnalysisService } from 'app/analysis/services/analysis.service';
 
-export class MockAnalysisService {
+export class MockAnalysisService implements IAnalysisService {
     private analysisDb: Map<string, IAnalysis> = new Map();
     private analysisChangesSubscriptions: Map<string, Subject<IAnalysis>> = new Map();
     private lorem = `

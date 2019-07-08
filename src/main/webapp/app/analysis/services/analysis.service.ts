@@ -9,8 +9,23 @@ import { map } from 'rxjs/operators';
 import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
 import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-count.model';
 
+export interface IAnalysisService {
+    createAnalysis(analysis: IAnalysis): Observable<IAnalysis>;
+    getAnalysisById(analysisId: string): Observable<IAnalysis>;
+    getAnalyses(): Observable<IAnalysis[]>;
+    stopAnalysis(analysisId: string): Observable<IAnalysis>;
+    startAnalysis(analysisId: string): Observable<IAnalysis>;
+    completeAnalysis(analysisId: string): Observable<IAnalysis>;
+    updateAnalysis(analysisId: string, changes: IAnalysis): Observable<IAnalysis>;
+    listenAnalysisStatusChanges(analysisId: string): Observable<IAnalysis>;
+    listenAnalysisResults(analysisId: string): Observable<any>;
+    getAnalysisResults(analysisId: string, page: number, pageSize: number): Observable<IPagedAnalysisResults>;
+    searchAnalysisResults(analysisId: string, query: string, page: number, pageSize: number): Observable<IPagedAnalysisResults>;
+    countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount>;
+}
+
 @Injectable({ providedIn: 'root' })
-export class AnalysisService {
+export class AnalysisService implements IAnalysisService {
 
     readonly ANALYSIS_API = `${SERVER_API_URL}analysis/api`;
 
