@@ -12,6 +12,7 @@ import {
     twitterNeelState,
     TwitterNeelReducer,
     TwitterNeelEffects,
+    AnalysisListComponent,
     DocumentToolbarComponent,
     DocumentUploadComponent,
     DocumentViewComponent,
@@ -41,6 +42,7 @@ import { ResultsFilterService } from 'app/analysis/twitter-neel/services/results
         TagInputModule,
     ],
     declarations: [
+        AnalysisListComponent,
         DocumentToolbarComponent,
         DocumentUploadComponent,
         DocumentViewComponent,

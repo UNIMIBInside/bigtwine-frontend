@@ -36,13 +36,12 @@ export const selectCurrentAnalysis = createSelector(
 
 export const selectAllAnalyses = createSelector(
     selectAnalysisFeature,
-    (state: AnalysisState) => state.analyses,
+    (state: AnalysisState) => state.analyses.all,
 );
 
-export const selectAnalysesByType = createSelector(
+export const selectAnalysesByType = (analysisType: string) => createSelector(
     selectAnalysisFeature,
-    (state: AnalysisState) => state.analyses.all,
-    (state: AnalysisState, analyses: IAnalysis[], analysisType: string) => analyses.filter(a => a.type === analysisType),
+    (state: AnalysisState) => state.analyses.all.filter(a => a.type === analysisType),
 );
 
 export const selectLastError = createSelector(

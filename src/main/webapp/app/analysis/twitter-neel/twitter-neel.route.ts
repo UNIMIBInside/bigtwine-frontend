@@ -6,7 +6,7 @@ import {
     DocumentViewComponent,
     DocumentUploadComponent,
     MapResultsViewerComponent,
-    ListResultsViewerComponent
+    ListResultsViewerComponent, AnalysisListComponent
 } from './';
 
 const viewerModes: Routes = [
@@ -29,6 +29,11 @@ const viewerModes: Routes = [
 ];
 
 export const twitterNeelState: Routes = [
+    {
+        path: '',
+        pathMatch: 'full',
+        component: AnalysisListComponent,
+    },
     {
         path: 'query',
         children: [
