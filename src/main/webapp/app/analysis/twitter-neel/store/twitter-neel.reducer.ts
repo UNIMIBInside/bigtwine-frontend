@@ -165,7 +165,7 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
                 listeningAnalysisId: state.listeningAnalysisId,
                 pagination: {
                     ...state.pagination,
-                    enabled: true,
+                    enabled: false,
                     currentPage: null
                 },
                 search: {
@@ -187,14 +187,15 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
                 pagination: {
                     ...state.pagination,
                     enabled: true,
-                    currentPage: null
+                    currentPage: act.page,
                 },
                 search: {
                     ...state.search,
                     query: null,
                     pagination: {
                         ...state.search.pagination,
-                        currentPage: act.page
+                        enabled: false,
+                        currentPage: null,
                     }
                 }
             };

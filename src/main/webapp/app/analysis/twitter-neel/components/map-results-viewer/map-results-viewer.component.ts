@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { map, takeUntil, throttleTime } from 'rxjs/operators';
+import { map, take, takeUntil, throttleTime } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import {
     IAnalysis,
     AnalysisState,
-    selectCurrentAnalysis
+    selectCurrentAnalysis, GetAnalysisResults
 } from 'app/analysis';
 import {
     buildNilEntityIdentifier,
@@ -14,7 +14,7 @@ import {
     selectNilEntities, selectNilEntitiesTweetsCount,
     selectResourcesTweetsCount,
     TwitterNeelState,
-    ILinkedEntity, INeelProcessedTweet, INilEntity, IResource, ILocation, LocationSource
+    ILinkedEntity, INeelProcessedTweet, INilEntity, IResource, ILocation, LocationSource, IPaginationInfo, selectPagination
 } from 'app/analysis/twitter-neel';
 import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/results-viewer.component';
 import { IResultsFilterQuery, ResultsFilterService } from 'app/analysis/twitter-neel/services/results-filter.service';
@@ -52,8 +52,27 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
     currentPage = 1;
     pageSize = 250;
 
+    get currentAnalysis(): IAnalysis {
+        let currentAnalysis: IAnalysis = null;
+        this.currentAnalysis$
+            .pipe(take(1))
+            .subscribe((analysis: IAnalysis) => currentAnalysis = analysis);
+
+        return currentAnalysis;
+    }
+
     get isFilteringEnabled() {
         return this.selectedNilEntity !== null || this.selectedResource !== null || this.filterQuery !== null;
+    }
+
+    get paginationInfo(): IPaginationInfo {
+        let pagination = null;
+        this.tNeelStore
+            .select(selectPagination)
+            .pipe(take(1))
+            .subscribe(p => pagination = p);
+
+        return pagination;
     }
 
     constructor(private changeDetector: ChangeDetectorRef,
@@ -202,4 +221,18 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
         return this.selectedTweet.entities.filter(e => e.isNil);
     }
 
+    fetchPrevPage() {
+        this.fetchPage(this.paginationInfo.currentPage - 1);
+    }
+
+    fetchNextPage() {
+        this.fetchPage(this.paginationInfo.currentPage + 1);
+    }
+
+    fetchPage(page: number) {
+        const pageSize = this.paginationInfo.pageSize;
+        const action = new GetAnalysisResults(this.currentAnalysis.id, page, pageSize);
+
+        this.analysisStore.dispatch(action);
+    }
 }

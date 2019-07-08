@@ -63,11 +63,13 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
 
         if (this.currentAnalysis && this.mode === 'view') {
             this.query = this.currentAnalysis.query;
+            this.startListenAnalysisChanges(this.currentAnalysis);
         }
     }
 
     ngOnDestroy() {
         this.subscriptions.unsubscribe();
+        this.stopListenAnalysisChanges(this.currentAnalysis);
     }
 
     onQueryChange(query) {
@@ -96,6 +98,10 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
 
     onCurrentAnalysisChange(analysis: IAnalysis) {
         if (this.isSupportedAnalysis(analysis)) {
+            if (this.mode === 'view') {
+                this.query = this.currentAnalysis.query;
+            }
+
             this.router
                 .navigate(['/analysis/twitter-neel/query/view/' + analysis.id])
                 .catch(e => console.error(e));

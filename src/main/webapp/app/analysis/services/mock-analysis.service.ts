@@ -37,6 +37,19 @@ export class MockAnalysisService implements IAnalysisService {
         return 500;
     }
 
+    constructor() {
+        const analysis: IAnalysis = {
+            id: 'completed-analysis',
+            status: AnalysisStatus.Completed,
+            query: 'query di prova',
+            type: 'twitter-neel',
+            inputType: 'query',
+            owner: 'user-1',
+        };
+
+        this.analysisDb.set(analysis.id, analysis);
+    }
+
     createAnalysis(analysis: IAnalysis): Observable<IAnalysis> {
         const overrides = {
             id: this.uuidv4(),

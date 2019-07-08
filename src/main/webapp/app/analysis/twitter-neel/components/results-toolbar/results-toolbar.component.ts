@@ -6,6 +6,7 @@ import { IResultsFilterQuery, ResultsFilterService } from 'app/analysis/twitter-
 import { AnalysisState, AnalysisStatus, GetAnalysisResults, IAnalysis, SearchAnalysisResults, selectCurrentAnalysis } from 'app/analysis';
 import { select, Store, Action } from '@ngrx/store';
 import { FormControl } from '@angular/forms';
+import { IPaginationInfo, selectPagination, selectSearchPagination, TwitterNeelState } from 'app/analysis/twitter-neel';
 
 @Component({
     selector: 'btw-results-toolbar',
@@ -41,10 +42,31 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         return (this.searchQuery && this.searchQuery.trim().length >= 3);
     }
 
+    get paginationInfo(): IPaginationInfo {
+        let pagination = null;
+        this.tNeelStore
+            .select(selectPagination)
+            .pipe(take(1))
+            .subscribe(p => pagination = p);
+
+        return pagination;
+    }
+
+    get searchPaginationInfo(): IPaginationInfo {
+        let pagination = null;
+        this.tNeelStore
+            .select(selectSearchPagination)
+            .pipe(take(1))
+            .subscribe(p => pagination = p);
+
+        return pagination;
+    }
+
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private analysisStore: Store<AnalysisState>,
+        private tNeelStore: Store<TwitterNeelState>,
         private resultsFilterService: ResultsFilterService) {}
 
     ngOnInit(): void {
@@ -122,7 +144,7 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
             const query: IResultsFilterQuery = {
                 text: this.searchQuery,
                 page: 1,
-                pageSize: 250,
+                pageSize: this.searchPaginationInfo.pageSize,
             };
 
             this.resultsFilterService.localSearch(query);
@@ -138,13 +160,13 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
                 this.currentAnalysis.id,
                 this.searchQuery,
                 1,
-                250
+                this.searchPaginationInfo.pageSize
             );
         } else {
             action = new GetAnalysisResults(
                 this.currentAnalysis.id,
                 1,
-                250
+                this.paginationInfo.pageSize
             );
         }
 
