@@ -16,6 +16,14 @@
                     </span>
                 </a>
             </li>
+            <li class="nav-item" routerLinkActive="active">
+                <a class="nav-link" routerLink="analysis" (click)="collapseNavbar()">
+                    <span>
+                        <fa-icon icon="home"></fa-icon>
+                        <span>Analysis</span>
+                    </span>
+                </a>
+            </li>
             <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
             <li *btwHasAnyAuthority="'ROLE_ADMIN'" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" href="/cp/admin" target="_blank" id="admin-link">

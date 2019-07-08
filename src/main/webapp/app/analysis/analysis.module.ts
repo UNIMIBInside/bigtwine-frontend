@@ -15,6 +15,7 @@ import {
     AnalysisEffects,
     rxStompConfigFactory,
 } from './';
+import { AnalysisHomeComponent } from 'app/analysis/components';
 
 @NgModule({
     imports: [
@@ -23,7 +24,9 @@ import {
         StoreModule.forFeature('analysis', AnalysisReducer),
         EffectsModule.forFeature([AnalysisEffects])
     ],
-    declarations: [],
+    declarations: [
+        AnalysisHomeComponent,
+    ],
     providers: [
         {
             provide: InjectableRxStompConfig,
