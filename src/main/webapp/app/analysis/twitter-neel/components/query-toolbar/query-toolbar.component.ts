@@ -27,6 +27,7 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
 
     currentAnalysis$: Observable<IAnalysis>;
     subscriptions = new Subscription();
+    waitingNewAnalysis = false;
 
     get currentAnalysis(): IAnalysis {
         let currentAnalysis: IAnalysis = null;
@@ -102,9 +103,13 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
                 this.query = this.currentAnalysis.query;
             }
 
-            this.router
-                .navigate(['/analysis/twitter-neel/query/view/' + analysis.id])
-                .catch(e => console.error(e));
+            if (this.waitingNewAnalysis) {
+                this.router
+                    .navigate(['/analysis/twitter-neel/query/view/' + analysis.id])
+                    .catch(e => console.error(e));
+
+                this.waitingNewAnalysis = false;
+            }
         }
     }
 
@@ -119,6 +124,7 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
             query,
         };
 
+        this.waitingNewAnalysis = true;
         this.analysisStore.dispatch(new CreateAnalysis(analysis));
     }
 
