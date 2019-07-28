@@ -47,10 +47,6 @@ export interface INilEntity {
 }
 
 export interface INeelProcessedTweet {
-    id: string;
-    analysisId: string;
-    processDate: Date;
-    saveDate: Date;
     status: ITwitterStatus;
     entities: ILinkedEntity[];
 }

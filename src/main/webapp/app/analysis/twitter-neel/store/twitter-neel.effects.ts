@@ -7,6 +7,7 @@ import { Action, Store } from '@ngrx/store';
 import { selectListeningAnalysisId, TwitterNeelState } from 'app/analysis/twitter-neel';
 import { interval, Observable } from 'rxjs';
 import { AnalysisState, IAnalysis, selectCurrentAnalysis } from 'app/analysis';
+import { ITwitterNeelAnalysisResult } from 'app/analysis/twitter-neel/models/twitter-neel-analysis-result.model';
 
 @Injectable()
 export class TwitterNeelEffects {
@@ -28,7 +29,8 @@ export class TwitterNeelEffects {
         withLatestFrom(this.store$.select(selectListeningAnalysisId)),
         filter(([action, listeningAnalysisId]: [AnalysisActions.AnalysisResultsReceived, string]) =>
             (listeningAnalysisId != null && action.results.length > 0 && action.results[0].analysisId === listeningAnalysisId)),
-        map(([action]: [AnalysisActions.AnalysisResultsReceived, string]) => (new TwitterNeelActions.TwitterNeelResultsReceived(action.results))),
+        map(([action]: [AnalysisActions.AnalysisResultsReceived, string]) => (
+            new TwitterNeelActions.TwitterNeelResultsReceived(action.results as ITwitterNeelAnalysisResult[]))),
     );
 
     @Effect()
@@ -38,7 +40,7 @@ export class TwitterNeelEffects {
         filter(([action, currentAnalysis]: [AnalysisActions.SearchAnalysisResultsSuccess, IAnalysis]) =>
             (currentAnalysis != null && action.results.length > 0 && action.results[0].analysisId === currentAnalysis.id)),
         map(([action]: [AnalysisActions.SearchAnalysisResultsSuccess, IAnalysis]) => (
-            new TwitterNeelActions.TwitterNeelSearchResultsReceived(action.results, action.page))),
+            new TwitterNeelActions.TwitterNeelSearchResultsReceived(action.results as ITwitterNeelAnalysisResult[], action.page))),
     );
 
     @Effect()
@@ -48,7 +50,7 @@ export class TwitterNeelEffects {
         filter(([action, currentAnalysis]: [AnalysisActions.GetAnalysisResultsSuccess, IAnalysis]) =>
             (currentAnalysis != null && action.results.length > 0 && action.results[0].analysisId === currentAnalysis.id)),
         map(([action]: [AnalysisActions.GetAnalysisResultsSuccess, IAnalysis]) => (
-            new TwitterNeelActions.TwitterNeelPagedResultsReceived(action.results, action.page))),
+            new TwitterNeelActions.TwitterNeelPagedResultsReceived(action.results as ITwitterNeelAnalysisResult[], action.page))),
     );
 
     @Effect()

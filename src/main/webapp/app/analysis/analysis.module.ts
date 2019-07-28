@@ -38,10 +38,10 @@ import { AnalysisHomeComponent } from 'app/analysis/components';
             useFactory: rxStompServiceFactory,
             deps: [InjectableRxStompConfig]
         },
-        {
+        /*{
             provide: AnalysisService,
             useClass: MockAnalysisService
-        },
+        },*/
     ]
 })
 export class BigtwineAnalysisModule { }

@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 
 import { INeelProcessedTweet } from '../models/neel-processed-tweet.model';
+import { ITwitterNeelAnalysisResult } from 'app/analysis/twitter-neel/models/twitter-neel-analysis-result.model';
 
 export enum ActionTypes {
     StartListenTwitterNeelResults = '[TwitterNeel] StartListenTwitterNeelResults',
@@ -27,19 +28,19 @@ export class StopListenTwitterNeelResults implements Action {
 export class TwitterNeelResultsReceived implements Action {
     readonly type = ActionTypes.TwitterNeelResultsReceived;
 
-    constructor(public results: INeelProcessedTweet[]) {}
+    constructor(public results: ITwitterNeelAnalysisResult[]) {}
 }
 
 export class TwitterNeelSearchResultsReceived implements Action {
     readonly type = ActionTypes.TwitterNeelSearchResultsReceived;
 
-    constructor(public results: INeelProcessedTweet[], public page: number) {}
+    constructor(public results: ITwitterNeelAnalysisResult[], public page: number) {}
 }
 
 export class TwitterNeelPagedResultsReceived implements Action {
     readonly type = ActionTypes.TwitterNeelPagedResultsReceived;
 
-    constructor(public results: INeelProcessedTweet[], public page: number) {}
+    constructor(public results: ITwitterNeelAnalysisResult[], public page: number) {}
 }
 
 export class ClearTwitterNeelResults implements Action {

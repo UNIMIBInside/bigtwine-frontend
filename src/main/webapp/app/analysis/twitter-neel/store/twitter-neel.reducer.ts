@@ -3,6 +3,7 @@ import * as TwitterNeelActions from './twitter-neel.action';
 import { ActionTypes } from './twitter-neel.action';
 import { ILocation, Location, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
 import { ILinkedEntity, INeelProcessedTweet, INilEntity, IResource } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
+import { ITwitterNeelAnalysisResult } from 'app/analysis/twitter-neel/models/twitter-neel-analysis-result.model';
 
 export const initialState: TwitterNeelState = initTwitterNeelState();
 
@@ -63,7 +64,8 @@ const resourceComparator = (counters: {[key: string]: number}, a: IResource, b: 
     return bCount - aCount;
 };
 
-const reduceNewTweets = (state: TwitterNeelState, tweets: INeelProcessedTweet[]) => {
+const reduceNewTweets = (state: TwitterNeelState, results: ITwitterNeelAnalysisResult[]) => {
+    const tweets = results.map(result => result.payload);
     const entities = tweets
         .filter(t => t.entities && t.entities.length)
         .reduce((a, t) => a.concat(t.entities), []) as ILinkedEntity[];

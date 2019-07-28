@@ -50,7 +50,7 @@ describe('AnalysisReducer', () => {
     });
 
     it('should update current analysis', () => {
-        const action = new AnalysisChangeReceived({id: 'analysis1', status: 'running'});
+        const action = new AnalysisChangeReceived({id: 'analysis1', status: 'started'});
         const initial = initAnalysisState();
         initial.currentAnalysis = {
             id: 'analysis1',
@@ -59,11 +59,11 @@ describe('AnalysisReducer', () => {
         const state = AnalysisReducer(initial, action);
 
         expect(state.currentAnalysis).not.toBeNull();
-        expect(state.currentAnalysis.status).toBe('running');
+        expect(state.currentAnalysis.status).toBe('started');
     });
 
     it('should not update current analysis if id is different', () => {
-        const action = new AnalysisChangeReceived({id: 'analysis2', status: 'running'});
+        const action = new AnalysisChangeReceived({id: 'analysis2', status: 'started'});
         const initial = initAnalysisState();
         initial.currentAnalysis = {
             id: 'analysis1',

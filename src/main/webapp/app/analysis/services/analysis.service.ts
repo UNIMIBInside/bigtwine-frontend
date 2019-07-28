@@ -73,20 +73,24 @@ export class AnalysisService implements IAnalysisService {
     }
 
     listenAnalysisResults(analysisId: string): Observable<any> {
-        return timer(1000, 1000).pipe(
-            map((n: number) => ({id: n, text: 'Prova ' + n + ' (' + analysisId + ')', analysisId}))
-        );
+        this.stompService.activate();
+
+        return this.stompService.watch(`/topic/analysis-results/${analysisId}`)
+            .pipe(map((message: Message) => JSON.parse(message.body)));
     }
 
     getAnalysisResults(analysisId: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
-        return EMPTY;
+        return this.http
+            .get(`${this.ANALYSIS_API}/analyses-results/${analysisId}?page=${page}&pageSize=${pageSize}`) as Observable<IPagedAnalysisResults>;
     }
 
     searchAnalysisResults(analysisId: string, query: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
-        return EMPTY;
+        return this.http
+            .post(`${this.ANALYSIS_API}/analyses-results/${analysisId}/search?page=${page}&pageSize=${pageSize}`, query) as Observable<IPagedAnalysisResults>;
     }
 
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount> {
-        return EMPTY;
+        return this.http
+            .get(`${this.ANALYSIS_API}/analyses-results/${analysisId}/count`) as Observable<IAnalysisResultsCount>;
     }
 }

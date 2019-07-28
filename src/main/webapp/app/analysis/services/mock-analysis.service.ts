@@ -1,4 +1,4 @@
-import { AnalysisStatus, IAnalysis } from 'app/analysis';
+import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IAnalysisInput } from 'app/analysis';
 import { interval, Observable, of, Subject, throwError } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
 import { ILinkedEntity, INeelProcessedTweet } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
@@ -6,6 +6,8 @@ import { ICoordinates } from 'app/analysis/twitter-neel/models/coordinates.model
 import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
 import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-count.model';
 import { IAnalysisService } from 'app/analysis/services/analysis.service';
+import { IPagedAnalyses } from 'app/analysis/models/paged-analyses.model';
+import { IAnalysisResult } from 'app/analysis/models/analysis-result.model';
 
 export class MockAnalysisService implements IAnalysisService {
     private analysisDb: Map<string, IAnalysis> = new Map();
@@ -41,9 +43,12 @@ export class MockAnalysisService implements IAnalysisService {
         const analysis: IAnalysis = {
             id: 'completed-analysis',
             status: AnalysisStatus.Completed,
-            query: 'query di prova',
-            type: 'twitter-neel',
-            inputType: 'query',
+            input: {
+                type: AnalysisInputType.Query,
+                tokens: ['query', 'di', 'prova'],
+                joinOperator: 'all',
+            } as IAnalysisInput,
+            type: AnalysisType.TwitterNeel,
             owner: 'user-1',
         };
 
@@ -70,8 +75,15 @@ export class MockAnalysisService implements IAnalysisService {
         }
     }
 
-    getAnalyses(): Observable<IAnalysis[]> {
-        return of(Array.from(this.analysisDb.values())).pipe(delay(this.rms));
+    getAnalyses(): Observable<IPagedAnalyses> {
+        return of({
+            totalCount: this.analysisDb.size,
+            page: 0,
+            pageSize: 1000,
+            count: this.analysisDb.size,
+            objects: Array.from(this.analysisDb.values())
+        }
+        ).pipe(delay(this.rms));
     }
 
     stopAnalysis(analysisId: string): Observable<IAnalysis> {
@@ -79,7 +91,7 @@ export class MockAnalysisService implements IAnalysisService {
     }
 
     startAnalysis(analysisId: string): Observable<IAnalysis> {
-        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Running});
+        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Started});
     }
 
     completeAnalysis(analysisId: string): Observable<IAnalysis> {
@@ -98,14 +110,16 @@ export class MockAnalysisService implements IAnalysisService {
                 return updated;
             }),
             tap((a: IAnalysis) => {
-                if (this.analysisChangesSubscriptions.has(analysisId)) {
-                    this.analysisChangesSubscriptions.get(analysisId).next(a);
+                console.log('updateAnalysis', a.id, this.analysisChangesSubscriptions.has(a.id));
+                if (this.analysisChangesSubscriptions.has(a.id)) {
+                    this.analysisChangesSubscriptions.get(a.id).next(a);
                 }
             })
         );
     }
 
     listenAnalysisStatusChanges(analysisId: string): Observable<IAnalysis> {
+        console.log('listenAnalysisStatusChanges', analysisId);
         if (!this.analysisChangesSubscriptions.has(analysisId)) {
             const sub = new Subject<IAnalysis>();
             this.analysisChangesSubscriptions.set(analysisId, sub);
@@ -116,14 +130,14 @@ export class MockAnalysisService implements IAnalysisService {
 
     listenAnalysisResults(analysisId: string): Observable<any> {
         return interval(this.rms).pipe(map(() => {
-            return this.createProcessedTweet(analysisId);
+            return this.createAnalysisResult(analysisId);
         }));
     }
 
     getAnalysisResults(analysisId: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
         const tweets = [];
         for (let i = 0; i < pageSize; ++i) {
-            tweets.push(this.createProcessedTweet(analysisId));
+            tweets.push(this.createAnalysisResult(analysisId));
         }
         return of({
             page,
@@ -137,7 +151,7 @@ export class MockAnalysisService implements IAnalysisService {
     searchAnalysisResults(analysisId: string, query: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
         const tweets = [];
         for (let i = 0; i < pageSize; ++i) {
-            tweets.push(this.createProcessedTweet(analysisId));
+            tweets.push(this.createAnalysisResult(analysisId));
         }
         return of({
             page,
@@ -162,7 +176,7 @@ export class MockAnalysisService implements IAnalysisService {
         return this.lorem.substr(s, len).replace(/\n/g, ' ');
     }
 
-    private createProcessedTweet(analysisId: string): INeelProcessedTweet {
+    private createAnalysisResult(analysisId: string): IAnalysisResult {
         const tweetText = this.tweetText((Math.random() * 120) + 20);
 
         return {
@@ -170,21 +184,23 @@ export class MockAnalysisService implements IAnalysisService {
             analysisId,
             processDate: new Date(),
             saveDate: new Date(),
-            status: {
-                id: this.uuidv4(),
-                text: tweetText,
-                user: {
+            payload: {
+                status: {
                     id: this.uuidv4(),
-                    name: 'user' + Math.random(),
-                    screenName: 'user' + Math.random(),
-                    location: '',
-                    profileImageUrl: '',
-                    coordinates: this.randomCoordinates(0.8),
+                    text: tweetText,
+                    user: {
+                        id: this.uuidv4(),
+                        name: 'user' + Math.random(),
+                        screenName: 'user' + Math.random(),
+                        location: '',
+                        profileImageUrl: '',
+                        coordinates: this.randomCoordinates(0.8),
+                    },
+                    coordinates: this.randomCoordinates(0.1)
                 },
-                coordinates: this.randomCoordinates(0.1)
-            },
-            entities: this.randomEntities(tweetText)
-        };
+                entities: this.randomEntities(tweetText)
+            }
+        } as IAnalysisResult;
     }
 
     private randomCoordinates(prob = 1.0): ICoordinates {

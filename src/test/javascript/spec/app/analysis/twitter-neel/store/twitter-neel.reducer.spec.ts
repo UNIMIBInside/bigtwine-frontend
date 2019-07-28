@@ -11,104 +11,109 @@ import {
 } from 'app/analysis/twitter-neel';
 import { LocationSource } from 'app/analysis/twitter-neel/models/location.model';
 import { ActionTypes } from 'app/analysis/store';
+import { ITwitterNeelAnalysisResult } from 'app/analysis/twitter-neel/models/twitter-neel-analysis-result.model';
 
 describe('TwitterNeelReducer', () => {
     let initialState: TwitterNeelState;
-    const tweet1: INeelProcessedTweet = {
+    const tweet1: ITwitterNeelAnalysisResult = {
         id: 'result1',
         analysisId: 'analysis1',
         processDate: new Date(),
         saveDate: new Date(),
-        status: {
-            id: 'status1',
-            text: 'text 1',
-            user: {
-                id: 'user1',
-                name: 'User1',
-                screenName: 'user1',
-                location: 'location1',
-                profileImageUrl: 'image1',
-                coordinates: new CoordinatesModel(15, 20)
-            },
-            coordinates: new CoordinatesModel(5, 10)
-        },
-        entities: [
-            {
-                value: 'nil1',
-                link: null,
-                confidence: 1,
-                category: 'generic',
-                isNil: true,
-                nilCluster: '1',
-                position: {
-                    start: 0,
-                    end: 1
+        payload: {
+            status: {
+                id: 'status1',
+                text: 'text 1',
+                user: {
+                    id: 'user1',
+                    name: 'User1',
+                    screenName: 'user1',
+                    location: 'location1',
+                    profileImageUrl: 'image1',
+                    coordinates: new CoordinatesModel(15, 20)
                 },
-                resource: null
+                coordinates: new CoordinatesModel(5, 10)
             },
-            {
-                value: 'resource1',
-                link: 'http://dbpedia.com/resource1',
-                confidence: 1,
-                category: 'generic',
-                isNil: false,
-                nilCluster: null,
-                position: {
-                    start: 0,
-                    end: 1
+            entities: [
+                {
+                    value: 'nil1',
+                    link: null,
+                    confidence: 1,
+                    category: 'generic',
+                    isNil: true,
+                    nilCluster: '1',
+                    position: {
+                        start: 0,
+                        end: 1
+                    },
+                    resource: null
                 },
-                resource: {
-                    name: 'resource1',
-                    shortDesc: 'desc1',
-                    thumb: 'http://dbpedia.com/thumb1',
-                    thumbLarge: 'http://dbpedia.com/thumb1Large',
-                    url: 'http://dbpedia.com/resource1',
-                    coordinates: new CoordinatesModel(25, 30)
+                {
+                    value: 'resource1',
+                    link: 'http://dbpedia.com/resource1',
+                    confidence: 1,
+                    category: 'generic',
+                    isNil: false,
+                    nilCluster: null,
+                    position: {
+                        start: 0,
+                        end: 1
+                    },
+                    resource: {
+                        name: 'resource1',
+                        shortDesc: 'desc1',
+                        thumb: 'http://dbpedia.com/thumb1',
+                        thumbLarge: 'http://dbpedia.com/thumb1Large',
+                        url: 'http://dbpedia.com/resource1',
+                        coordinates: new CoordinatesModel(25, 30)
+                    }
                 }
-            }
-        ]
+            ]
+        }
     };
 
-    const tweet2: INeelProcessedTweet = {
+    const tweet2: ITwitterNeelAnalysisResult = {
         id: 'result2',
         analysisId: 'analysis1',
         processDate: new Date(),
         saveDate: new Date(),
-        status: {
-            id: 'status2',
-            text: 'text 2',
-            user: {
-                id: 'user2',
-                name: 'User2',
-                screenName: 'user2',
-                location: 'location2',
-                profileImageUrl: 'image2',
-                coordinates: new CoordinatesModel(15, 20)
-            },
-            coordinates: new CoordinatesModel(5, 10)
-        },
-        entities: [
-            {
-                value: 'resource2',
-                link: 'http://dbpedia.com/resource2',
-                confidence: 1,
-                category: 'generic',
-                isNil: false,
-                nilCluster: null,
-                position: {
-                    start: 2,
-                    end: 3
+        payload: {
+            status: {
+                id: 'status2',
+                text: 'text 2',
+                user: {
+                    id: 'user2',
+                    name: 'User2',
+                    screenName: 'user2',
+                    location: 'location2',
+                    profileImageUrl: 'image2',
+                    coordinates: new CoordinatesModel(15, 20)
                 },
-                resource: {
-                    name: 'resource2',
-                    shortDesc: 'desc2',
-                    thumb: 'http://dbpedia.com/thumb2',
-                    thumbLarge: 'http://dbpedia.com/thumb2Large',
-                    url: 'http://dbpedia.com/resource2',
-                    coordinates: new CoordinatesModel(25, 30)
+                coordinates: new CoordinatesModel(5, 10)
+            },
+            entities: [
+                {
+                    value: 'resource2',
+                    link: 'http://dbpedia.com/resource2',
+                    confidence: 1,
+                    category: 'generic',
+                    isNil: false,
+                    nilCluster: null,
+                    position: {
+                        start: 2,
+                        end: 3
+                    },
+                    resource: {
+                        name: 'resource2',
+                        shortDesc: 'desc2',
+                        thumb: 'http://dbpedia.com/thumb2',
+                        thumbLarge: 'http://dbpedia.com/thumb2Large',
+                        url: 'http://dbpedia.com/resource2',
+                        coordinates: new CoordinatesModel(25, 30)
+                    }
                 }
-            }
-        ]
+            ]
+        }
     };
 
     beforeEach(() => {
@@ -154,7 +159,7 @@ describe('TwitterNeelReducer', () => {
         expect(updatedState.tweets.all.length).toBe(1);
         expect(updatedState.nilEntities.all.length).toBe(2);
         expect(updatedState.locations.bySource[LocationSource.Resource].length).toBe(1);
-        expect(updatedState.locations.bySource[LocationSource.Resource][0].coordinates).toBe(tweet1.entities[1].resource.coordinates);
+        expect(updatedState.locations.bySource[LocationSource.Resource][0].coordinates).toBe(tweet1.payload.entities[1].resource.coordinates);
         expect(updatedState.locations.bySource[LocationSource.TwitterUser].length).toBe(1);
         expect(updatedState.locations.bySource[LocationSource.Status].length).toBe(1);
     });

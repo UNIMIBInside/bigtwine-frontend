@@ -12,15 +12,15 @@ export class TweetEntityHighlighterService {
     private _cache: {[key: string]: IStatusTextPart[]} = {};
 
     private isInCache(tweet: INeelProcessedTweet) {
-        return typeof this._cache[tweet.id] !== 'undefined';
+        return typeof this._cache[tweet.status.id] !== 'undefined';
     }
 
     private getFromCache(tweet: INeelProcessedTweet) {
-        return this._cache[tweet.id];
+        return this._cache[tweet.status.id];
     }
 
     private addToCache(tweet: INeelProcessedTweet, parts: IStatusTextPart[]) {
-        this._cache[tweet.id] = parts;
+        this._cache[tweet.status.id] = parts;
     }
 
     invalidateCache() {

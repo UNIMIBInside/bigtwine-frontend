@@ -129,7 +129,7 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
     }
 
     onTweetClick(tweet: INeelProcessedTweet) {
-        if (this.selectedTweet !== null && this.selectedTweet.id === tweet.id) {
+        if (this.selectedTweet !== null && this.selectedTweet.status.id === tweet.status.id) {
             this.selectedTweet = null;
         } else {
             this.selectedTweet = tweet;
@@ -190,7 +190,7 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
 
     tweetCssClass(tweet: INeelProcessedTweet) {
         if (this.selectedTweet != null) {
-            return (this.selectedTweet.id === tweet.id) ? 'status active' : 'status inactive';
+            return (this.selectedTweet.status.id === tweet.status.id) ? 'status active' : 'status inactive';
         } else {
             return '';
         }

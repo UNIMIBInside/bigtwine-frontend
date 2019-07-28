@@ -1,5 +1,6 @@
 import {Action} from '@ngrx/store';
 import {IAnalysis} from 'app/analysis';
+import { IAnalysisResult } from 'app/analysis/models/analysis-result.model';
 
 export enum ActionTypes {
     GetAnalysis = '[Analysis] GET_ANALYSIS',
@@ -225,7 +226,7 @@ export class GetAnalysisResults implements Action {
 export class GetAnalysisResultsSuccess implements Action {
     readonly type = ActionTypes.GetAnalysisResultsSuccess;
 
-    constructor(readonly results: any[], readonly page: number) {}
+    constructor(readonly results: IAnalysisResult[], readonly page: number) {}
 }
 
 export class GetAnalysisResultsError extends GenericAnalysisError {
@@ -243,7 +244,7 @@ export class SearchAnalysisResults implements Action {
 export class SearchAnalysisResultsSuccess implements Action {
     readonly type = ActionTypes.SearchAnalysisResultsSuccess;
 
-    constructor(readonly results: any[], readonly page: number) {}
+    constructor(readonly results: IAnalysisResult[], readonly page: number) {}
 }
 
 export class SearchAnalysisResultsError extends GenericAnalysisError {
@@ -255,7 +256,7 @@ export class SearchAnalysisResultsError extends GenericAnalysisError {
 export class AnalysisResultsReceived implements Action {
     readonly type = ActionTypes.AnalysisResultsReceived;
 
-    constructor(readonly results: any[]) {}
+    constructor(readonly results: IAnalysisResult[]) {}
 }
 
 export class ListeningAnalysisResultsError extends GenericAnalysisError {

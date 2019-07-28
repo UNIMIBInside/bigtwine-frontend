@@ -35,7 +35,7 @@ export class AnalysisEffects {
         ofType(AnalysisActions.ActionTypes.GetAnalyses),
         mergeMap(() => this.analysisService.getAnalyses()
             .pipe(
-                map(analyses => new AnalysisActions.GetAnalysesSuccess(analyses)),
+                map(response => new AnalysisActions.GetAnalysesSuccess(response.objects)),
                 catchError(e => of(new AnalysisActions.GetAnalysesError(e)))
             ))
     );

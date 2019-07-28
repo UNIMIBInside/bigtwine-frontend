@@ -1,12 +1,12 @@
 import { BigtwineTestModule } from '../../../../test.module';
-import { ComponentFixture, fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
-import { StoreModule, Store } from '@ngrx/store';
+import { ComponentFixture, fakeAsync, inject, TestBed } from '@angular/core/testing';
+import { Store, StoreModule } from '@ngrx/store';
 import { QueryToolbarComponent } from 'app/analysis/twitter-neel/components';
 import * as fromAnalysis from 'app/analysis/store';
 import * as fromTwitterNeel from 'app/analysis/twitter-neel/store';
 import { BigtwineSharedLibsModule } from 'app/shared';
 import { of } from 'rxjs';
-import { IAnalysis } from 'app/analysis';
+import { AnalysisInputType, AnalysisType, IAnalysis, IAnalysisInput, IQueryAnalysisInput } from 'app/analysis';
 import { EffectsModule } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
@@ -51,11 +51,14 @@ describe('QueryToolbar Component', () => {
     });
 
     it('should dispatch an action to create analysis', (() => {
-        const query = 'test';
+        const query: IQueryAnalysisInput = {
+            type: AnalysisInputType.Query,
+            tokens: ['test'],
+            joinOperator: 'and'
+        };
         const action = new fromAnalysis.CreateAnalysis({
-            type: 'twitter-neel',
-            inputType: 'query',
-            query,
+            type: AnalysisType.TwitterNeel,
+            input: query,
         });
 
         component.createAnalysis(query);
@@ -66,7 +69,11 @@ describe('QueryToolbar Component', () => {
     it('should update current analysis', inject(
         [AnalysisService],
         fakeAsync((service: AnalysisService) => {
-            const query = 'test';
+            const query: IQueryAnalysisInput = {
+                type: AnalysisInputType.Query,
+                tokens: ['test'],
+                joinOperator: 'and'
+            };
             spyOn(service, 'createAnalysis').and.returnValue(of({
                 id: 'testanalysis1',
                 type: 'twitter-neel',
@@ -86,17 +93,20 @@ describe('QueryToolbar Component', () => {
     ));
 
     it('should submit on button click', () => {
-        const query = 'test';
+        const query: IQueryAnalysisInput = {
+            type: AnalysisInputType.Query,
+            tokens: ['test'],
+            joinOperator: 'and'
+        };
         const action = new fromAnalysis.CreateAnalysis({
             type: 'twitter-neel',
-            inputType: 'query',
-            query,
+            input: query,
         });
 
         const input = fixture.debugElement.query(By.css('input[name="query"]')).nativeElement as HTMLInputElement;
         const button = fixture.debugElement.query(By.css('button[name="submit"]')).nativeElement as HTMLButtonElement;
 
-        input.value = query;
+        // input.value = query;
         input.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         button.dispatchEvent(new Event('click'));
