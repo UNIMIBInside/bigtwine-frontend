@@ -1,18 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { IQueryAnalysisInput } from 'app/analysis';
 
 @Component({
     selector: 'btw-query-input',
     templateUrl: './query-input.component.html'
 })
 export class QueryInputComponent implements OnInit {
-    @Output() queryChange = new EventEmitter<string>();
-    @Input() set query(query: string) {
-        if (this._query !== query) {
+    @Output() queryChange = new EventEmitter<any>();
+    @Input() set query(query: IQueryAnalysisInput) {
+        if (JSON.stringify(this._query) !== JSON.stringify(query)) {
             this._query = query || '';
             this.parseQuery(query);
         }
     }
-    _query = '';
+    _query = null;
     tokens = [];
     joiner: string;
 
@@ -22,22 +23,17 @@ export class QueryInputComponent implements OnInit {
     }
 
     onTagsChanged() {
-        this._query = this.tokens.join(this.joiner);
+        this._query = { type: 'query', tokens: this.tokens, joinOperator: this.joiner };
         this.queryChange.emit(this._query);
     }
 
-    parseQuery(query: string) {
+    parseQuery(query: any) {
         if (!query) {
             this.tokens = [];
             this.joiner = ' ';
         } else {
-            if (query.indexOf(',') >= 0) {
-                this.tokens = query.split(/,+/g);
-                this.joiner = ',';
-            } else {
-                this.tokens = query.split(/\s+/g);
-                this.joiner = ' ';
-            }
+            this.tokens = query.tokens;
+            this.joiner = query.joinOperator;
         }
     }
 }

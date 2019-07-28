@@ -32,11 +32,11 @@
         </thead>
         <tbody>
         <tr *ngFor="let analysis of analyses$ | async">
-            <td>{{analysis.inputType}}</td>
-            <td>{{analysis.query || analysis.documentId}}</td>
+            <td>{{analysis.input.type}}</td>
+            <td>{{analysis.input | json}}</td>
             <td>{{analysis.owner}}</td>
             <td>{{analysis.status}}</td>
-            <td><a class="btn btn-outline-primary btn-sm" [routerLink]="analysis.inputType + '/view/' + analysis.id">View</a></td>
+            <td><a class="btn btn-outline-primary btn-sm" [routerLink]="analysis.input.type + '/view/' + analysis.id">View</a></td>
         </tr>
         </tbody>
     </table>

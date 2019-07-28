@@ -14,19 +14,26 @@ export enum AnalysisType {
     TwitterNeel = 'twitter-neel',
 }
 
+export interface IAnalysisInput {
+    type: AnalysisInputType;
+}
+
+export interface IQueryAnalysisInput extends IAnalysisInput {
+    tokens: string[];
+    joinOperator: string;
+}
+
 export interface IAnalysis {
     id?: string;
     type?: string;
-    inputType?: string;
     owner?: string;
     status?: string;
-    query?: string;
-    documentId?: string;
+    input?: IAnalysisInput;
 }
 
 export class Analysis implements IAnalysis {
     id: string;
-    inputType: string;
+    input: IAnalysisInput;
     owner: string;
     status: string;
     type: string;

@@ -6,7 +6,7 @@
         <button class="btn btn-sm btn-outline-primary" (click)="onCreateBtnClick()" name="create">Create</button>
     </div>
     <div class="col" *ngIf="showStartStopButton">
-        <button class="btn btn-sm btn-outline-primary" (click)="onToggleAnalysisBtnClick()" name="start-stop">{{(currentAnalysis$ | async)?.status === 'running' ? 'Pause' : 'Start'}}</button>
+        <button class="btn btn-sm btn-outline-primary" (click)="onToggleAnalysisBtnClick()" name="start-stop">{{(currentAnalysis$ | async)?.status === 'started' ? 'Pause' : 'Start'}}</button>
     </div>
     <div class="col" *ngIf="showCompleteButton">
         <button class="btn btn-sm btn-outline-primary" (click)="onCompleteBtnClick()" name="complete">Complete</button>

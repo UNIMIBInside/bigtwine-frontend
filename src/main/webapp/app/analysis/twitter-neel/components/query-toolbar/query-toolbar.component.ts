@@ -12,7 +12,7 @@ import {
     StopListenAnalysisChanges
 } from 'app/analysis/store';
 import { Observable, Subscription } from 'rxjs';
-import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis } from 'app/analysis';
+import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IQueryAnalysisInput } from 'app/analysis';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -23,7 +23,7 @@ import { take } from 'rxjs/operators';
 export class QueryToolbarComponent implements OnInit, OnDestroy {
 
     @Input() mode = 'new';
-    private query: string;
+    query: IQueryAnalysisInput;
 
     currentAnalysis$: Observable<IAnalysis>;
     subscriptions = new Subscription();
@@ -39,7 +39,7 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
     }
 
     get showCreateButton() {
-        return this.mode === 'new' || (this.currentAnalysis && this.currentAnalysis.query !== this.query);
+        return this.mode === 'new' || (this.currentAnalysis && JSON.stringify(this.currentAnalysis.input) !== JSON.stringify(this.query));
     }
 
     get showStartStopButton() {
@@ -47,7 +47,7 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
     }
 
     get showCompleteButton() {
-        return this.mode === 'view' && this.currentAnalysis && this.currentAnalysis.status === AnalysisStatus.Running;
+        return this.mode === 'view' && this.currentAnalysis && this.currentAnalysis.status === AnalysisStatus.Started;
     }
 
     constructor(private router: Router, private route: ActivatedRoute, private analysisStore: Store<AnalysisState>) {
@@ -63,7 +63,7 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         this.subscriptions.add(s1);
 
         if (this.currentAnalysis && this.mode === 'view') {
-            this.query = this.currentAnalysis.query;
+            this.query = this.currentAnalysis.input as IQueryAnalysisInput;
             this.startListenAnalysisChanges(this.currentAnalysis);
         }
     }
@@ -85,14 +85,14 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         if (this.currentAnalysis) {
             if (this.currentAnalysis.status === AnalysisStatus.Ready || this.currentAnalysis.status === AnalysisStatus.Stopped) {
                 this.startAnalysis(this.currentAnalysis);
-            } else if (this.currentAnalysis.status === AnalysisStatus.Running) {
+            } else if (this.currentAnalysis.status === AnalysisStatus.Started) {
                 this.stopAnalysis(this.currentAnalysis);
             }
         }
     }
 
     onCompleteBtnClick() {
-        if (this.currentAnalysis && this.currentAnalysis.status === AnalysisStatus.Running) {
+        if (this.currentAnalysis && this.currentAnalysis.status === AnalysisStatus.Started) {
             this.completeAnalysis(this.currentAnalysis);
         }
     }
@@ -100,7 +100,7 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
     onCurrentAnalysisChange(analysis: IAnalysis) {
         if (this.isSupportedAnalysis(analysis)) {
             if (this.mode === 'view') {
-                this.query = this.currentAnalysis.query;
+                this.query = this.currentAnalysis.input as IQueryAnalysisInput;
             }
 
             if (this.waitingNewAnalysis) {
@@ -114,14 +114,14 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
     }
 
     isSupportedAnalysis(analysis: IAnalysis) {
-        return (analysis && analysis.id && analysis.type === 'twitter-neel' && analysis.inputType === 'query');
+        return (analysis && analysis.id && analysis.type === AnalysisType.TwitterNeel && analysis.input.type === AnalysisInputType.Query);
     }
 
-    createAnalysis(query: string) {
+    createAnalysis(query: IQueryAnalysisInput) {
+        query.type = AnalysisInputType.Query;
         const analysis: IAnalysis = {
             type: AnalysisType.TwitterNeel,
-            inputType: AnalysisInputType.Query,
-            query,
+            input: query,
         };
 
         this.waitingNewAnalysis = true;
