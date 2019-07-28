@@ -16,7 +16,7 @@ import { IPaginationInfo, selectPagination, selectSearchPagination, TwitterNeelS
 export class ResultsToolbarComponent implements OnInit, OnDestroy {
     private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
     private currentAnalysis$: Observable<IAnalysis>;
-    private currentViewMode: string;
+    currentViewMode: string;
 
     searchQueryControl = new FormControl('');
     searchQuery: string;

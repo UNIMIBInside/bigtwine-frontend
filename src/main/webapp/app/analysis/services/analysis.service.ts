@@ -8,11 +8,13 @@ import { RxStompService } from '@stomp/ng2-stompjs';
 import { map } from 'rxjs/operators';
 import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
 import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-count.model';
+import { IPagedAnalyses } from 'app/analysis/models/paged-analyses.model';
+import { Message } from 'webstomp-client';
 
 export interface IAnalysisService {
     createAnalysis(analysis: IAnalysis): Observable<IAnalysis>;
     getAnalysisById(analysisId: string): Observable<IAnalysis>;
-    getAnalyses(): Observable<IAnalysis[]>;
+    getAnalyses(): Observable<IPagedAnalyses>;
     stopAnalysis(analysisId: string): Observable<IAnalysis>;
     startAnalysis(analysisId: string): Observable<IAnalysis>;
     completeAnalysis(analysisId: string): Observable<IAnalysis>;
@@ -42,8 +44,8 @@ export class AnalysisService implements IAnalysisService {
         return this.http.get(`${this.ANALYSIS_API}/analyses/${analysisId}`) as Observable<IAnalysis>;
     }
 
-    getAnalyses(): Observable<IAnalysis[]> {
-        return this.http.get(`${this.ANALYSIS_API}/analyses`) as Observable<IAnalysis[]>;
+    getAnalyses(): Observable<IPagedAnalyses> {
+        return this.http.get(`${this.ANALYSIS_API}/analyses`) as Observable<IPagedAnalyses>;
     }
 
     stopAnalysis(analysisId: string): Observable<IAnalysis> {
@@ -51,7 +53,7 @@ export class AnalysisService implements IAnalysisService {
     }
 
     startAnalysis(analysisId: string): Observable<IAnalysis> {
-        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Running});
+        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Started});
     }
 
     completeAnalysis(analysisId: string): Observable<IAnalysis> {
@@ -63,14 +65,11 @@ export class AnalysisService implements IAnalysisService {
     }
 
     listenAnalysisStatusChanges(analysisId: string): Observable<IAnalysis> {
-        if (analysisId in this.listenedAnalyses) {
-            return this.listenedAnalyses[analysisId];
-        }
-
         this.stompService.activate();
-        this.listenedAnalyses[analysisId] =  this.stompService.watch(`/topic/analysis/${analysisId}/changes`);
 
-        return this.listenedAnalyses[analysisId];
+        return this.stompService
+            .watch(`/topic/analysis-changes/${analysisId}`)
+            .pipe(map((message: Message) => JSON.parse(message.body)));
     }
 
     listenAnalysisResults(analysisId: string): Observable<any> {

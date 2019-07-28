@@ -1,7 +1,6 @@
-export interface IPagedAnalysisResults {
-    totalCount: number;
-    pageSize: number;
-    page: number;
-    count: number;
-    objects: any[];
+import { IPagedResponse } from 'app/analysis/models/paged-response.model';
+import { IAnalysisResult } from 'app/analysis/models/analysis-result.model';
+
+export interface IPagedAnalysisResults extends IPagedResponse {
+    objects: IAnalysisResult[];
 }
