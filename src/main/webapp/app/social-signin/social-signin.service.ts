@@ -50,6 +50,8 @@ export class SocialSignInService {
             requestToken: oauthToken,
             verifier: oauthVerifier
         };
+
+        await this.accountService.identity();
         const action = this.accountService.isAuthenticated() ? 'connect' : 'signin';
 
         const response: any = await this.http.post(`${SERVER_API_URL}socials/api/oauth/${action}/${providerId}`, data).toPromise();
