@@ -27,9 +27,7 @@ export interface IAnalysisService {
 @Injectable({ providedIn: 'root' })
 export class AnalysisService implements IAnalysisService {
 
-    readonly ANALYSIS_API = `${SERVER_API_URL}analysis/api`;
-
-    private listenedAnalyses: { [key: string]: Observable<any> } = {};
+    readonly ANALYSIS_API = `${SERVER_API_URL}analysis/api/public`;
 
     constructor(
         private http: HttpClient,
