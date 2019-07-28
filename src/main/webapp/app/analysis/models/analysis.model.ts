@@ -1,13 +1,13 @@
 export enum AnalysisStatus {
     Ready = 'ready',
     Stopped = 'stopped',
-    Running = 'running',
+    Started = 'started',
     Completed = 'completed',
 }
 
 export enum AnalysisInputType {
     Query = 'query',
-    Document = 'document',
+    Dataset = 'dataset',
 }
 
 export enum AnalysisType {

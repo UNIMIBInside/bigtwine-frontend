@@ -78,7 +78,7 @@ export class QueryViewComponent implements OnInit, OnDestroy {
 
     onCurrentAnalysisChange(analysis: IAnalysis) {
         if (analysis) {
-            if (analysis.status === AnalysisStatus.Running) {
+            if (analysis.status === AnalysisStatus.Started) {
                 this.startListenResults(analysis);
             } else if (analysis.status === AnalysisStatus.Completed) {
                 this.fetchFirstResultsPage();
