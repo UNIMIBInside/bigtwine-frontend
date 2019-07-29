@@ -132,7 +132,7 @@
         "webpack:test": "npm run test",
         "webpack-dev-server": "node --max_old_space_size=4096 node_modules/webpack-dev-server/bin/webpack-dev-server.js",
         "webpack": "node --max_old_space_size=4096 node_modules/webpack/bin/webpack.js",
-        "docker:setup": "mkdir -p ./build/docker-context && cp -r ./src/main/docker/* ./build/docker-context",
+        "docker:setup": "rimraf build/docker-context && mkdir -p ./build/docker-context && cp -r ./src/main/docker/* ./build/docker-context",
         "docker:build": "npm run docker:setup && npm run build && cp -r ./build/www ./build/docker-context/www && cd ./build/docker-context && sh ./docker-build.sh"
     },
     "jestSonar": {
