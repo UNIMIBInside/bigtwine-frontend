@@ -89,8 +89,10 @@ export class AnalysisEffects {
                 catchError(e => of(new AnalysisActions.ListeningAnalysisChangesError(e))),
                 takeUntil(
                     this.action$.pipe(
-                        ofType(AnalysisActions.ActionTypes.StopListenAnalysisChanges),
-                        filter((stopAction: AnalysisActions.StopListenAnalysisChanges) => stopAction.analysisId === null || stopAction.analysisId === startAction.analysisId)
+                        ofType(AnalysisActions.ActionTypes.StopListenAnalysisChanges, AnalysisActions.ActionTypes.StartListenAnalysisChanges),
+                        filter((action: Action) => action.type === AnalysisActions.ActionTypes.StartListenAnalysisChanges ||
+                            (action as AnalysisActions.StopListenAnalysisChanges).analysisId === null ||
+                            (action as AnalysisActions.StopListenAnalysisChanges).analysisId === startAction.analysisId)
                     )
                 )
             ))
@@ -107,8 +109,10 @@ export class AnalysisEffects {
                 catchError(e => of(new AnalysisActions.ListeningAnalysisResultsError(e))),
                 takeUntil(
                     this.action$.pipe(
-                        ofType(AnalysisActions.ActionTypes.StopListenAnalysisResults),
-                        filter((stopAction: AnalysisActions.StopListenAnalysisResults) => stopAction.analysisId === null || stopAction.analysisId === startAction.analysisId)
+                        ofType(AnalysisActions.ActionTypes.StopListenAnalysisResults, AnalysisActions.ActionTypes.StartListenAnalysisResults),
+                        filter((action: Action) => action.type === AnalysisActions.ActionTypes.StartListenAnalysisResults ||
+                            (action as AnalysisActions.StopListenAnalysisResults).analysisId === null ||
+                            (action as AnalysisActions.StopListenAnalysisResults).analysisId === startAction.analysisId)
                     )
                 )
             ))

@@ -5,7 +5,7 @@ import { SERVER_API_URL } from 'app/app.constants';
 export function rxStompConfigFactory(authServerProvider: AuthServerProvider, $window: WindowRef): InjectableRxStompConfig {
     // const loc = $window.nativeWindow.location;
     let url;
-    url = 'ws://' + SERVER_API_URL.replace('http://', '') + 'websocket/analysis';
+    url = 'ws://' + SERVER_API_URL.replace(/^https?:\/\//, '') + 'websocket/analysis';
     const authToken = authServerProvider.getToken();
     if (authToken) {
         url += '?access_token=' + authToken;

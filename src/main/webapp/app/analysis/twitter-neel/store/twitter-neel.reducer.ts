@@ -69,7 +69,7 @@ const reduceNewTweets = (state: TwitterNeelState, results: ITwitterNeelAnalysisR
     const entities = tweets
         .filter(t => t.entities && t.entities.length)
         .reduce((a, t) => a.concat(t.entities), []) as ILinkedEntity[];
-    const linkedEntities = entities.filter(e => !e.isNil);
+    const linkedEntities = entities.filter(e => !e.isNil && e.resource);
     const nilEntities = entities
         .filter(e => e.isNil)
         .map(e => ({value: e.value, nilCluster: e.nilCluster}));

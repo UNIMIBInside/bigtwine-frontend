@@ -61,11 +61,6 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         });
 
         this.subscriptions.add(s1);
-
-        if (this.currentAnalysis && this.mode === 'view') {
-            this.query = this.currentAnalysis.input as IQueryAnalysisInput;
-            this.startListenAnalysisChanges(this.currentAnalysis);
-        }
     }
 
     ngOnDestroy() {
@@ -101,6 +96,7 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         if (this.isSupportedAnalysis(analysis)) {
             if (this.mode === 'view') {
                 this.query = this.currentAnalysis.input as IQueryAnalysisInput;
+                this.startListenAnalysisChanges(this.currentAnalysis);
             }
 
             if (this.waitingNewAnalysis) {
