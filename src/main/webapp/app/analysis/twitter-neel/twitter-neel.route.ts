@@ -3,8 +3,8 @@ import { Routes } from '@angular/router';
 import {
     QueryNewComponent,
     QueryViewComponent,
-    DocumentViewComponent,
-    DocumentUploadComponent,
+    DatasetViewComponent,
+    DatasetUploadComponent,
     MapResultsViewerComponent,
     ListResultsViewerComponent, AnalysisListComponent
 } from './';
@@ -63,11 +63,11 @@ export const twitterNeelState: Routes = [
             },
             {
                 path: 'upload',
-                component: DocumentUploadComponent,
+                component: DatasetUploadComponent,
             },
             {
                 path: 'view/:analysisId',
-                component: DocumentViewComponent,
+                component: DatasetViewComponent,
                 children: viewerModes
             },
         ]
