@@ -1,41 +1,34 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import {
     AnalysisState,
-    CompleteAnalysis,
-    CreateAnalysis,
-    selectCurrentAnalysis,
-    StartAnalysis,
-    StartListenAnalysisChanges,
-    StopAnalysis,
-    StopListenAnalysisChanges
 } from 'app/analysis/store';
-import { Observable, Subscription } from 'rxjs';
-import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IQueryAnalysisInput } from 'app/analysis';
-import { take } from 'rxjs/operators';
+import { AnalysisInputType, AnalysisStatus, AnalysisType, IQueryAnalysisInput } from 'app/analysis';
+import { AnalysisToolbarComponent } from 'app/analysis/components/analysis-toolbar.component';
 
 @Component({
     selector: 'btw-query-toolbar',
     templateUrl: './query-toolbar.component.html',
     styleUrls: ['./query-toolbar.component.scss']
 })
-export class QueryToolbarComponent implements OnInit, OnDestroy {
+export class QueryToolbarComponent extends AnalysisToolbarComponent {
 
-    @Input() mode = 'new';
-    query: IQueryAnalysisInput;
+    get query(): IQueryAnalysisInput {
+        return this.input as IQueryAnalysisInput;
+    }
 
-    currentAnalysis$: Observable<IAnalysis>;
-    subscriptions = new Subscription();
-    waitingNewAnalysis = false;
+    set query(query: IQueryAnalysisInput) {
+        query.type = AnalysisInputType.Query;
+        this.input = query;
+    }
 
-    get currentAnalysis(): IAnalysis {
-        let currentAnalysis: IAnalysis = null;
-        this.currentAnalysis$
-            .pipe(take(1))
-            .subscribe((analysis: IAnalysis) => currentAnalysis = analysis);
+    get supportedAnalysisType(): AnalysisType {
+        return AnalysisType.TwitterNeel;
+    }
 
-        return currentAnalysis;
+    get supportedInputType(): AnalysisInputType {
+        return AnalysisInputType.Query;
     }
 
     get showCreateButton() {
@@ -50,22 +43,8 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         return this.mode === 'view' && this.currentAnalysis && this.currentAnalysis.status === AnalysisStatus.Started;
     }
 
-    constructor(private router: Router, private route: ActivatedRoute, private analysisStore: Store<AnalysisState>) {
-    }
-
-    ngOnInit() {
-        this.currentAnalysis$ = this.analysisStore.pipe(select(selectCurrentAnalysis));
-
-        const s1 = this.currentAnalysis$.subscribe((analysis: IAnalysis) => {
-            this.onCurrentAnalysisChange(analysis);
-        });
-
-        this.subscriptions.add(s1);
-    }
-
-    ngOnDestroy() {
-        this.subscriptions.unsubscribe();
-        this.stopListenAnalysisChanges(this.currentAnalysis);
+    constructor(protected router: Router, protected route: ActivatedRoute, protected analysisStore: Store<AnalysisState>) {
+        super(router, route, analysisStore);
     }
 
     onQueryChange(query) {
@@ -73,7 +52,7 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
     }
 
     onCreateBtnClick() {
-        this.createAnalysis(this.query);
+        this.createAnalysis();
     }
 
     onToggleAnalysisBtnClick() {
@@ -90,58 +69,5 @@ export class QueryToolbarComponent implements OnInit, OnDestroy {
         if (this.currentAnalysis && this.currentAnalysis.status === AnalysisStatus.Started) {
             this.completeAnalysis(this.currentAnalysis);
         }
-    }
-
-    onCurrentAnalysisChange(analysis: IAnalysis) {
-        if (this.isSupportedAnalysis(analysis)) {
-            if (this.mode === 'view') {
-                this.query = this.currentAnalysis.input as IQueryAnalysisInput;
-                this.startListenAnalysisChanges(this.currentAnalysis);
-            }
-
-            if (this.waitingNewAnalysis) {
-                this.router
-                    .navigate(['/analysis/twitter-neel/query/view/' + analysis.id])
-                    .catch(e => console.error(e));
-
-                this.waitingNewAnalysis = false;
-            }
-        }
-    }
-
-    isSupportedAnalysis(analysis: IAnalysis) {
-        return (analysis && analysis.id && analysis.type === AnalysisType.TwitterNeel && analysis.input.type === AnalysisInputType.Query);
-    }
-
-    createAnalysis(query: IQueryAnalysisInput) {
-        query.type = AnalysisInputType.Query;
-        const analysis: IAnalysis = {
-            type: AnalysisType.TwitterNeel,
-            input: query,
-        };
-
-        this.waitingNewAnalysis = true;
-        this.analysisStore.dispatch(new CreateAnalysis(analysis));
-    }
-
-    startAnalysis(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new StartAnalysis(analysis.id));
-    }
-
-    stopAnalysis(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new StopAnalysis(analysis.id));
-    }
-
-    completeAnalysis(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new CompleteAnalysis(analysis.id));
-    }
-
-    startListenAnalysisChanges(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new StartListenAnalysisChanges(analysis.id));
-    }
-
-    stopListenAnalysisChanges(analysis?: IAnalysis) {
-        const analysisId = analysis ? analysis.id : null;
-        this.analysisStore.dispatch(new StopListenAnalysisChanges(analysisId));
     }
 }

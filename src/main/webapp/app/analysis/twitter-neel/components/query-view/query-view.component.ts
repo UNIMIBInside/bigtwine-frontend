@@ -3,29 +3,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { ActionTypes, AnalysisState, GetAnalysis, GetAnalysisResults, selectCurrentAnalysis, selectLastError } from 'app/analysis/store';
 import { Observable, ReplaySubject } from 'rxjs';
-import { IAnalysis, AnalysisStatus } from 'app/analysis';
+import { IAnalysis, AnalysisStatus, AnalysisType, AnalysisInputType } from 'app/analysis';
 import { first, take, takeUntil } from 'rxjs/operators';
 import { IPaginationInfo, selectPagination, StartListenTwitterNeelResults, StopListenTwitterNeelResults, TwitterNeelState } from 'app/analysis/twitter-neel';
+import { AnalysisViewComponent } from 'app/analysis/components/analysis-view.component';
 
 @Component({
   selector: 'btw-query-view',
   templateUrl: './query-view.component.html',
   styleUrls: ['./query-view.component.scss']
 })
-export class QueryViewComponent implements OnInit, OnDestroy {
-    private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-
-    currentAnalysis$: Observable<IAnalysis>;
-    lastError$: Observable<any>;
-
-    get currentAnalysis(): IAnalysis {
-        let currentAnalysis: IAnalysis = null;
-        this.currentAnalysis$
-            .pipe(take(1))
-            .subscribe((analysis: IAnalysis) => currentAnalysis = analysis);
-
-        return currentAnalysis;
-    }
+export class QueryViewComponent extends AnalysisViewComponent {
 
     get paginationInfo(): IPaginationInfo {
         let pagination = null;
@@ -37,58 +25,21 @@ export class QueryViewComponent implements OnInit, OnDestroy {
         return pagination;
     }
 
+    get analysisType(): AnalysisType {
+        return AnalysisType.TwitterNeel;
+    }
+
+    get analysisInputType(): AnalysisInputType {
+        return AnalysisInputType.Query;
+    }
+
     constructor(
-        private router: Router,
-        private route: ActivatedRoute,
-        private analysisStore: Store<AnalysisState>,
-        private tNeelStore: Store<TwitterNeelState>
-    ) { }
-
-    ngOnInit() {
-        this.currentAnalysis$ = this.analysisStore.select(selectCurrentAnalysis);
-        this.lastError$ = this.analysisStore.pipe(select(selectLastError));
-
-        this.currentAnalysis$.pipe(takeUntil(this.destroyed$)).subscribe((analysis: IAnalysis) => {
-            this.onCurrentAnalysisChange(analysis);
-        });
-
-        this.lastError$.pipe(first(e => e && e.type === ActionTypes.GetAnalysisError)).subscribe(e => {
-            this.router
-                .navigate(['/analysis/twitter-neel/query/new'])
-                .catch(err => console.error(err));
-        });
-
-        this.route.paramMap.pipe(takeUntil(this.destroyed$)).subscribe(params => {
-            this.onRouteAnalysisIdChange(params.get('analysisId'));
-        });
-
-        this.onRouteAnalysisIdChange(this.route.snapshot.params.analysisId);
-    }
-
-    ngOnDestroy(): void {
-        this.destroyed$.next(true);
-        this.destroyed$.complete();
-    }
-
-    onRouteAnalysisIdChange(analysisId: string) {
-        if (analysisId && (!this.currentAnalysis || this.currentAnalysis.id !== analysisId)) {
-            this.analysisStore.dispatch(new GetAnalysis(analysisId));
-        }
-    }
-
-    onCurrentAnalysisChange(analysis: IAnalysis) {
-        if (analysis) {
-            if (analysis.status === AnalysisStatus.Started) {
-                this.startListenResults(analysis);
-            } else {
-                this.stopListenResults(analysis);
-                if (analysis.status === AnalysisStatus.Completed) {
-                    this.fetchFirstResultsPage();
-                }
-            }
-        } else {
-            this.stopListenResults(analysis);
-        }
+        protected router: Router,
+        protected route: ActivatedRoute,
+        protected analysisStore: Store<AnalysisState>,
+        protected tNeelStore: Store<TwitterNeelState>
+    ) {
+        super(router, route, analysisStore);
     }
 
     startListenResults(analysis: IAnalysis) {
@@ -98,10 +49,6 @@ export class QueryViewComponent implements OnInit, OnDestroy {
     stopListenResults(analysis?: IAnalysis) {
         const analysisId = analysis ? analysis.id : null;
         this.analysisStore.dispatch(new StopListenTwitterNeelResults(analysisId));
-    }
-
-    fetchFirstResultsPage() {
-        this.fetchResultsPage(1);
     }
 
     fetchResultsPage(page: number) {

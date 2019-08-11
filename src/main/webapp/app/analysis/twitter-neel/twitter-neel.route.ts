@@ -54,7 +54,7 @@ export const twitterNeelState: Routes = [
         ]
     },
     {
-        path: 'document',
+        path: 'dataset',
         children: [
             {
                 path: '',
@@ -62,7 +62,7 @@ export const twitterNeelState: Routes = [
                 redirectTo: 'upload'
             },
             {
-                path: 'upload',
+                path: 'new',
                 component: DatasetUploadComponent,
             },
             {
