@@ -8,8 +8,21 @@ import { CookieModule } from 'ngx-cookie';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
-    imports: [NgbModule, InfiniteScrollModule, CookieModule.forRoot(), FontAwesomeModule],
-    exports: [FormsModule, ReactiveFormsModule, CommonModule, NgbModule, NgJhipsterModule, InfiniteScrollModule, FontAwesomeModule]
+    imports: [
+        NgbModule,
+        InfiniteScrollModule,
+        CookieModule.forRoot(),
+        FontAwesomeModule
+    ],
+    exports: [
+        FormsModule,
+        ReactiveFormsModule,
+        CommonModule,
+        NgbModule,
+        NgJhipsterModule,
+        InfiniteScrollModule,
+        FontAwesomeModule
+    ]
 })
 export class BigtwineSharedLibsModule {
     static forRoot() {

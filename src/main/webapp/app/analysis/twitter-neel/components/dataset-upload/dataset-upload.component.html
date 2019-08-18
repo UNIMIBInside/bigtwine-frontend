@@ -1,4 +1,27 @@
 <btw-dataset-toolbar [mode]="'view'"></btw-dataset-toolbar>
-<btw-results-toolbar></btw-results-toolbar>
 
-<router-outlet name="results-viewer"></router-outlet>
+<form #ourForm="ngForm">
+    <div class="form-group row justify-content-center align-items-center">
+        <div class="col-12" style="border: 10px dashed #ccc; border-radius: 50px;">
+            <h3>Add files</h3>
+            <div>
+                <div class="well my-drop-zone" [ngxDragAndDrop]="optionsDrop" *ngxInputFile="optionsInput" style="min-height: 400px; text-align: center">
+                    <h5>Drop files here to upload</h5>
+                    <h6>Or click here to select local files.</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12" style="margin: 40px 0">
+            <h3>Upload queue <span *ngIf="uploader.queue.length>0"> - {{ uploader.queue.length }} item(s)</span>
+            </h3>
+
+            <div class="card text-right">
+                <div style="margin: 15px">
+                    <ngb-progressbar showValue="true" type="success" [striped]="true" [animated]="true"
+                                     [value]="uploader.progressTotal"></ngb-progressbar>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

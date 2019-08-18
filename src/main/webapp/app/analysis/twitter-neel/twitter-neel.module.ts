@@ -7,6 +7,7 @@ import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { TagInputModule } from 'ngx-chips';
+import { NgxUploadModule } from '@wkoza/ngx-upload';
 
 import {
     twitterNeelState,
@@ -40,6 +41,7 @@ import { ResultsFilterService } from 'app/analysis/twitter-neel/services/results
         AgmCoreModule,
         AgmJsMarkerClustererModule,
         TagInputModule,
+        NgxUploadModule.forRoot()
     ],
     declarations: [
         AnalysisListComponent,

@@ -71,6 +71,16 @@ export class AnalysisEffects {
     );
 
     @Effect()
+    cancelAnalysis$: Observable<Action> = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.CancelAnalysis),
+        mergeMap((action: AnalysisActions.CancelAnalysis) => this.analysisService.cancelAnalysis(action.analysisId)
+            .pipe(
+                map(analysis => new AnalysisActions.CancelAnalysisSuccess(analysis)),
+                catchError(e => of(new AnalysisActions.CancelAnalysisError(e)))
+            ))
+    );
+
+    @Effect()
     updateAnalysis$: Observable<Action> = this.action$.pipe(
         ofType(AnalysisActions.ActionTypes.UpdateAnalysis),
         mergeMap((action: AnalysisActions.UpdateAnalysis) => this.analysisService.updateAnalysis(action.analysisId, action.changes)

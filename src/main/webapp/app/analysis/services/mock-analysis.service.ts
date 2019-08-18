@@ -1,7 +1,7 @@
 import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IAnalysisInput } from 'app/analysis';
 import { interval, Observable, of, Subject, throwError } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
-import { ILinkedEntity, INeelProcessedTweet } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
+import { ILinkedEntity } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
 import { ICoordinates } from 'app/analysis/twitter-neel/models/coordinates.model';
 import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
 import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-count.model';
@@ -96,6 +96,10 @@ export class MockAnalysisService implements IAnalysisService {
 
     completeAnalysis(analysisId: string): Observable<IAnalysis> {
         return this.updateAnalysis(analysisId, {status: AnalysisStatus.Completed});
+    }
+
+    cancelAnalysis(analysisId: string): Observable<IAnalysis> {
+        return this.updateAnalysis(analysisId, {status: AnalysisStatus.Cancelled});
     }
 
     updateAnalysis(analysisId: string, changes: IAnalysis): Observable<IAnalysis> {

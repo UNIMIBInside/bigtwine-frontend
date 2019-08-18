@@ -2,7 +2,7 @@ import { Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import {
     AnalysisInputType,
-    AnalysisState, AnalysisType,
+    AnalysisState, AnalysisType, CancelAnalysis,
     CompleteAnalysis, CreateAnalysis,
     IAnalysis,
     IAnalysisInput,
@@ -81,6 +81,10 @@ export abstract class AnalysisToolbarComponent implements OnInit, OnDestroy {
 
     completeAnalysis(analysis: IAnalysis) {
         this.analysisStore.dispatch(new CompleteAnalysis(analysis.id));
+    }
+
+    cancelAnalysis(analysis: IAnalysis) {
+        this.analysisStore.dispatch(new CancelAnalysis(analysis.id));
     }
 
     startListenAnalysisChanges(analysis: IAnalysis) {

@@ -5,7 +5,7 @@ import {
     AnalysisState,
 } from 'app/analysis/store';
 import { AnalysisInputType, AnalysisStatus, AnalysisType, IQueryAnalysisInput } from 'app/analysis';
-import { AnalysisToolbarComponent } from 'app/analysis/components/analysis-toolbar.component';
+import { AnalysisToolbarComponent } from 'app/analysis/components/analysis-toolbar/analysis-toolbar.component';
 
 @Component({
     selector: 'btw-query-toolbar',

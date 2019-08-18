@@ -3,6 +3,8 @@ export enum AnalysisStatus {
     Stopped = 'stopped',
     Started = 'started',
     Completed = 'completed',
+    Cancelled = 'cancelled',
+    Failed = 'failed',
 }
 
 export enum AnalysisInputType {
@@ -23,12 +25,17 @@ export interface IQueryAnalysisInput extends IAnalysisInput {
     joinOperator: string;
 }
 
+export interface IDatasetAnalysisInput extends IAnalysisInput {
+    documentId: string;
+}
+
 export interface IAnalysis {
     id?: string;
     type?: string;
     owner?: string;
     status?: string;
     input?: IAnalysisInput;
+    progress?: number;
 }
 
 export class Analysis implements IAnalysis {

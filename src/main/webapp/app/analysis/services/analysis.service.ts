@@ -18,6 +18,7 @@ export interface IAnalysisService {
     stopAnalysis(analysisId: string): Observable<IAnalysis>;
     startAnalysis(analysisId: string): Observable<IAnalysis>;
     completeAnalysis(analysisId: string): Observable<IAnalysis>;
+    cancelAnalysis(analysisId: string): Observable<IAnalysis>;
     updateAnalysis(analysisId: string, changes: IAnalysis): Observable<IAnalysis>;
     listenAnalysisStatusChanges(analysisId: string): Observable<IAnalysis>;
     listenAnalysisResults(analysisId: string): Observable<any>;
@@ -58,6 +59,10 @@ export class AnalysisService implements IAnalysisService {
 
     completeAnalysis(analysisId: string): Observable<IAnalysis> {
         return this.updateAnalysis(analysisId, {status: AnalysisStatus.Completed});
+    }
+
+    cancelAnalysis(analysisId: string): Observable<IAnalysis> {
+        return this.http.delete(`${this.ANALYSIS_API}/analyses/${analysisId}`) as Observable<IAnalysis>;
     }
 
     updateAnalysis(analysisId: string, changes: IAnalysis): Observable<IAnalysis> {

@@ -61,7 +61,8 @@ describe('QueryToolbar Component', () => {
             input: query,
         });
 
-        component.createAnalysis(query);
+        component.query = query;
+        component.createAnalysis();
 
         expect(store.dispatch).toHaveBeenCalledWith(action);
     }));
@@ -81,7 +82,8 @@ describe('QueryToolbar Component', () => {
                 query,
             }));
 
-            component.createAnalysis(query);
+            component.query = query;
+            component.createAnalysis();
 
             component.currentAnalysis$.subscribe((currentAnalysis: IAnalysis) => {
                 expect(currentAnalysis).not.toBeNull();
