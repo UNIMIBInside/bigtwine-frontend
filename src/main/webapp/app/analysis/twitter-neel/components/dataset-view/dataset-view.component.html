@@ -1,3 +1,13 @@
-<btw-dataset-toolbar [mode]="'view'"></btw-dataset-toolbar>
-<btw-results-toolbar></btw-results-toolbar>
+<btw-analysis-toolbar
+    [showStartBtn]="showStartBtn"
+    [showCancelBtn]="showCancelBtn">
+    <div class="space-center">
+        {{ currentAnalysis.input.documentId }}
+    </div>
+</btw-analysis-toolbar>
+<btw-results-toolbar>
+    <div class="space-right">
+        <btw-view-mode-switcher></btw-view-mode-switcher>
+    </div>
+</btw-results-toolbar>
 <router-outlet name="results-viewer"></router-outlet>

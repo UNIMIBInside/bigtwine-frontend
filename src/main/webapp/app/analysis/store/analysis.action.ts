@@ -41,6 +41,7 @@ export enum ActionTypes {
     SearchAnalysisResultsSuccess = '[Analysis] SEARCH_ANALYSIS_RESULTS_SUCCESS',
     SearchAnalysisResultsError = '[Analysis] SEARCH_ANALYSIS_RESULTS_ERROR',
     AnalysisResultsReceived = '[Analysis] ANALYSIS_RESULTS_RECEIVED',
+    ClearAnalysisResults = '[Analysis] CLEAR_ANALYSIS_RESULTS',
     GenericAnalysisError = '[Analysis] GENERIC_ANALYSIS_ERROR',
 }
 
@@ -280,6 +281,12 @@ export class AnalysisResultsReceived implements Action {
     constructor(readonly results: IAnalysisResult[]) {}
 }
 
+export class ClearAnalysisResults implements Action {
+    readonly type = ActionTypes.ClearAnalysisResults;
+
+    constructor() {}
+}
+
 export class ListeningAnalysisResultsError extends GenericAnalysisError {
     constructor(readonly error: any) {
         super(ActionTypes.ListeningAnalysisResultsError, error);
@@ -296,4 +303,5 @@ export type All = GetAnalysis | GetAnalysisSuccess | GetAnalysisError |
     UpdateAnalysis | UpdateAnalysisSuccess | UpdateAnalysisError |
     StartListenAnalysisChanges | StopListenAnalysisChanges | AnalysisChangeReceived | ListeningAnalysisChangesError |
     StartListenAnalysisResults | StopListenAnalysisResults | AnalysisResultsReceived | ListeningAnalysisResultsError |
+    ClearAnalysisResults |
     GenericAnalysisError;

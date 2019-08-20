@@ -1,28 +1,43 @@
-import { Input, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Observable, ReplaySubject } from 'rxjs';
 import {
-    AnalysisInputType,
-    AnalysisState, AnalysisType, CancelAnalysis,
-    CompleteAnalysis, CreateAnalysis,
+    AnalysisState, AnalysisStatus,
+    CancelAnalysis,
+    CompleteAnalysis,
+    CreateAnalysis,
     IAnalysis,
-    IAnalysisInput,
     selectCurrentAnalysis,
     StartAnalysis,
-    StartListenAnalysisChanges,
-    StopAnalysis,
-    StopListenAnalysisChanges
+    StopAnalysis
 } from 'app/analysis';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 
-export abstract class AnalysisToolbarComponent implements OnInit, OnDestroy {
-    @Input() mode = 'new';
+export enum AnalysisToolbarActionBtnType {
+    Create = 'create',
+    Start = 'start',
+    Stop = 'stop',
+    Cancel = 'cancel',
+    Complete = 'complete',
+}
 
+@Component({
+    selector: 'btw-analysis-toolbar',
+    templateUrl: './analysis-toolbar.component.html',
+    styleUrls: ['./analysis-toolbar.component.scss']
+})
+export class AnalysisToolbarComponent implements OnInit, OnDestroy {
+    @Input() showCreateBtn = false;
+    @Input() showStartBtn = false;
+    @Input() showStopBtn = false;
+    @Input() showCompleteBtn = false;
+    @Input() showCancelBtn = false;
+
+    @Output() actionBtnClick = new EventEmitter<AnalysisToolbarActionBtnType>();
+
+    protected destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
     currentAnalysis$: Observable<IAnalysis>;
-    subscriptions = new Subscription();
-    waitingNewAnalysis = false;
-    input: IAnalysisInput;
 
     get currentAnalysis(): IAnalysis {
         let currentAnalysis: IAnalysis = null;
@@ -33,82 +48,78 @@ export abstract class AnalysisToolbarComponent implements OnInit, OnDestroy {
         return currentAnalysis;
     }
 
-    abstract get supportedAnalysisType(): AnalysisType;
+    get currentAnalysisStatusLabelClasses() {
+        const classes = ['badge'];
+        const status = this.currentAnalysis.status;
 
-    abstract get supportedInputType(): AnalysisInputType;
+        if (status === AnalysisStatus.Ready || status === AnalysisStatus.Stopped) {
+            classes.push('badge-secondary');
+        } else if (status === AnalysisStatus.Started) {
+            classes.push('badge-primary');
+        } else if (status === AnalysisStatus.Completed) {
+            classes.push('badge-success');
+        } else if (status === AnalysisStatus.Cancelled || status === AnalysisStatus.Failed) {
+            classes.push('badge-danger');
+        }
 
-    protected constructor(protected router: Router, protected route: ActivatedRoute, protected analysisStore: Store<AnalysisState>) { }
+        return classes;
+    }
+
+    constructor(
+        protected router: Router,
+        protected route: ActivatedRoute,
+        protected analysisStore: Store<AnalysisState>) { }
 
     ngOnInit() {
         this.currentAnalysis$ = this.analysisStore.pipe(select(selectCurrentAnalysis));
-
-        const s1 = this.currentAnalysis$.subscribe((analysis: IAnalysis) => {
-            this.onCurrentAnalysisChange(analysis);
-        });
-
-        this.subscriptions.add(s1);
     }
 
     ngOnDestroy() {
-        this.subscriptions.unsubscribe();
-        this.stopListenAnalysisChanges(this.currentAnalysis);
-    }
-
-    onCurrentAnalysisChange(analysis: IAnalysis) {
-        if (this.isSupportedAnalysis(analysis)) {
-            if (this.mode === 'view') {
-                this.input = this.currentAnalysis.input;
-                this.startListenAnalysisChanges(this.currentAnalysis);
-            }
-
-            if (this.waitingNewAnalysis) {
-                this.router
-                    .navigate([`/analysis/${this.supportedAnalysisType}/${this.supportedInputType}/view/` + analysis.id])
-                    .catch(e => console.error(e));
-
-                this.waitingNewAnalysis = false;
-            }
-        }
-    }
-
-    startAnalysis(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new StartAnalysis(analysis.id));
-    }
-
-    stopAnalysis(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new StopAnalysis(analysis.id));
-    }
-
-    completeAnalysis(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new CompleteAnalysis(analysis.id));
-    }
-
-    cancelAnalysis(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new CancelAnalysis(analysis.id));
-    }
-
-    startListenAnalysisChanges(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new StartListenAnalysisChanges(analysis.id));
-    }
-
-    stopListenAnalysisChanges(analysis?: IAnalysis) {
-        const analysisId = analysis ? analysis.id : null;
-        this.analysisStore.dispatch(new StopListenAnalysisChanges(analysisId));
-    }
-
-    isSupportedAnalysis(analysis: IAnalysis) {
-        return (analysis && analysis.id &&
-            analysis.type === this.supportedAnalysisType &&
-            analysis.input.type === this.supportedInputType);
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
     }
 
     createAnalysis() {
-        const analysis: IAnalysis = {
-            type: this.supportedAnalysisType,
-            input: this.input,
-        };
+        this.actionBtnClick.emit(AnalysisToolbarActionBtnType.Create);
+    }
 
-        this.waitingNewAnalysis = true;
-        this.analysisStore.dispatch(new CreateAnalysis(analysis));
+    startAnalysis() {
+        this.actionBtnClick.emit(AnalysisToolbarActionBtnType.Start);
+
+        if (!this.currentAnalysis) {
+            return;
+        }
+
+        this.analysisStore.dispatch(new StartAnalysis(this.currentAnalysis.id));
+    }
+
+    stopAnalysis() {
+        this.actionBtnClick.emit(AnalysisToolbarActionBtnType.Stop);
+
+        if (!this.currentAnalysis) {
+            return;
+        }
+
+        this.analysisStore.dispatch(new StopAnalysis(this.currentAnalysis.id));
+    }
+
+    completeAnalysis() {
+        this.actionBtnClick.emit(AnalysisToolbarActionBtnType.Complete);
+
+        if (!this.currentAnalysis) {
+            return;
+        }
+
+        this.analysisStore.dispatch(new CompleteAnalysis(this.currentAnalysis.id));
+    }
+
+    cancelAnalysis() {
+        this.actionBtnClick.emit(AnalysisToolbarActionBtnType.Cancel);
+
+        if (!this.currentAnalysis) {
+            return;
+        }
+
+        this.analysisStore.dispatch(new CancelAnalysis(this.currentAnalysis.id));
     }
 }

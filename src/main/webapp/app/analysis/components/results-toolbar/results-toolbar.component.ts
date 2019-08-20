@@ -1,12 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterEvent } from '@angular/router';
-import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { Observable, ReplaySubject } from 'rxjs';
-import { IResultsFilterQuery, ResultsFilterService } from 'app/analysis/twitter-neel/services/results-filter.service';
-import { AnalysisState, AnalysisStatus, GetAnalysisResults, IAnalysis, SearchAnalysisResults, selectCurrentAnalysis } from 'app/analysis';
+import {
+    AnalysisState,
+    AnalysisStatus,
+    GetAnalysisResults,
+    IAnalysis,
+    IPaginationInfo,
+    SearchAnalysisResults,
+    selectCurrentAnalysis,
+    selectResultsPagination,
+    selectSearchPagination
+} from 'app/analysis';
 import { select, Store, Action } from '@ngrx/store';
 import { FormControl } from '@angular/forms';
-import { IPaginationInfo, selectPagination, selectSearchPagination, TwitterNeelState } from 'app/analysis/twitter-neel';
+import { IResultsFilterService, IResultsFilterQuery, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 
 @Component({
     selector: 'btw-results-toolbar',
@@ -16,7 +24,6 @@ import { IPaginationInfo, selectPagination, selectSearchPagination, TwitterNeelS
 export class ResultsToolbarComponent implements OnInit, OnDestroy {
     private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
     private currentAnalysis$: Observable<IAnalysis>;
-    currentViewMode: string;
 
     searchQueryControl = new FormControl('');
     searchQuery: string;
@@ -44,8 +51,8 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
 
     get paginationInfo(): IPaginationInfo {
         let pagination = null;
-        this.tNeelStore
-            .select(selectPagination)
+        this.analysisStore
+            .select(selectResultsPagination)
             .pipe(take(1))
             .subscribe(p => pagination = p);
 
@@ -54,7 +61,7 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
 
     get searchPaginationInfo(): IPaginationInfo {
         let pagination = null;
-        this.tNeelStore
+        this.analysisStore
             .select(selectSearchPagination)
             .pipe(take(1))
             .subscribe(p => pagination = p);
@@ -63,22 +70,11 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
     }
 
     constructor(
-        private router: Router,
-        private route: ActivatedRoute,
         private analysisStore: Store<AnalysisState>,
-        private tNeelStore: Store<TwitterNeelState>,
-        private resultsFilterService: ResultsFilterService) {}
+        @Inject(RESULTS_FILTER_SERVICE) private resultsFilterService: IResultsFilterService) {}
 
     ngOnInit(): void {
         this.currentAnalysis$ = this.analysisStore.pipe(select(selectCurrentAnalysis));
-        this.router.events.pipe(
-            filter(e => e instanceof RouterEvent),
-            takeUntil(this.destroyed$),
-        ).subscribe((e: RouterEvent) => {
-            this.onRouteChange(e);
-        });
-
-        this.onRouteChange(null);
 
         this.searchQueryControl.valueChanges
             .pipe(
@@ -91,17 +87,6 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroyed$.next(true);
         this.destroyed$.complete();
-    }
-
-    onToggleViewModeBtnClick() {
-        const currentMode = this.currentViewMode;
-        const isMapView = currentMode === 'map';
-
-        this.switchViewMode(isMapView ? 'list' : 'map');
-    }
-
-    onRouteChange(event: RouterEvent) {
-        this.currentViewMode = this.getCurrentViewMode();
     }
 
     onSearchQueryChange() {
@@ -122,21 +107,6 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         }
 
         this.performFullSearch();
-    }
-
-    getCurrentViewMode(): string {
-        const path = this.route.snapshot.children
-            .filter(r => r.outlet === 'results-viewer')
-            .map(r => r.routeConfig.path)
-            .shift();
-
-        return path === '' ? 'map' : path;
-    }
-
-    switchViewMode(mode: string) {
-        this.router
-            .navigate([{'outlets': {'results-viewer': mode}}], {relativeTo: this.route})
-            .catch(e => console.error(e));
     }
 
     performLiveSearch() {

@@ -3,24 +3,52 @@ import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { AnalysisState } from 'app/analysis/store';
 import { ClearTwitterNeelResults, TwitterNeelState } from 'app/analysis/twitter-neel';
+import { AnalysisInputType, AnalysisType, IAnalysis } from 'app/analysis';
+import { AnalysisNewComponent, AnalysisToolbarActionBtnType } from 'app/analysis/components';
 
 @Component({
     selector: 'btw-query-new',
     templateUrl: './query-new.component.html',
     styleUrls: ['./query-new.component.scss']
 })
-export class QueryNewComponent implements OnInit, OnDestroy {
+export class QueryNewComponent extends AnalysisNewComponent implements OnInit {
+
+    query: any;
+
+    get analysis(): IAnalysis {
+        return this.buildAnalysis();
+    }
 
     constructor(
-        private router: Router,
-        private analysisStore: Store<AnalysisState>,
-        private tNeelStore: Store<TwitterNeelState>) { }
+        protected router: Router,
+        protected analysisStore: Store<AnalysisState>,
+        protected tNeelStore: Store<TwitterNeelState>) {
+        super(router, analysisStore);
+    }
 
-    ngOnInit() {
+    ngOnInit(): void {
+        super.ngOnInit();
         this.tNeelStore.dispatch(new ClearTwitterNeelResults());
     }
 
-    ngOnDestroy() {
+    onToolbarActionBtnClick(btn: AnalysisToolbarActionBtnType) {
+        if (btn === AnalysisToolbarActionBtnType.Create) {
+            this.createAnalysis();
+        }
+    }
+
+    buildAnalysis(): IAnalysis {
+        if (!this.query) {
+            return null;
+        }
+
+        return {
+            type: AnalysisType.TwitterNeel,
+            input: {
+                type: AnalysisInputType.Query,
+                ...this.query
+            }
+        };
     }
 
 }

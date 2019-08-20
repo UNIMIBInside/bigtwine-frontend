@@ -15,7 +15,7 @@ export class QueryInputComponent implements OnInit {
     }
     _query = null;
     tokens = [];
-    joiner: string;
+    joiner = 'any';
 
     constructor() {}
 

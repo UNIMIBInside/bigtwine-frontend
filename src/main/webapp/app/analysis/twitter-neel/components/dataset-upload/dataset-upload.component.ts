@@ -7,17 +7,15 @@ import { select, Store } from '@ngrx/store';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
+import { AnalysisNewComponent } from 'app/analysis/components/analysis-new.component';
 
 @Component({
   selector: 'btw-dataset-upload',
   templateUrl: './dataset-upload.component.html',
   styleUrls: ['./dataset-upload.component.scss']
 })
-export class DatasetUploadComponent implements OnInit, OnDestroy {
+export class DatasetUploadComponent extends AnalysisNewComponent implements OnInit, OnDestroy {
     @ViewChild('ourForm') ourForm;
-
-    protected destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-    currentAnalysis$: Observable<IAnalysis>;
 
     optionsInput: InputFileOptions = {
         multiple: false,
@@ -32,10 +30,17 @@ export class DatasetUploadComponent implements OnInit, OnDestroy {
         accept: ['text/csv' as MineTypeEnum]
     };
 
-    constructor(public uploader: HttpClientUploadService, private router: Router, private analysisStore: Store<AnalysisState>) { }
+    documentId: string;
+
+    constructor(
+        protected router: Router,
+        protected analysisStore: Store<AnalysisState>,
+        public uploader: HttpClientUploadService) {
+        super(router, analysisStore);
+    }
 
     ngOnInit() {
-        this.currentAnalysis$ = this.analysisStore.pipe(select(selectCurrentAnalysis));
+        super.ngOnInit();
         this.uploader.queue = [];
 
         this.uploader.onCancel$.subscribe(
@@ -58,7 +63,8 @@ export class DatasetUploadComponent implements OnInit, OnDestroy {
         this.uploader.onSuccess$.subscribe(
             (data: any) => {
                 console.log('upload file successful:', data);
-                this.createAnalysis(data.body.documentId);
+                this.documentId = data.body.documentId;
+                this.createAnalysis();
             }
         );
 
@@ -69,15 +75,6 @@ export class DatasetUploadComponent implements OnInit, OnDestroy {
                 this.upload(item);
             }
         );
-
-        this.currentAnalysis$.pipe(takeUntil(this.destroyed$)).subscribe((analysis: IAnalysis) => {
-            this.onCurrentAnalysisChange(analysis);
-        });
-    }
-
-    ngOnDestroy(): void {
-        this.destroyed$.next(true);
-        this.destroyed$.complete();
     }
 
     upload(item: FileItem) {
@@ -113,23 +110,19 @@ export class DatasetUploadComponent implements OnInit, OnDestroy {
         return this.uploader.queue.some((item: FileItem) => item.uploadInProgress);
     }
 
-    onCurrentAnalysisChange(analysis: IAnalysis) {
-        if (analysis && analysis.id) {
-            this.router
-                .navigate([`/analysis/twitter-neel/dataset/view/` + analysis.id])
-                .catch(e => console.error(e));
+    buildAnalysis() {
+        if (!this.documentId) {
+            return null;
         }
-    }
 
-    createAnalysis(documentId: string) {
         const analysis: IAnalysis = {
             type: AnalysisType.TwitterNeel,
             input: {
                 type: AnalysisInputType.Dataset,
-                documentId
+                documentId: this.documentId
             } as IDatasetAnalysisInput,
         };
 
-        this.analysisStore.dispatch(new CreateAnalysis(analysis));
+       return analysis;
     }
 }

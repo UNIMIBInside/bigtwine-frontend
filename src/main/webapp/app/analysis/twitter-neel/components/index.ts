@@ -1,15 +1,13 @@
 export * from './query-view/query-view.component';
 export * from './query-new/query-new.component';
-export * from './query-toolbar/query-toolbar.component';
 export * from './query-input/query-input.component';
 export * from './map-results-viewer/map-results-viewer.component';
 export * from './list-results-viewer/list-results-viewer.component';
-export * from './dataset-toolbar/dataset-toolbar.component';
 export * from './dataset-view/dataset-view.component';
 export * from './dataset-upload/dataset-upload.component';
 export * from './neel-processed-tweet/neel-processed-tweet.component';
 export * from './neel-processed-tweet-large/neel-processed-tweet-large.component';
 export * from './highlighted-tweet-text/highlighted-tweet-text.component';
-export * from './results-toolbar/results-toolbar.component';
+export * from '../../components/results-toolbar/results-toolbar.component';
 export * from './analysis-list/analysis-list.component';
 // export * from './results-viewer.component';

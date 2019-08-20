@@ -1,3 +1,7 @@
-<btw-query-toolbar [mode]="'new'"></btw-query-toolbar>
+<btw-analysis-toolbar showCreateBtn="true" (actionBtnClick)="onToolbarActionBtnClick($event)">
+    <div class="space-center">
+        <btw-query-input (queryChange)="this.query = $event"></btw-query-input>
+    </div>
+</btw-analysis-toolbar>
 
 <btw-map-results-viewer></btw-map-results-viewer>

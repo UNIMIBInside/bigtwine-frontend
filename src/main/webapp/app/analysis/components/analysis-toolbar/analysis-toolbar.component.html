@@ -1,0 +1,29 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <ng-content select=".space-left"></ng-content>
+        </div>
+        <div class="col">
+            <ng-content select=".space-center"></ng-content>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-outline-primary btn-sm" *ngIf="showCreateBtn" (click)="createAnalysis()">Create</button>
+                    <button class="btn btn-outline-primary btn-sm" *ngIf="showStartBtn" (click)="startAnalysis()">Start</button>
+                    <button class="btn btn-outline-primary btn-sm" *ngIf="showStopBtn" (click)="stopAnalysis()">Stop</button>
+                    <button class="btn btn-outline-success btn-sm" *ngIf="showCompleteBtn" (click)="completeAnalysis()">Complete</button>
+                    <button class="btn btn-outline-danger btn-sm" *ngIf="showCancelBtn" (click)="cancelAnalysis()">Cancel</button>
+                </div>
+                <div class="col-auto">
+                    <ng-content select=".space-right"></ng-content>
+                </div>
+                <div class="col-auto">
+                    <span *ngIf="currentAnalysis" [ngClass]="currentAnalysisStatusLabelClasses">{{ currentAnalysis.status }}</span>
+                </div>
+                <div class="col-auto">SET.</div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -21,11 +21,11 @@ export abstract class TwitterNeelAnalysisViewComponent extends AnalysisViewCompo
         return pagination;
     }
 
-    startListenResults(analysis: IAnalysis) {
+    startListenAnalysisResults(analysis: IAnalysis) {
         this.analysisStore.dispatch(new StartListenTwitterNeelResults(analysis.id));
     }
 
-    stopListenResults(analysis?: IAnalysis) {
+    stopListenAnalysisResults(analysis?: IAnalysis) {
         const analysisId = analysis ? analysis.id : null;
         this.analysisStore.dispatch(new StopListenTwitterNeelResults(analysisId));
     }

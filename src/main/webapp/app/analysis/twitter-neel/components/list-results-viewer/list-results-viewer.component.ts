@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/results-viewer.component';
 import { Observable, ReplaySubject } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { selectAllTweets, TwitterNeelState, INeelProcessedTweet } from 'app/analysis/twitter-neel';
 import { map } from 'rxjs/operators';
-import { IResultsFilterQuery, ResultsFilterService } from 'app/analysis/twitter-neel/services/results-filter.service';
+import { IResultsFilterService, IResultsFilterQuery, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 
 @Component({
     selector: 'btw-list-results-viewer',
@@ -30,7 +30,7 @@ export class ListResultsViewerComponent extends ResultsViewerComponent implement
     }
 
     constructor(private tNeelStore: Store<TwitterNeelState>,
-                private resultsFilterService: ResultsFilterService) {
+                @Inject(RESULTS_FILTER_SERVICE) private resultsFilterService: IResultsFilterService) {
         super();
     }
 
@@ -54,7 +54,7 @@ export class ListResultsViewerComponent extends ResultsViewerComponent implement
         this.filterQuery = query;
 
         if (query) {
-            this.filteredTweets$ = this.resultsFilterService.filteredTweets$;
+            this.filteredTweets$ = this.resultsFilterService.filteredResults$;
         }
     }
 

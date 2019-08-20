@@ -1,19 +1,27 @@
 import { OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, ReplaySubject } from 'rxjs';
+import { first, take, takeUntil } from 'rxjs/operators';
+import { select, Store } from '@ngrx/store';
 import {
     ActionTypes,
-    AnalysisInputType,
     AnalysisState,
     AnalysisStatus,
-    AnalysisType,
+    ClearAnalysisResults,
     GetAnalysis,
+    GetAnalysisResults,
     IAnalysis,
+    selectChangesListeningAnalysisId,
     selectCurrentAnalysis,
-    selectLastError
+    selectLastError,
+    selectResultsListeningAnalysisId,
+    selectResultsPagination,
+    StartListenAnalysisChanges,
+    StartListenAnalysisResults,
+    StopListenAnalysisChanges,
+    StopListenAnalysisResults,
+    IPaginationInfo
 } from 'app/analysis';
-import { first, take, takeUntil } from 'rxjs/operators';
-import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
 
 export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
     protected destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -30,8 +38,41 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
         return currentAnalysis;
     }
 
-    abstract get analysisType(): AnalysisType;
-    abstract get analysisInputType(): AnalysisInputType;
+    get paginationInfo(): IPaginationInfo {
+        let pagination = null;
+        this.analysisStore
+            .select(selectResultsPagination)
+            .pipe(take(1))
+            .subscribe(p => pagination = p);
+
+        return pagination;
+    }
+
+    get changesListeningAnalysisId(): string {
+        let analysisId = null;
+        this.analysisStore
+            .select(selectChangesListeningAnalysisId)
+            .pipe(take(1))
+            .subscribe(aid => analysisId = aid);
+
+        return analysisId;
+    }
+
+    get resultsListeningAnalysisId(): string {
+        let analysisId = null;
+        this.analysisStore
+            .select(selectResultsListeningAnalysisId)
+            .pipe(take(1))
+            .subscribe(aid => analysisId = aid);
+
+        return analysisId;
+    }
+
+    abstract get showCreateBtn(): boolean;
+    abstract get showStartBtn(): boolean;
+    abstract get showStopBtn(): boolean;
+    abstract get showCancelBtn(): boolean;
+    abstract get showCompleteBtn(): boolean;
 
     protected constructor(
         protected router: Router,
@@ -48,50 +89,111 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
         this.currentAnalysis$ = this.analysisStore.select(selectCurrentAnalysis);
         this.lastError$ = this.analysisStore.pipe(select(selectLastError));
 
-        this.currentAnalysis$.pipe(takeUntil(this.destroyed$)).subscribe((analysis: IAnalysis) => {
-            this.onCurrentAnalysisChange(analysis);
-        });
+        this.currentAnalysis$
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe((analysis: IAnalysis) => {
+                this.onCurrentAnalysisChange(analysis);
+            });
 
-        this.lastError$.pipe(first(e => e && e.type === ActionTypes.GetAnalysisError)).subscribe(e => {
-            this.router
-                .navigate([`/analysis/${this.analysisType}/${this.analysisInputType}/new`])
-                .catch(err => console.error(err));
-        });
+        this.lastError$
+            .pipe(first(e => e && e.type === ActionTypes.GetAnalysisError))
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(() => {
+                this.handleAnalysisNotFound();
+            });
 
-        this.route.paramMap.pipe(takeUntil(this.destroyed$)).subscribe(params => {
-            this.onRouteAnalysisIdChange(params.get('analysisId'));
-        });
+        this.route.paramMap
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(params => {
+                this.onRouteAnalysisIdChange(params.get('analysisId'));
+            });
 
         this.onRouteAnalysisIdChange(this.route.snapshot.params.analysisId);
     }
 
     onRouteAnalysisIdChange(analysisId: string) {
-        if (analysisId && (!this.currentAnalysis || this.currentAnalysis.id !== analysisId)) {
-            this.analysisStore.dispatch(new GetAnalysis(analysisId));
+        if (analysisId) {
+            if (!this.currentAnalysis || this.currentAnalysis.id !== analysisId) {
+                this.stopListenAnalysisResults();
+                this.clearAnalysisResults();
+                this.fetchAnalysis(analysisId);
+            }
+        } else {
+            this.handleAnalysisNotFound();
         }
     }
 
     onCurrentAnalysisChange(analysis: IAnalysis) {
         if (analysis) {
+            this.startListenAnalysisChanges();
+
             if (analysis.status === AnalysisStatus.Started) {
-                this.startListenResults(analysis);
+                this.startListenAnalysisResults();
             } else {
-                this.stopListenResults(analysis);
-                if (analysis.status === AnalysisStatus.Completed) {
-                    this.fetchFirstResultsPage();
-                }
+                this.stopListenAnalysisResults();
+            }
+
+            if (analysis.status === AnalysisStatus.Completed && !this.paginationInfo.enabled) {
+                this.fetchFirstResultsPage();
             }
         } else {
-            this.stopListenResults(analysis);
+            this.stopListenAnalysisChanges();
+            this.stopListenAnalysisResults();
         }
     }
 
-    abstract startListenResults(analysis: IAnalysis);
-    abstract stopListenResults(analysis?: IAnalysis);
+    handleAnalysisNotFound() {
+        this.router
+            .navigate([`/analysis/not-found`])
+            .catch(err => console.error(err));
+    }
 
     fetchFirstResultsPage() {
         this.fetchResultsPage(1);
     }
 
-    abstract fetchResultsPage(page: number);
+    fetchResultsPage(page: number) {
+        const pageSize = this.paginationInfo.pageSize;
+        const action = new GetAnalysisResults(this.currentAnalysis.id, page, pageSize);
+
+        this.analysisStore.dispatch(action);
+    }
+
+    fetchAnalysis(analysisId: string) {
+        this.analysisStore.dispatch(new GetAnalysis(analysisId));
+    }
+
+    startListenAnalysisResults() {
+        if (!this.currentAnalysis || this.resultsListeningAnalysisId === this.currentAnalysis.id) {
+            return;
+        }
+
+        this.analysisStore.dispatch(new StartListenAnalysisResults(this.currentAnalysis.id));
+    }
+
+    stopListenAnalysisResults() {
+        const analysisId = this.currentAnalysis ? this.currentAnalysis.id : null;
+        this.analysisStore.dispatch(new StopListenAnalysisResults(analysisId));
+    }
+
+    startListenAnalysisChanges() {
+        if (!this.currentAnalysis || this.changesListeningAnalysisId === this.currentAnalysis.id) {
+            return;
+        }
+
+        this.analysisStore.dispatch(new StartListenAnalysisChanges(this.currentAnalysis.id));
+    }
+
+    stopListenAnalysisChanges() {
+        const analysisId = this.currentAnalysis ? this.currentAnalysis.id : null;
+        this.analysisStore.dispatch(new StopListenAnalysisChanges(analysisId));
+    }
+
+    clearAnalysisResults() {
+        this.analysisStore.dispatch(new ClearAnalysisResults());
+    }
+
+    protected _checkAnalysisStatus(...statuses: AnalysisStatus[]): boolean {
+        return this.currentAnalysis && statuses.indexOf(this.currentAnalysis.status as AnalysisStatus) >= 0;
+    }
 }

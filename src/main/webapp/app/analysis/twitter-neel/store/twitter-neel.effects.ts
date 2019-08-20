@@ -13,14 +13,14 @@ import { ITwitterNeelAnalysisResult } from 'app/analysis/twitter-neel/models/twi
 export class TwitterNeelEffects {
     @Effect()
     startListenTwitterNeelResults$ = this.action$.pipe(
-        ofType(TwitterNeelActions.ActionTypes.StartListenTwitterNeelResults),
-        map((action: TwitterNeelActions.StartListenTwitterNeelResults) => new AnalysisActions.StartListenAnalysisResults(action.analysisId))
+        ofType(AnalysisActions.ActionTypes.StartListenAnalysisResults),
+        map((action: AnalysisActions.StartListenAnalysisResults) => new TwitterNeelActions.StartListenTwitterNeelResults(action.analysisId))
     );
 
     @Effect()
     stopListenTwitterNeelResults$ = this.action$.pipe(
-        ofType(TwitterNeelActions.ActionTypes.StopListenTwitterNeelResults),
-        map((action: TwitterNeelActions.StopListenTwitterNeelResults) => new AnalysisActions.StopListenAnalysisResults(action.analysisId))
+        ofType(AnalysisActions.ActionTypes.StopListenAnalysisResults),
+        map((action: AnalysisActions.StopListenAnalysisResults) => new TwitterNeelActions.StopListenTwitterNeelResults(action.analysisId))
     );
 
     @Effect()
@@ -66,6 +66,12 @@ export class TwitterNeelEffects {
                     )
                 )
             ))
+    );
+
+    @Effect()
+    clearTwitterNeelResults$ = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.ClearAnalysisResults),
+        map(() => new TwitterNeelActions.ClearTwitterNeelResults())
     );
 
     constructor(private action$: Actions, private store$: Store<TwitterNeelState>, private analysisStore$: Store<AnalysisState>) {}

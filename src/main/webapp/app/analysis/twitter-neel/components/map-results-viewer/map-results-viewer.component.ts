@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, take, takeUntil, throttleTime } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import {
     IAnalysis,
     AnalysisState,
-    selectCurrentAnalysis, GetAnalysisResults
+    selectCurrentAnalysis, GetAnalysisResults, IPaginationInfo, selectResultsPagination
 } from 'app/analysis';
 import {
     buildNilEntityIdentifier,
@@ -14,10 +14,10 @@ import {
     selectNilEntities, selectNilEntitiesTweetsCount,
     selectResourcesTweetsCount,
     TwitterNeelState,
-    ILinkedEntity, INeelProcessedTweet, INilEntity, IResource, ILocation, LocationSource, IPaginationInfo, selectPagination
+    ILinkedEntity, INeelProcessedTweet, INilEntity, IResource, ILocation, LocationSource
 } from 'app/analysis/twitter-neel';
 import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/results-viewer.component';
-import { IResultsFilterQuery, ResultsFilterService } from 'app/analysis/twitter-neel/services/results-filter.service';
+import { IResultsFilterService, IResultsFilterQuery, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 
 @Component({
     templateUrl: './map-results-viewer.component.html',
@@ -68,7 +68,7 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
     get paginationInfo(): IPaginationInfo {
         let pagination = null;
         this.tNeelStore
-            .select(selectPagination)
+            .select(selectResultsPagination)
             .pipe(take(1))
             .subscribe(p => pagination = p);
 
@@ -78,7 +78,7 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
     constructor(private changeDetector: ChangeDetectorRef,
                 private analysisStore:  Store<AnalysisState>,
                 private tNeelStore: Store<TwitterNeelState>,
-                private resultsFilterService: ResultsFilterService) {
+                @Inject(RESULTS_FILTER_SERVICE) private resultsFilterService: IResultsFilterService) {
         super();
     }
 
@@ -184,7 +184,7 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
             this.selectedNilEntity = null;
             this.selectedResource = null;
 
-            this.filteredTweets$ = this.resultsFilterService.filteredTweets$;
+            this.filteredTweets$ = this.resultsFilterService.filteredResults$;
         }
     }
 

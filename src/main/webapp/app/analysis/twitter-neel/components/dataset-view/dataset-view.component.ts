@@ -1,32 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AnalysisInputType, AnalysisState, AnalysisType } from 'app/analysis';
-import { TwitterNeelState } from 'app/analysis/twitter-neel';
-import { TwitterNeelAnalysisViewComponent } from 'app/analysis/twitter-neel/components/twitterneel-analysisview.component';
+import { AnalysisState } from 'app/analysis';
+import { BoundedAnalysisViewComponent } from 'app/analysis/components';
 
 @Component({
   selector: 'btw-dataset-view',
   templateUrl: './dataset-view.component.html',
   styleUrls: ['./dataset-view.component.scss']
 })
-export class DatasetViewComponent extends TwitterNeelAnalysisViewComponent implements OnInit {
-
-    get analysisInputType(): AnalysisInputType {
-        return AnalysisInputType.Dataset;
-    }
+export class DatasetViewComponent extends BoundedAnalysisViewComponent {
 
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected analysisStore: Store<AnalysisState>,
-        protected tNeelStore: Store<TwitterNeelState>
+        protected analysisStore: Store<AnalysisState>
     ) {
         super(router, route, analysisStore);
     }
-
-  ngOnInit() {
-        super.ngOnInit();
-  }
 
 }

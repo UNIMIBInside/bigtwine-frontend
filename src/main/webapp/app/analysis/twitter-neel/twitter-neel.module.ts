@@ -14,13 +14,11 @@ import {
     TwitterNeelReducer,
     TwitterNeelEffects,
     AnalysisListComponent,
-    DatasetToolbarComponent,
     DatasetUploadComponent,
     DatasetViewComponent,
     ListResultsViewerComponent,
     MapResultsViewerComponent,
     QueryNewComponent,
-    QueryToolbarComponent,
     QueryViewComponent,
     QueryInputComponent,
     NeelProcessedTweetComponent,
@@ -30,6 +28,9 @@ import {
 } from './';
 import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/services/tweet-entity-highlighter.service';
 import { ResultsFilterService } from 'app/analysis/twitter-neel/services/results-filter.service';
+import { AnalysisToolbarComponent } from 'app/analysis/components/analysis-toolbar/analysis-toolbar.component';
+import { RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
+import { ViewModeSwitcherComponent } from 'app/analysis/twitter-neel/components/view-mode-switcher/view-mode-switcher.component';
 
 @NgModule({
     imports: [
@@ -45,19 +46,19 @@ import { ResultsFilterService } from 'app/analysis/twitter-neel/services/results
     ],
     declarations: [
         AnalysisListComponent,
-        DatasetToolbarComponent,
+        AnalysisToolbarComponent,
         DatasetUploadComponent,
         DatasetViewComponent,
         ListResultsViewerComponent,
         MapResultsViewerComponent,
         QueryNewComponent,
-        QueryToolbarComponent,
         QueryViewComponent,
         QueryInputComponent,
         NeelProcessedTweetComponent,
         NeelProcessedTweetLargeComponent,
         HighlightedTweetTextComponent,
         ResultsToolbarComponent,
+        ViewModeSwitcherComponent,
     ],
     providers: [
         {
@@ -65,7 +66,7 @@ import { ResultsFilterService } from 'app/analysis/twitter-neel/services/results
             useClass: TweetEntityHighlighterService,
         },
         {
-            provide: ResultsFilterService,
+            provide: RESULTS_FILTER_SERVICE,
             useClass: ResultsFilterService,
         },
     ]

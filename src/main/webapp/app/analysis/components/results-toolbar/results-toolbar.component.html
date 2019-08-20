@@ -4,6 +4,6 @@
         <button *ngIf="!liveSearchEnabled" type="button" (click)="onSearchBtnCLick()">Search</button>
     </div>
     <div class="col text-right">
-        <button class="btn btn-sm btn-outline-primary" (click)="onToggleViewModeBtnClick();">{{currentViewMode === 'map' ? 'List' : 'Map'}}</button>
+        <ng-content select=".space-right"></ng-content>
     </div>
 </div>

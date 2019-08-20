@@ -1,12 +1,7 @@
 import { INeelProcessedTweet, INilEntity, IResource } from '../models/neel-processed-tweet.model';
 import { ILocation, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-
-export interface IPaginationInfo {
-    enabled: boolean;
-    currentPage: number;
-    pageSize: number;
-}
+import { IPaginationInfo } from 'app/analysis/models/pagination-info.model';
 
 export interface TwitterNeelState {
     listeningAnalysisId: string;
@@ -106,19 +101,4 @@ export const selectNilEntities = createSelector(
 export const selectLocationsBySource = (source: LocationSource) => createSelector(
     selectTwitterNeelFeature,
     (state: TwitterNeelState) => state.locations.bySource[source],
-);
-
-export const selectPagination = createSelector(
-    selectTwitterNeelFeature,
-    (state: TwitterNeelState) => state.pagination,
-);
-
-export const selectSearchPagination = createSelector(
-    selectTwitterNeelFeature,
-    (state: TwitterNeelState) => state.search.pagination,
-);
-
-export const selectSearchQuery = createSelector(
-    selectTwitterNeelFeature,
-    (state: TwitterNeelState) => state.search.query,
 );
