@@ -1,7 +1,39 @@
 <div class="row">
     <div class="col">
-        <input type="text" [(ngModel)]="searchQuery" [formControl]="searchQueryControl">
-        <button *ngIf="!liveSearchEnabled" type="button" (click)="onSearchBtnCLick()">Search</button>
+        <div class="input-group input-group-sm">
+            <input
+                class="form-control"
+                placeholder="Filter results by text"
+                type="text"
+                [(ngModel)]="searchQuery"
+                [formControl]="searchQueryControl">
+            <div class="input-group-append">
+                <button
+                    *ngIf="!liveSearchEnabled"
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    [disabled]="!shouldSearch"
+                    (click)="onSearchBtnCLick()">Search</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="col">
+        <div class="pagination" *ngIf="paginationEnabled">
+            Page {{ pagination.currentPage + 1 }} / {{ pagination.pagesCount }} | Results: {{ pagination.allItemsCount }}
+            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    [disabled]="(pagination.currentPage - 1) < 0"
+                    (click)="onChangePageBtnClick(-1)">Prev</button>
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    [disabled]="(pagination.currentPage + 1) >= pagination.pagesCount"
+                    (click)="onChangePageBtnClick(+1)">Next</button>
+            </div>
+        </div>
     </div>
     <div class="col text-right">
         <ng-content select=".space-right"></ng-content>

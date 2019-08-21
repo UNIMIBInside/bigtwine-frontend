@@ -301,7 +301,8 @@ export type All = GetAnalysis | GetAnalysisSuccess | GetAnalysisError |
     CompleteAnalysis | CompleteAnalysisSuccess | CompleteAnalysisError |
     CancelAnalysis | CancelAnalysisSuccess | CancelAnalysisError |
     UpdateAnalysis | UpdateAnalysisSuccess | UpdateAnalysisError |
+    GetAnalysisResults | GetAnalysisResultsSuccess | GetAnalysisResultsError |
+    SearchAnalysisResults | SearchAnalysisResultsSuccess | SearchAnalysisResultsError | ClearAnalysisResults |
     StartListenAnalysisChanges | StopListenAnalysisChanges | AnalysisChangeReceived | ListeningAnalysisChangesError |
     StartListenAnalysisResults | StopListenAnalysisResults | AnalysisResultsReceived | ListeningAnalysisResultsError |
-    ClearAnalysisResults |
     GenericAnalysisError;

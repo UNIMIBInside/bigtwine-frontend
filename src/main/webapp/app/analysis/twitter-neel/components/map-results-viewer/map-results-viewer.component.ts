@@ -221,19 +221,4 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
     selectedTweetNilEntities() {
         return this.selectedTweet.entities.filter(e => e.isNil);
     }
-
-    fetchPrevPage() {
-        this.fetchPage(this.paginationInfo.currentPage - 1);
-    }
-
-    fetchNextPage() {
-        this.fetchPage(this.paginationInfo.currentPage + 1);
-    }
-
-    fetchPage(page: number) {
-        const pageSize = this.paginationInfo.pageSize;
-        const action = new GetAnalysisResults(this.currentAnalysis.id, {page, pageSize});
-
-        this.analysisStore.dispatch(action);
-    }
 }

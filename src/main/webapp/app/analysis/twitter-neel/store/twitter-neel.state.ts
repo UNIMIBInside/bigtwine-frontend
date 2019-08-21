@@ -1,15 +1,9 @@
 import { INeelProcessedTweet, INilEntity, IResource } from '../models/neel-processed-tweet.model';
 import { ILocation, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { IPaginationInfo } from 'app/analysis/models/pagination-info.model';
 
 export interface TwitterNeelState {
     listeningAnalysisId: string;
-    pagination: IPaginationInfo;
-    search: {
-        query: any;
-        pagination: IPaginationInfo;
-    };
     tweets: {
         all: INeelProcessedTweet[],
     };
@@ -31,19 +25,6 @@ export interface TwitterNeelState {
 export const initTwitterNeelState: () => TwitterNeelState = () => {
     return {
         listeningAnalysisId: null,
-        pagination: {
-            enabled: false,
-            currentPage: null,
-            pageSize: 250,
-        },
-        search: {
-            query: null,
-            pagination: {
-                enabled: false,
-                currentPage: null,
-                pageSize: 250,
-            }
-        },
         tweets: {
             all: [],
         },

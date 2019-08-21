@@ -72,6 +72,53 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                 },
                 currentAnalysis
             };
+
+        case AnalysisActions.ActionTypes.AnalysisResultsReceived:
+            return {
+                ...clearLastError(state),
+                resultsPagination: {
+                    ...state.resultsPagination,
+                    enabled: false,
+                }
+            };
+        case AnalysisActions.ActionTypes.GetAnalysisResultsSuccess:
+            const getResActionSuc = action as AnalysisActions.GetAnalysisResultsSuccess;
+            return {
+                ...clearLastError(state),
+                resultsPagination: {
+                    ...state.resultsPagination,
+                    enabled: true,
+                    currentPage: getResActionSuc.pageDetails.page,
+                    pageSize: getResActionSuc.pageDetails.pageSize,
+                    allItemsCount: getResActionSuc.pageDetails.totalCount,
+                    pagesCount: Math.ceil(getResActionSuc.pageDetails.totalCount / getResActionSuc.pageDetails.pageSize)
+                }
+            };
+        case AnalysisActions.ActionTypes.SearchAnalysisResults:
+            const searchAction = action as AnalysisActions.SearchAnalysisResults;
+            return {
+                ...state,
+                resultsFilters: {
+                    ...state.resultsFilters,
+                    query: searchAction.query
+                }
+            };
+        case AnalysisActions.ActionTypes.SearchAnalysisResultsSuccess:
+            const searchActionSuc = action as AnalysisActions.SearchAnalysisResultsSuccess;
+            return {
+                ...clearLastError(state),
+                resultsFilters: {
+                    ...state.resultsFilters,
+                    pagination: {
+                        ...state.resultsFilters.pagination,
+                        enabled: true,
+                        currentPage: searchActionSuc.pageDetails.page,
+                        pageSize: searchActionSuc.pageDetails.pageSize,
+                        allItemsCount: searchActionSuc.pageDetails.totalCount,
+                        pagesCount: Math.ceil(searchActionSuc.pageDetails.totalCount / searchActionSuc.pageDetails.pageSize)
+                    }
+                }
+            };
         case AnalysisActions.ActionTypes.StartListenAnalysisChanges:
             return {
                 ...state,

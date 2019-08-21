@@ -84,24 +84,31 @@ export class AnalysisService implements IAnalysisService {
             .pipe(map((message: Message) => JSON.parse(message.body)));
     }
 
-    getAnalysisResults(analysisId: string, page: IPage = {page: 1, pageSize: 250}): Observable<IPagedAnalysisResults> {
+    getAnalysisResults(analysisId: string, page: IPage = {page: 0, pageSize: 250}): Observable<IPagedAnalysisResults> {
         return this.http
-            .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}?page=${page.page - 1}&pageSize=${page.pageSize}`) as Observable<IPagedAnalysisResults>;
+            .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}?page=${page.page}&pageSize=${page.pageSize}`) as Observable<IPagedAnalysisResults>;
     }
 
-    searchAnalysisResults(analysisId: string, query: IResultsFilterQuery, page: IPage = {page: 1, pageSize: 250}): Observable<IPagedAnalysisResults> {
-        const url = `${this.ANALYSIS_API}/analysis-results/${analysisId}/search?page=${page.page - 1}&pageSize=${page.pageSize}`;
+    searchAnalysisResults(analysisId: string, query: IResultsFilterQuery, page: IPage = {page: 0, pageSize: 250}): Observable<IPagedAnalysisResults> {
+        const url = `${this.ANALYSIS_API}/analysis-results/${analysisId}/search?page=${page.page}&pageSize=${page.pageSize}`;
         const httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type':  'text/plain',
             })
         };
+        const body = this.buildSearchQuery(query);
 
-        return this.http.post(url, query, httpOptions) as Observable<IPagedAnalysisResults>;
+        return this.http.post(url, body, httpOptions) as Observable<IPagedAnalysisResults>;
     }
 
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount> {
         return this.http
             .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}/count`) as Observable<IAnalysisResultsCount>;
+    }
+
+    private buildSearchQuery(query: IResultsFilterQuery): string {
+        return `
+            {$text: {$search: ${JSON.stringify(query.text)}, $caseSensitive: false}}
+        `;
     }
 }

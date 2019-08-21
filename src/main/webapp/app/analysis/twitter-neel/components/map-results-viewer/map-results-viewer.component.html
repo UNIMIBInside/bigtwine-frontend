@@ -55,12 +55,6 @@
                 </div>
             </div>
         </div>
-        <div class="row" *ngIf="paginationInfo.enabled">
-            <div class="col">
-                <button (click)="fetchPrevPage()" *ngIf="paginationInfo.currentPage > 1">PREV</button>
-                <button (click)="fetchNextPage()">NEXT</button>
-            </div>
-        </div>
     </div>
 
     <div class="col col-md-6">

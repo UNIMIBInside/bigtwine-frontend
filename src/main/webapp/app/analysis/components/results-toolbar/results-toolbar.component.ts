@@ -50,7 +50,7 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         return (this.searchQuery && this.searchQuery.trim().length >= 3);
     }
 
-    get paginationInfo(): IPaginationInfo {
+    get resultsPagination(): IPaginationInfo {
         let pagination = null;
         this.analysisStore
             .select(selectResultsPagination)
@@ -60,7 +60,7 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         return pagination;
     }
 
-    get searchPaginationInfo(): IPaginationInfo {
+    get searchPagination(): IPaginationInfo {
         let pagination = null;
         this.analysisStore
             .select(selectSearchPagination)
@@ -68,6 +68,20 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
             .subscribe(p => pagination = p);
 
         return pagination;
+    }
+
+    get pagination(): IPaginationInfo {
+        if (this.searchPagination.enabled) {
+            return this.searchPagination;
+        } else if (this.resultsPagination.enabled) {
+            return this.resultsPagination;
+        } else {
+            return null;
+        }
+    }
+
+    get paginationEnabled(): boolean {
+        return this.pagination !== null;
     }
 
     constructor(
@@ -110,12 +124,29 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         this.performFullSearch();
     }
 
+    onChangePageBtnClick(move: number) {
+        if (!this.paginationEnabled) {
+            return;
+        }
+
+        const page = this.pagination.currentPage + move;
+        if (page < 0 || page >= this.pagination.pagesCount) {
+            return;
+        }
+
+        if (this.searchPagination.enabled) {
+            this.performFullSearch(page);
+        } else if (this.resultsPagination.enabled) {
+            this.fetchPage(page);
+        }
+    }
+
     performLiveSearch() {
         if (this.shouldSearch) {
             const query = this.buildQuery();
             const page = {
-                page: 1,
-                pageSize: this.searchPaginationInfo.pageSize
+                page: 0,
+                pageSize: this.searchPagination.pageSize
             };
 
             this.resultsFilterService.localSearch(query, page);
@@ -124,28 +155,18 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         }
     }
 
-    performFullSearch() {
-        const analysisId = this.currentAnalysis.id;
-        let action: Action;
-
+    performFullSearch(pageNum = 0) {
         if (this.shouldSearch) {
+            const analysisId = this.currentAnalysis.id;
             const query = this.buildQuery();
             const page = {
-                page: 1,
-                pageSize: this.searchPaginationInfo.pageSize
+                page: pageNum,
+                pageSize: this.searchPagination.pageSize
             };
 
-            action = new SearchAnalysisResults(analysisId, query, page);
-        } else {
-            const page = {
-                page: 1,
-                pageSize: this.paginationInfo.pageSize
-            };
-
-            action = new GetAnalysisResults(analysisId, page);
+            const action: Action = new SearchAnalysisResults(analysisId, query, page);
+            this.analysisStore.dispatch(action);
         }
-
-        this.analysisStore.dispatch(action);
     }
 
     private buildQuery(): IResultsFilterQuery {
@@ -156,5 +177,24 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         return {
             text: this.searchQuery
         };
+    }
+
+    private fetchFirstPage() {
+        this.fetchPage(0);
+    }
+
+    private fetchPrevPage() {
+        this.fetchPage(this.resultsPagination.currentPage - 1);
+    }
+
+    private fetchNextPage() {
+        this.fetchPage(this.resultsPagination.currentPage + 1);
+    }
+
+    private fetchPage(page: number) {
+        const pageSize = this.resultsPagination.pageSize;
+        const action = new GetAnalysisResults(this.currentAnalysis.id, {page, pageSize});
+
+        this.analysisStore.dispatch(action);
     }
 }

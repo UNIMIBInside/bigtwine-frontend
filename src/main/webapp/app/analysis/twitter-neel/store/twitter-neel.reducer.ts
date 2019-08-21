@@ -2,7 +2,7 @@ import { initTwitterNeelState, TwitterNeelState } from './twitter-neel.state';
 import * as TwitterNeelActions from './twitter-neel.action';
 import { ActionTypes } from './twitter-neel.action';
 import { ILocation, Location, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
-import { ILinkedEntity, INeelProcessedTweet, INilEntity, IResource } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
+import { ILinkedEntity, INilEntity, IResource } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
 import { ITwitterNeelAnalysisResult } from 'app/analysis/twitter-neel/models/twitter-neel-analysis-result.model';
 
 export const initialState: TwitterNeelState = initTwitterNeelState();
@@ -64,7 +64,17 @@ const resourceComparator = (counters: {[key: string]: number}, a: IResource, b: 
     return bCount - aCount;
 };
 
-const reduceNewTweets = (state: TwitterNeelState, results: ITwitterNeelAnalysisResult[]) => {
+const reduceNewTweets = (oldState: TwitterNeelState, results: ITwitterNeelAnalysisResult[], append = true) => {
+    let state: TwitterNeelState;
+    if (append) {
+        state = oldState;
+    } else {
+        state = {
+            ...initTwitterNeelState(),
+            listeningAnalysisId: oldState.listeningAnalysisId
+        };
+    }
+
     const tweets = results.map(result => result.payload);
     const entities = tweets
         .filter(t => t.entities && t.entities.length)
@@ -148,60 +158,23 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
                 .filter(t => t.analysisId === state.listeningAnalysisId);
 
             return {
-                ...reduceNewTweets(state, tweets),
-                pagination: {
-                    ...state.pagination,
-                    enabled: false,
-                },
-                search: {
-                    ...state.search,
-                    query: null,
-                }
+                ...reduceNewTweets(state, tweets)
             };
         }
         case TwitterNeelActions.ActionTypes.TwitterNeelSearchResultsReceived: {
             const act = (action as TwitterNeelActions.TwitterNeelSearchResultsReceived);
 
             return {
-                ...reduceNewTweets(initialState, act.results),
-                listeningAnalysisId: state.listeningAnalysisId,
-                pagination: {
-                    ...state.pagination,
-                    enabled: false,
-                    currentPage: null
-                },
-                search: {
-                    ...state.search,
-                    query: null,
-                    pagination: {
-                        ...state.search.pagination,
-                        currentPage: act.pageDetails.page,
-                        pageSize: act.pageDetails.pageSize
-                    }
-                }
+                ...reduceNewTweets(initialState, act.results, false),
+                listeningAnalysisId: state.listeningAnalysisId
             };
         }
         case TwitterNeelActions.ActionTypes.TwitterNeelPagedResultsReceived: {
             const act = (action as TwitterNeelActions.TwitterNeelPagedResultsReceived);
 
             return {
-                ...reduceNewTweets(initialState, act.results),
-                listeningAnalysisId: state.listeningAnalysisId,
-                pagination: {
-                    ...state.pagination,
-                    enabled: true,
-                    currentPage: act.pageDetails.page,
-                    pageSize: act.pageDetails.pageSize,
-                },
-                search: {
-                    ...state.search,
-                    query: null,
-                    pagination: {
-                        ...state.search.pagination,
-                        enabled: false,
-                        currentPage: null,
-                    }
-                }
+                ...reduceNewTweets(initialState, act.results, false),
+                listeningAnalysisId: state.listeningAnalysisId
             };
         }
         case ActionTypes.SortTwitterNeelResults:

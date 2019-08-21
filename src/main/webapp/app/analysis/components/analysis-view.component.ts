@@ -149,7 +149,7 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
     }
 
     fetchFirstResultsPage() {
-        this.fetchResultsPage(1);
+        this.fetchResultsPage(0);
     }
 
     fetchResultsPage(page: number) {
