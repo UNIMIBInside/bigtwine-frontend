@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { map, withLatestFrom, filter, mergeMap, takeUntil } from 'rxjs/operators';
+import { map, withLatestFrom, filter, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import * as TwitterNeelActions from './twitter-neel.action';
 import * as AnalysisActions from 'app/analysis/store/analysis.action';
 import { Action, Store } from '@ngrx/store';
@@ -72,6 +72,21 @@ export class TwitterNeelEffects {
     clearTwitterNeelResults$ = this.action$.pipe(
         ofType(AnalysisActions.ActionTypes.ClearAnalysisResults),
         map(() => new TwitterNeelActions.ClearTwitterNeelResults())
+    );
+
+    @Effect()
+    sliceTwitterNeelResult$: Observable<Action> = this.action$.pipe(
+        ofType(TwitterNeelActions.ActionTypes.StartListenTwitterNeelResults),
+        mergeMap((startAction: AnalysisActions.StartListenAnalysisResults) => interval(5000)
+            .pipe(
+                map(() => new TwitterNeelActions.SliceTwitterNeelResults()),
+                takeUntil(
+                    this.action$.pipe(
+                        ofType(TwitterNeelActions.ActionTypes.StopListenTwitterNeelResults),
+                        filter((stopAction: AnalysisActions.StopListenAnalysisResults) => stopAction.analysisId === null || stopAction.analysisId === startAction.analysisId)
+                    )
+                )
+            ))
     );
 
     constructor(private action$: Actions, private store$: Store<TwitterNeelState>, private analysisStore$: Store<AnalysisState>) {}

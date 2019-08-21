@@ -1,8 +1,8 @@
-import { initTwitterNeelState, TwitterNeelState } from './twitter-neel.state';
+import { initTwitterNeelState, MAX_STREAM_TWEETS_COUNT, TwitterNeelState } from './twitter-neel.state';
 import * as TwitterNeelActions from './twitter-neel.action';
 import { ActionTypes } from './twitter-neel.action';
 import { ILocation, Location, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
-import { ILinkedEntity, INilEntity, IResource } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
+import { ILinkedEntity, INeelProcessedTweet, INilEntity, IResource } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
 import { ITwitterNeelAnalysisResult } from 'app/analysis/twitter-neel/models/twitter-neel-analysis-result.model';
 
 export const initialState: TwitterNeelState = initTwitterNeelState();
@@ -64,7 +64,12 @@ const resourceComparator = (counters: {[key: string]: number}, a: IResource, b: 
     return bCount - aCount;
 };
 
-const reduceNewTweets = (oldState: TwitterNeelState, results: ITwitterNeelAnalysisResult[], append = true) => {
+const reduceAnalysisResults = (oldState: TwitterNeelState, results: ITwitterNeelAnalysisResult[], append = true) => {
+    const tweets = results.map(result => result.payload);
+    return reduceNewTweets(oldState, tweets, append);
+};
+
+const reduceNewTweets = (oldState: TwitterNeelState, tweets: INeelProcessedTweet[], append = true) => {
     let state: TwitterNeelState;
     if (append) {
         state = oldState;
@@ -75,7 +80,6 @@ const reduceNewTweets = (oldState: TwitterNeelState, results: ITwitterNeelAnalys
         };
     }
 
-    const tweets = results.map(result => result.payload);
     const entities = tweets
         .filter(t => t.entities && t.entities.length)
         .reduce((a, t) => a.concat(t.entities), []) as ILinkedEntity[];
@@ -158,14 +162,14 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
                 .filter(t => t.analysisId === state.listeningAnalysisId);
 
             return {
-                ...reduceNewTweets(state, tweets)
+                ...reduceAnalysisResults(state, tweets)
             };
         }
         case TwitterNeelActions.ActionTypes.TwitterNeelSearchResultsReceived: {
             const act = (action as TwitterNeelActions.TwitterNeelSearchResultsReceived);
 
             return {
-                ...reduceNewTweets(initialState, act.results, false),
+                ...reduceAnalysisResults(state, act.results, false),
                 listeningAnalysisId: state.listeningAnalysisId
             };
         }
@@ -173,7 +177,7 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
             const act = (action as TwitterNeelActions.TwitterNeelPagedResultsReceived);
 
             return {
-                ...reduceNewTweets(initialState, act.results, false),
+                ...reduceAnalysisResults(state, act.results, false),
                 listeningAnalysisId: state.listeningAnalysisId
             };
         }
@@ -191,6 +195,18 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
                         .sort((a, b) => resourceComparator(state.resources.tweetsCount, a, b))
                 }
             };
+        case ActionTypes.SliceTwitterNeelResults:
+            const sliceMargin = 0.2;
+            const sliceFactor = 0.6;
+
+            if (state.tweets.all.length > (MAX_STREAM_TWEETS_COUNT + (MAX_STREAM_TWEETS_COUNT * sliceMargin))) {
+                return {
+                    ...reduceNewTweets(state, state.tweets.all.slice(0, (MAX_STREAM_TWEETS_COUNT * sliceFactor)), false),
+                    listeningAnalysisId: state.listeningAnalysisId
+                };
+            } else {
+                return state;
+            }
         case ActionTypes.ClearTwitterNeelResults:
             return {
                 ...initTwitterNeelState(),

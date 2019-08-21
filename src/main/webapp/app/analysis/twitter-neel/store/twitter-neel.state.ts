@@ -2,6 +2,8 @@ import { INeelProcessedTweet, INilEntity, IResource } from '../models/neel-proce
 import { ILocation, LocationSource } from 'app/analysis/twitter-neel/models/location.model';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
+export const MAX_STREAM_TWEETS_COUNT = 50;
+
 export interface TwitterNeelState {
     listeningAnalysisId: string;
     tweets: {
