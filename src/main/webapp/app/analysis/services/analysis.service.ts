@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EMPTY, Observable, timer } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
-import { AnalysisStatus, IAnalysis } from '../';
+import { AnalysisStatus, IAnalysis, IPage, IResultsFilterQuery } from '../';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { map } from 'rxjs/operators';
 import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
@@ -22,8 +22,8 @@ export interface IAnalysisService {
     updateAnalysis(analysisId: string, changes: IAnalysis): Observable<IAnalysis>;
     listenAnalysisStatusChanges(analysisId: string): Observable<IAnalysis>;
     listenAnalysisResults(analysisId: string): Observable<any>;
-    getAnalysisResults(analysisId: string, page: number, pageSize: number): Observable<IPagedAnalysisResults>;
-    searchAnalysisResults(analysisId: string, query: string, page: number, pageSize: number): Observable<IPagedAnalysisResults>;
+    getAnalysisResults(analysisId: string, page: IPage): Observable<IPagedAnalysisResults>;
+    searchAnalysisResults(analysisId: string, query: IResultsFilterQuery, page: IPage): Observable<IPagedAnalysisResults>;
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount>;
 }
 
@@ -84,18 +84,24 @@ export class AnalysisService implements IAnalysisService {
             .pipe(map((message: Message) => JSON.parse(message.body)));
     }
 
-    getAnalysisResults(analysisId: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
+    getAnalysisResults(analysisId: string, page: IPage = {page: 1, pageSize: 250}): Observable<IPagedAnalysisResults> {
         return this.http
-            .get(`${this.ANALYSIS_API}/analyses-results/${analysisId}?page=${page}&pageSize=${pageSize}`) as Observable<IPagedAnalysisResults>;
+            .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}?page=${page.page - 1}&pageSize=${page.pageSize}`) as Observable<IPagedAnalysisResults>;
     }
 
-    searchAnalysisResults(analysisId: string, query: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
-        return this.http
-            .post(`${this.ANALYSIS_API}/analyses-results/${analysisId}/search?page=${page}&pageSize=${pageSize}`, query) as Observable<IPagedAnalysisResults>;
+    searchAnalysisResults(analysisId: string, query: IResultsFilterQuery, page: IPage = {page: 1, pageSize: 250}): Observable<IPagedAnalysisResults> {
+        const url = `${this.ANALYSIS_API}/analysis-results/${analysisId}/search?page=${page.page - 1}&pageSize=${page.pageSize}`;
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type':  'text/plain',
+            })
+        };
+
+        return this.http.post(url, query, httpOptions) as Observable<IPagedAnalysisResults>;
     }
 
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount> {
         return this.http
-            .get(`${this.ANALYSIS_API}/analyses-results/${analysisId}/count`) as Observable<IAnalysisResultsCount>;
+            .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}/count`) as Observable<IAnalysisResultsCount>;
     }
 }

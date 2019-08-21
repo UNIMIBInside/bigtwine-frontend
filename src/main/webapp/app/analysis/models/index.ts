@@ -5,3 +5,6 @@ export * from './paged-analyses.model';
 export * from './paged-analysis-results.model';
 export * from './paged-response.model';
 export * from './pagination-info.model';
+export * from './page.model';
+export * from './page-details.model';
+export * from './results-filter-query.model';

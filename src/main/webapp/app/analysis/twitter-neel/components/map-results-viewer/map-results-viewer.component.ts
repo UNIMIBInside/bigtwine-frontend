@@ -17,7 +17,8 @@ import {
     ILinkedEntity, INeelProcessedTweet, INilEntity, IResource, ILocation, LocationSource
 } from 'app/analysis/twitter-neel';
 import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/results-viewer.component';
-import { IResultsFilterService, IResultsFilterQuery, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
+import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
+import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
 
 @Component({
     templateUrl: './map-results-viewer.component.html',
@@ -231,7 +232,7 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
 
     fetchPage(page: number) {
         const pageSize = this.paginationInfo.pageSize;
-        const action = new GetAnalysisResults(this.currentAnalysis.id, page, pageSize);
+        const action = new GetAnalysisResults(this.currentAnalysis.id, {page, pageSize});
 
         this.analysisStore.dispatch(action);
     }

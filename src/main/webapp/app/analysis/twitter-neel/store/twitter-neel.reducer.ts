@@ -175,7 +175,8 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
                     query: null,
                     pagination: {
                         ...state.search.pagination,
-                        currentPage: act.page
+                        currentPage: act.pageDetails.page,
+                        pageSize: act.pageDetails.pageSize
                     }
                 }
             };
@@ -189,7 +190,8 @@ export function TwitterNeelReducer(state = initialState, action: TwitterNeelActi
                 pagination: {
                     ...state.pagination,
                     enabled: true,
-                    currentPage: act.page,
+                    currentPage: act.pageDetails.page,
+                    pageSize: act.pageDetails.pageSize,
                 },
                 search: {
                     ...state.search,

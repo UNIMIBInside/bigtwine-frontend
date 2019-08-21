@@ -154,7 +154,7 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
 
     fetchResultsPage(page: number) {
         const pageSize = this.paginationInfo.pageSize;
-        const action = new GetAnalysisResults(this.currentAnalysis.id, page, pageSize);
+        const action = new GetAnalysisResults(this.currentAnalysis.id, {page, pageSize});
 
         this.analysisStore.dispatch(action);
     }

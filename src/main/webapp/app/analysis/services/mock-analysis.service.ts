@@ -1,4 +1,4 @@
-import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IAnalysisInput } from 'app/analysis';
+import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IAnalysisInput, IPage, IResultsFilterQuery } from 'app/analysis';
 import { interval, Observable, of, Subject, throwError } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
 import { ILinkedEntity } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
@@ -138,30 +138,30 @@ export class MockAnalysisService implements IAnalysisService {
         }));
     }
 
-    getAnalysisResults(analysisId: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
+    getAnalysisResults(analysisId: string, page: IPage = {page: 1, pageSize: 250}): Observable<IPagedAnalysisResults> {
         const tweets = [];
-        for (let i = 0; i < pageSize; ++i) {
+        for (let i = 0; i < page.pageSize; ++i) {
             tweets.push(this.createAnalysisResult(analysisId));
         }
         return of({
-            page,
-            pageSize,
-            totalCount: pageSize * 5,
-            count: pageSize,
+            page: page.page,
+            pageSize: page.pageSize,
+            totalCount: page.pageSize * 5,
+            count: page.pageSize,
             objects: tweets
         }).pipe(delay(this.rms));
     }
 
-    searchAnalysisResults(analysisId: string, query: string, page = 1, pageSize = 250): Observable<IPagedAnalysisResults> {
+    searchAnalysisResults(analysisId: string, query: IResultsFilterQuery, page: IPage = {page: 1, pageSize: 250}): Observable<IPagedAnalysisResults> {
         const tweets = [];
-        for (let i = 0; i < pageSize; ++i) {
+        for (let i = 0; i < page.pageSize; ++i) {
             tweets.push(this.createAnalysisResult(analysisId));
         }
         return of({
-            page,
-            pageSize,
-            totalCount: pageSize * 2,
-            count: pageSize,
+            page: page.page,
+            pageSize: page.pageSize,
+            totalCount: page.pageSize * 2,
+            count: page.pageSize,
             objects: tweets
         }).pipe(delay(this.rms * 3));
     }

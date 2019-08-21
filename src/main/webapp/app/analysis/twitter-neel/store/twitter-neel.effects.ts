@@ -40,7 +40,7 @@ export class TwitterNeelEffects {
         filter(([action, currentAnalysis]: [AnalysisActions.SearchAnalysisResultsSuccess, IAnalysis]) =>
             (currentAnalysis != null && action.results.length > 0 && action.results[0].analysisId === currentAnalysis.id)),
         map(([action]: [AnalysisActions.SearchAnalysisResultsSuccess, IAnalysis]) => (
-            new TwitterNeelActions.TwitterNeelSearchResultsReceived(action.results as ITwitterNeelAnalysisResult[], action.page))),
+            new TwitterNeelActions.TwitterNeelSearchResultsReceived(action.results as ITwitterNeelAnalysisResult[], action.pageDetails))),
     );
 
     @Effect()
@@ -50,7 +50,7 @@ export class TwitterNeelEffects {
         filter(([action, currentAnalysis]: [AnalysisActions.GetAnalysisResultsSuccess, IAnalysis]) =>
             (currentAnalysis != null && action.results.length > 0 && action.results[0].analysisId === currentAnalysis.id)),
         map(([action]: [AnalysisActions.GetAnalysisResultsSuccess, IAnalysis]) => (
-            new TwitterNeelActions.TwitterNeelPagedResultsReceived(action.results as ITwitterNeelAnalysisResult[], action.page))),
+            new TwitterNeelActions.TwitterNeelPagedResultsReceived(action.results as ITwitterNeelAnalysisResult[], action.pageDetails))),
     );
 
     @Effect()

@@ -1,11 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
-
-export interface IResultsFilterQuery {
-    text: string;
-    page: number;
-    pageSize: number;
-}
+import { IPage, IResultsFilterQuery } from 'app/analysis/models';
 
 export const DEFAULT_RESULTS_FILTER_THROTTLE = 5000;
 
@@ -18,11 +13,12 @@ export interface IResultsFilterService {
     /**
      * Avvia una ricerca sui risultati disponibili localmente
      * @param query
+     * @param page
      * @param throttleDuration
      */
-    localSearch(query: IResultsFilterQuery, throttleDuration);
+    localSearch(query: IResultsFilterQuery, page: IPage, throttleDuration);
 
-    localSearch(query: IResultsFilterQuery);
+    localSearch(query: IResultsFilterQuery, page: IPage);
 
     clear();
 }

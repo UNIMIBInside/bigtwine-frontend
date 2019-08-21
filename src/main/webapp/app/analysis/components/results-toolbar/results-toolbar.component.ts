@@ -14,7 +14,8 @@ import {
 } from 'app/analysis';
 import { select, Store, Action } from '@ngrx/store';
 import { FormControl } from '@angular/forms';
-import { IResultsFilterService, IResultsFilterQuery, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
+import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
+import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
 
 @Component({
     selector: 'btw-results-toolbar',
@@ -111,35 +112,49 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
 
     performLiveSearch() {
         if (this.shouldSearch) {
-            const query: IResultsFilterQuery = {
-                text: this.searchQuery,
+            const query = this.buildQuery();
+            const page = {
                 page: 1,
-                pageSize: this.searchPaginationInfo.pageSize,
+                pageSize: this.searchPaginationInfo.pageSize
             };
 
-            this.resultsFilterService.localSearch(query);
+            this.resultsFilterService.localSearch(query, page);
         } else {
             this.resultsFilterService.clear();
         }
     }
 
     performFullSearch() {
+        const analysisId = this.currentAnalysis.id;
         let action: Action;
+
         if (this.shouldSearch) {
-            action = new SearchAnalysisResults(
-                this.currentAnalysis.id,
-                this.searchQuery,
-                1,
-                this.searchPaginationInfo.pageSize
-            );
+            const query = this.buildQuery();
+            const page = {
+                page: 1,
+                pageSize: this.searchPaginationInfo.pageSize
+            };
+
+            action = new SearchAnalysisResults(analysisId, query, page);
         } else {
-            action = new GetAnalysisResults(
-                this.currentAnalysis.id,
-                1,
-                this.paginationInfo.pageSize
-            );
+            const page = {
+                page: 1,
+                pageSize: this.paginationInfo.pageSize
+            };
+
+            action = new GetAnalysisResults(analysisId, page);
         }
 
         this.analysisStore.dispatch(action);
+    }
+
+    private buildQuery(): IResultsFilterQuery {
+        if (!this.searchQuery) {
+            return null;
+        }
+
+        return {
+            text: this.searchQuery
+        };
     }
 }

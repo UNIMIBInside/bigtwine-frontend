@@ -4,7 +4,8 @@ import { Observable, ReplaySubject } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { selectAllTweets, TwitterNeelState, INeelProcessedTweet } from 'app/analysis/twitter-neel';
 import { map } from 'rxjs/operators';
-import { IResultsFilterService, IResultsFilterQuery, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
+import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
+import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
 
 @Component({
     selector: 'btw-list-results-viewer',

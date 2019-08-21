@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AnalysisService } from 'app/analysis/services/analysis.service';
 import { of, Observable } from 'rxjs';
-import { bufferTime, catchError, filter, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { bufferTime, catchError, filter, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
@@ -131,9 +131,9 @@ export class AnalysisEffects {
     @Effect()
     getAnalysisResults$: Observable<Action> = this.action$.pipe(
         ofType(AnalysisActions.ActionTypes.GetAnalysisResults),
-        mergeMap((action: AnalysisActions.GetAnalysisResults) => this.analysisService.getAnalysisResults(action.analysisId, action.page, action.pageSize)
+        mergeMap((action: AnalysisActions.GetAnalysisResults) => this.analysisService.getAnalysisResults(action.analysisId, action.page)
             .pipe(
-                map(response => new AnalysisActions.GetAnalysisResultsSuccess(response.objects, response.page)),
+                map(response => new AnalysisActions.GetAnalysisResultsSuccess(response.objects, response)),
                 catchError(e => of(new AnalysisActions.GetAnalysisResultsError(e)))
             ))
     );
@@ -141,9 +141,9 @@ export class AnalysisEffects {
     @Effect()
     searchAnalysisResults$: Observable<Action> = this.action$.pipe(
         ofType(AnalysisActions.ActionTypes.SearchAnalysisResults),
-        mergeMap((action: AnalysisActions.SearchAnalysisResults) => this.analysisService.searchAnalysisResults(action.analysisId, action.query, action.page, action.pageSize)
+        mergeMap((action: AnalysisActions.SearchAnalysisResults) => this.analysisService.searchAnalysisResults(action.analysisId, action.query, action.page)
             .pipe(
-                map(response => new AnalysisActions.SearchAnalysisResultsSuccess(response.objects, response.page)),
+                map(response => new AnalysisActions.SearchAnalysisResultsSuccess(response.objects, response)),
                 catchError(e => of(new AnalysisActions.SearchAnalysisResultsError(e)))
             ))
     );

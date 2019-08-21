@@ -1,10 +1,11 @@
-import { AnalysisState, IAnalysis, selectCurrentAnalysis } from 'app/analysis';
+import { AnalysisState, IAnalysis, IPage, selectCurrentAnalysis } from 'app/analysis';
 import { filter, map, take, takeUntil, throttleTime } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { INeelProcessedTweet, selectAllTweets, TwitterNeelState } from 'app/analysis/twitter-neel';
-import { DEFAULT_RESULTS_FILTER_THROTTLE, IResultsFilterQuery, IResultsFilterService } from 'app/analysis/services/results-filter.service';
+import { DEFAULT_RESULTS_FILTER_THROTTLE, IResultsFilterService } from 'app/analysis/services/results-filter.service';
 import { Injectable } from '@angular/core';
+import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
 
 @Injectable()
 export class ResultsFilterService implements IResultsFilterService {
@@ -43,7 +44,7 @@ export class ResultsFilterService implements IResultsFilterService {
     /**
      * @inheritDoc
      */
-    localSearch(query: IResultsFilterQuery, throttleDuration = DEFAULT_RESULTS_FILTER_THROTTLE) {
+    localSearch(query: IResultsFilterQuery, page: IPage, throttleDuration = DEFAULT_RESULTS_FILTER_THROTTLE) {
         if (!query) {
             return;
         }
@@ -54,7 +55,7 @@ export class ResultsFilterService implements IResultsFilterService {
             .pipe(
                 throttleTime(throttleDuration),
                 map(allTweets => allTweets.filter(t => t.status.text.indexOf(query.text) >= 0)),
-                map(tweets => tweets.slice(0, query.pageSize)),
+                map(tweets => tweets.slice(0, page.pageSize)),
                 takeUntil(this._currentQuery$.pipe(filter(q => q !== query))),
             )
             .subscribe(tweets => {

@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import {IAnalysis} from 'app/analysis';
+import { IAnalysis, IPage, IPageDetails, IResultsFilterQuery } from 'app/analysis';
 import { IAnalysisResult } from 'app/analysis/models/analysis-result.model';
 
 export enum ActionTypes {
@@ -242,13 +242,13 @@ export class StopListenAnalysisResults implements Action {
 export class GetAnalysisResults implements Action {
     readonly type = ActionTypes.GetAnalysisResults;
 
-    constructor(readonly analysisId: string, readonly page: number, readonly pageSize: number) {}
+    constructor(readonly analysisId: string, readonly page: IPage) {}
 }
 
 export class GetAnalysisResultsSuccess implements Action {
     readonly type = ActionTypes.GetAnalysisResultsSuccess;
 
-    constructor(readonly results: IAnalysisResult[], readonly page: number) {}
+    constructor(readonly results: IAnalysisResult[], readonly pageDetails: IPageDetails) {}
 }
 
 export class GetAnalysisResultsError extends GenericAnalysisError {
@@ -260,13 +260,13 @@ export class GetAnalysisResultsError extends GenericAnalysisError {
 export class SearchAnalysisResults implements Action {
     readonly type = ActionTypes.SearchAnalysisResults;
 
-    constructor(readonly analysisId: string, readonly query: any, readonly page: number, readonly pageSize: number) {}
+    constructor(readonly analysisId: string, readonly query: IResultsFilterQuery, readonly page: IPage) {}
 }
 
 export class SearchAnalysisResultsSuccess implements Action {
     readonly type = ActionTypes.SearchAnalysisResultsSuccess;
 
-    constructor(readonly results: IAnalysisResult[], readonly page: number) {}
+    constructor(readonly results: IAnalysisResult[], readonly pageDetails: IPageDetails) {}
 }
 
 export class SearchAnalysisResultsError extends GenericAnalysisError {
