@@ -1,4 +1,4 @@
-import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IAnalysisInput, IPage, IResultsFilterQuery } from 'app/analysis';
+import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IAnalysisInput, IDocument, IPage, IResultsFilterQuery } from 'app/analysis';
 import { interval, Observable, of, Subject, throwError } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
 import { ILinkedEntity } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
@@ -173,6 +173,17 @@ export class MockAnalysisService implements IAnalysisService {
             timestamp: (new Date()).toISOString()
         };
         return of(response).pipe(delay(this.rms));
+    }
+
+    getDocumentById(documentId: string): Observable<IDocument> {
+        return of({
+            documentId,
+            filename: 'testdocument.csv',
+            size: Math.ceil(Math.random() * 100000000),
+            contentType: 'text/csv',
+            uploadDate: new Date(),
+            user: 'user-1',
+        }).pipe(delay(this.rms));
     }
 
     private tweetText(len: number) {

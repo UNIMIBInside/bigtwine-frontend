@@ -1,7 +1,5 @@
-import { IAnalysis } from 'app/analysis';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { IPaginationInfo } from 'app/analysis/models/pagination-info.model';
-import { selectTwitterNeelFeature, TwitterNeelState } from 'app/analysis/twitter-neel';
+import { IAnalysis, IPaginationInfo, IDocument } from 'app/analysis/models';
 
 export interface AnalysisState {
     analyses: {
@@ -15,6 +13,9 @@ export interface AnalysisState {
     resultsFilters: {
         query: any;
         pagination: IPaginationInfo;
+    };
+    documents: {
+        byId: {[key: string]: IDocument}
     };
     lastError: {type: string, error: Error};
     errorHistory: {type: string, error: Error}[];
@@ -32,6 +33,8 @@ export const initAnalysisState = (): AnalysisState => {
         resultsPagination: {
             enabled: false,
             currentPage: null,
+            pagesCount: null,
+            allItemsCount: null,
             pageSize: 100,
         },
         resultsFilters: {
@@ -39,8 +42,13 @@ export const initAnalysisState = (): AnalysisState => {
             pagination: {
                 enabled: false,
                 currentPage: null,
+                pagesCount: null,
+                allItemsCount: null,
                 pageSize: 100,
             }
+        },
+        documents: {
+            byId: {}
         },
         lastError: null,
         errorHistory: [],
@@ -92,4 +100,9 @@ export const selectResultsListeningAnalysisId = createSelector(
 export const selectChangesListeningAnalysisId = createSelector(
     selectAnalysisFeature,
     (state: AnalysisState) => state.changesListeningAnalysisId,
+);
+
+export const selectDocumentById = (documentId: string) => createSelector(
+    selectAnalysisFeature,
+    (state: AnalysisState) => state.documents.byId[documentId]
 );

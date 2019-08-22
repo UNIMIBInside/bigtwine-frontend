@@ -148,5 +148,15 @@ export class AnalysisEffects {
             ))
     );
 
+    @Effect()
+    getDocument$: Observable<Action> = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.GetDocumentMeta),
+        mergeMap((action: AnalysisActions.GetDocumentMeta) => this.analysisService.getDocumentById(action.documentId)
+            .pipe(
+                map(document => new AnalysisActions.GetDocumentMetaSuccess(document)),
+                catchError(e => of(new AnalysisActions.GetDocumentMetaError(e)))
+            ))
+    );
+
     constructor(private analysisService: AnalysisService, private action$: Actions) {}
 }

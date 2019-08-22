@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AnalysisState } from 'app/analysis';
+import { AnalysisState, IDatasetAnalysisInput } from 'app/analysis';
 import { BoundedAnalysisViewComponent } from 'app/analysis/components';
 
 @Component({
@@ -10,6 +10,10 @@ import { BoundedAnalysisViewComponent } from 'app/analysis/components';
   styleUrls: ['./dataset-view.component.scss']
 })
 export class DatasetViewComponent extends BoundedAnalysisViewComponent {
+
+    get datasetDocumentId(): string {
+        return (this.currentAnalysis.input as IDatasetAnalysisInput).documentId;
+    }
 
     constructor(
         protected router: Router,

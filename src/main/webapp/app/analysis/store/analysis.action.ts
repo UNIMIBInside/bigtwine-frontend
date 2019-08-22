@@ -1,6 +1,7 @@
 import {Action} from '@ngrx/store';
 import { IAnalysis, IPage, IPageDetails, IResultsFilterQuery } from 'app/analysis';
 import { IAnalysisResult } from 'app/analysis/models/analysis-result.model';
+import { IDocument } from 'app/analysis/models/document.model';
 
 export enum ActionTypes {
     GetAnalysis = '[Analysis] GET_ANALYSIS',
@@ -42,6 +43,9 @@ export enum ActionTypes {
     SearchAnalysisResultsError = '[Analysis] SEARCH_ANALYSIS_RESULTS_ERROR',
     AnalysisResultsReceived = '[Analysis] ANALYSIS_RESULTS_RECEIVED',
     ClearAnalysisResults = '[Analysis] CLEAR_ANALYSIS_RESULTS',
+    GetDocumentMeta = '[Analysis] GET_DOCUMENT_META',
+    GetDocumentMetaSuccess = '[Analysis] GET_DOCUMENT_META_SUCCESS',
+    GetDocumentMetaError = '[Analysis] GET_DOCUMENT_META_ERROR',
     GenericAnalysisError = '[Analysis] GENERIC_ANALYSIS_ERROR',
 }
 
@@ -293,6 +297,24 @@ export class ListeningAnalysisResultsError extends GenericAnalysisError {
     }
 }
 
+export class GetDocumentMeta implements Action {
+    readonly type = ActionTypes.GetDocumentMeta;
+
+    constructor(readonly documentId: string) {}
+}
+
+export class GetDocumentMetaSuccess implements Action {
+    readonly type = ActionTypes.GetDocumentMetaSuccess;
+
+    constructor(readonly document: IDocument) {}
+}
+
+export class GetDocumentMetaError extends GenericAnalysisError {
+    constructor(readonly error: any) {
+        super(ActionTypes.GetDocumentMetaError, error);
+    }
+}
+
 export type All = GetAnalysis | GetAnalysisSuccess | GetAnalysisError |
     GetAnalyses | GetAnalysesSuccess | GetAnalysesError |
     CreateAnalysis | CreateAnalysisSuccess | CreateAnalysisError |
@@ -305,4 +327,5 @@ export type All = GetAnalysis | GetAnalysisSuccess | GetAnalysisError |
     SearchAnalysisResults | SearchAnalysisResultsSuccess | SearchAnalysisResultsError | ClearAnalysisResults |
     StartListenAnalysisChanges | StopListenAnalysisChanges | AnalysisChangeReceived | ListeningAnalysisChangesError |
     StartListenAnalysisResults | StopListenAnalysisResults | AnalysisResultsReceived | ListeningAnalysisResultsError |
+    GetDocumentMeta | GetDocumentMetaSuccess | GetDocumentMetaError |
     GenericAnalysisError;

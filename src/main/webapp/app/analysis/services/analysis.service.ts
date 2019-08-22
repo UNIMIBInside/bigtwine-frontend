@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EMPTY, Observable, timer } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
-import { AnalysisStatus, IAnalysis, IPage, IResultsFilterQuery } from '../';
+import { AnalysisStatus, IAnalysis, IDocument, IPage, IResultsFilterQuery } from '../';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { map } from 'rxjs/operators';
 import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
@@ -25,6 +25,7 @@ export interface IAnalysisService {
     getAnalysisResults(analysisId: string, page: IPage): Observable<IPagedAnalysisResults>;
     searchAnalysisResults(analysisId: string, query: IResultsFilterQuery, page: IPage): Observable<IPagedAnalysisResults>;
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount>;
+    getDocumentById(documentId: string): Observable<IDocument>;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -104,6 +105,11 @@ export class AnalysisService implements IAnalysisService {
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount> {
         return this.http
             .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}/count`) as Observable<IAnalysisResultsCount>;
+    }
+
+    getDocumentById(documentId: string): Observable<IDocument> {
+        return this.http
+            .get(`${this.ANALYSIS_API}/documents/${documentId}`) as Observable<IDocument>;
     }
 
     private buildSearchQuery(query: IResultsFilterQuery): string {

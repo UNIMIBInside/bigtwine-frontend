@@ -1,8 +1,8 @@
 <btw-analysis-toolbar
     [showStartBtn]="showStartBtn"
     [showCancelBtn]="showCancelBtn">
-    <div class="space-center">
-        {{ currentAnalysis.input.documentId }}
+    <div class="space-center" *ngIf="currentAnalysis && currentAnalysis.input">
+        <btw-dataset-details [documentId]="datasetDocumentId"></btw-dataset-details>
     </div>
 </btw-analysis-toolbar>
 <btw-results-toolbar>

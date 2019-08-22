@@ -139,6 +139,18 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                 ...state,
                 resultsListeningAnalysisId: null
             };
+        case AnalysisActions.ActionTypes.GetDocumentMetaSuccess:
+            const doc = (action as AnalysisActions.GetDocumentMetaSuccess).document;
+            return {
+                ...clearLastError(state),
+                documents: {
+                    ...state.documents,
+                    byId: {
+                        ...state.documents.byId,
+                        [doc.documentId]: doc
+                    }
+                }
+            };
         case AnalysisActions.ActionTypes.ListeningAnalysisChangesError:
             return {
                 ...pushLastError(state, (action as AnalysisActions.GenericAnalysisError)),
@@ -158,6 +170,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
         case AnalysisActions.ActionTypes.CancelAnalysisError:
         case AnalysisActions.ActionTypes.SearchAnalysisResultsError:
         case AnalysisActions.ActionTypes.GetAnalysisResultsError:
+        case AnalysisActions.ActionTypes.GetDocumentMetaError:
         case AnalysisActions.ActionTypes.GenericAnalysisError:
             return pushLastError(state, (action as AnalysisActions.GenericAnalysisError));
         default:

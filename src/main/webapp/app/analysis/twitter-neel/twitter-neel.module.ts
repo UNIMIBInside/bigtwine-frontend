@@ -31,6 +31,7 @@ import { ResultsFilterService } from 'app/analysis/twitter-neel/services/results
 import { AnalysisToolbarComponent } from 'app/analysis/components/analysis-toolbar/analysis-toolbar.component';
 import { RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 import { ViewModeSwitcherComponent } from 'app/analysis/twitter-neel/components/view-mode-switcher/view-mode-switcher.component';
+import { DatasetDetailsComponent } from 'app/analysis/twitter-neel/components/dataset-details/dataset-details.component';
 
 @NgModule({
     imports: [
@@ -59,6 +60,7 @@ import { ViewModeSwitcherComponent } from 'app/analysis/twitter-neel/components/
         HighlightedTweetTextComponent,
         ResultsToolbarComponent,
         ViewModeSwitcherComponent,
+        DatasetDetailsComponent,
     ],
     providers: [
         {
