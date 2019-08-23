@@ -1,18 +1,20 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import {
-    AnalysisState, AnalysisStatus,
+    AnalysisState,
+    AnalysisStatus,
     CancelAnalysis,
     CompleteAnalysis,
-    CreateAnalysis,
     IAnalysis,
     selectCurrentAnalysis,
     StartAnalysis,
     StopAnalysis
 } from 'app/analysis';
-import { take, takeUntil } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AnalysisStatusHistoryComponent } from 'app/analysis/components/analysis-status-history/analysis-status-history.component';
 
 export enum AnalysisToolbarActionBtnType {
     Create = 'create',
@@ -68,7 +70,8 @@ export class AnalysisToolbarComponent implements OnInit, OnDestroy {
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected analysisStore: Store<AnalysisState>) { }
+        protected analysisStore: Store<AnalysisState>,
+        protected modal: NgbModal) { }
 
     ngOnInit() {
         this.currentAnalysis$ = this.analysisStore.pipe(select(selectCurrentAnalysis));
@@ -77,6 +80,12 @@ export class AnalysisToolbarComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.destroyed$.next(true);
         this.destroyed$.complete();
+    }
+
+    onStatusLabelClick() {
+        if (!this.modal.hasOpenModals()) {
+            this.modal.open(AnalysisStatusHistoryComponent);
+        }
     }
 
     createAnalysis() {

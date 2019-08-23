@@ -1,0 +1,9 @@
+<ul *ngIf="currentAnalysis && currentAnalysis.statusHistory">
+    <li *ngFor="let entry of currentAnalysis.statusHistory">
+        {{entry.oldStatus}} => {{entry.newStatus}}<br>
+        <ng-container *ngIf="entry.message">
+            {{entry.message}}<br>
+        </ng-container>
+        {{entry.user ? entry.user.username : 'system'}} - {{entry.date}}
+    </li>
+</ul>

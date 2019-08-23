@@ -19,7 +19,12 @@
                     <ng-content select=".space-right"></ng-content>
                 </div>
                 <div class="col-auto">
-                    <span *ngIf="currentAnalysis" [ngClass]="currentAnalysisStatusLabelClasses">{{ currentAnalysis.status }}</span>
+                    <a [routerLink]=""
+                       *ngIf="currentAnalysis"
+                       [ngClass]="currentAnalysisStatusLabelClasses"
+                       (click)="$event.preventDefault(); onStatusLabelClick()">
+                        {{ currentAnalysis.status }}
+                    </a>
                 </div>
                 <div class="col-auto">SET.</div>
             </div>
