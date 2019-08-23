@@ -15,7 +15,7 @@ import {
     AnalysisEffects,
     rxStompConfigFactory,
 } from './';
-import { AnalysisHomeComponent } from 'app/analysis/components';
+import { AnalysisHomeComponent, AnalysisNotFoundComponent } from 'app/analysis/components';
 
 @NgModule({
     imports: [
@@ -26,6 +26,7 @@ import { AnalysisHomeComponent } from 'app/analysis/components';
     ],
     declarations: [
         AnalysisHomeComponent,
+        AnalysisNotFoundComponent,
     ],
     providers: [
         {
