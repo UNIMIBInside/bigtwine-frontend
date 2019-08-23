@@ -49,7 +49,7 @@ export class MockAnalysisService implements IAnalysisService {
                 joinOperator: 'all',
             } as IAnalysisInput,
             type: AnalysisType.TwitterNeel,
-            owner: 'user-1',
+            owner: {uid: 'user-1', username: 'user-1'},
         };
 
         this.analysisDb.set(analysis.id, analysis);
@@ -182,7 +182,7 @@ export class MockAnalysisService implements IAnalysisService {
             size: Math.ceil(Math.random() * 100000000),
             contentType: 'text/csv',
             uploadDate: new Date(),
-            user: 'user-1',
+            user: {uid: 'user-1', username: 'user-1'},
         }).pipe(delay(this.rms));
     }
 
