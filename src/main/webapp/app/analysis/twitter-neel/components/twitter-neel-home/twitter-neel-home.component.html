@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-12 text-right">
+        <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-primary" id="dropdownBasic2" ngbDropdownToggle>New</button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+                <div ngbDropdownItem>
+                    <a [routerLink]="'query/new'">Query</a>
+                </div>
+                <div ngbDropdownItem>
+                    <a [routerLink]="'dataset/new'">Dataset</a>
+                </div>
+                <div ngbDropdownItem>
+                    <a [routerLink]="'coordinates/new'">Coordinates</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<btw-analysis-list analysisType="twitter-neel"></btw-analysis-list>

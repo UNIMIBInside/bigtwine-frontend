@@ -13,7 +13,6 @@ import {
     twitterNeelState,
     TwitterNeelReducer,
     TwitterNeelEffects,
-    AnalysisListComponent,
     DatasetUploadComponent,
     DatasetViewComponent,
     ListResultsViewerComponent,
@@ -33,6 +32,8 @@ import { RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.ser
 import { ViewModeSwitcherComponent } from 'app/analysis/twitter-neel/components/view-mode-switcher/view-mode-switcher.component';
 import { DatasetDetailsComponent } from 'app/analysis/twitter-neel/components/dataset-details/dataset-details.component';
 import { AnalysisStatusHistoryComponent } from 'app/analysis/components/analysis-status-history/analysis-status-history.component';
+import { AnalysisListComponent } from 'app/analysis/components';
+import { TwitterNeelHomeComponent } from 'app/analysis/twitter-neel/components/twitter-neel-home/twitter-neel-home.component';
 
 @NgModule({
     imports: [
@@ -47,9 +48,10 @@ import { AnalysisStatusHistoryComponent } from 'app/analysis/components/analysis
         NgxUploadModule.forRoot()
     ],
     declarations: [
-        AnalysisListComponent,
+        TwitterNeelHomeComponent,
         AnalysisToolbarComponent,
         AnalysisStatusHistoryComponent,
+        AnalysisListComponent,
         DatasetUploadComponent,
         DatasetViewComponent,
         ListResultsViewerComponent,

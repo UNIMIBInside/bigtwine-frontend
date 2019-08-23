@@ -9,5 +9,5 @@ export * from './neel-processed-tweet/neel-processed-tweet.component';
 export * from './neel-processed-tweet-large/neel-processed-tweet-large.component';
 export * from './highlighted-tweet-text/highlighted-tweet-text.component';
 export * from '../../components/results-toolbar/results-toolbar.component';
-export * from './analysis-list/analysis-list.component';
+export * from './twitter-neel-home/twitter-neel-home.component';
 // export * from './results-viewer.component';
