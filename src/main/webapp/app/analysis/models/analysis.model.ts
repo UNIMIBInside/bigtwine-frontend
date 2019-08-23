@@ -1,3 +1,5 @@
+import { IUser } from 'app/analysis/models/user.model';
+
 export enum AnalysisStatus {
     Ready = 'ready',
     Stopped = 'stopped',
@@ -29,11 +31,21 @@ export interface IDatasetAnalysisInput extends IAnalysisInput {
     documentId: string;
 }
 
+export interface IAnalysisStatusHistory {
+    newStatus: AnalysisStatus;
+    oldStatus: AnalysisStatus;
+    user: IUser;
+    errorCode: number;
+    message: string;
+    date: Date;
+}
+
 export interface IAnalysis {
     id?: string;
     type?: string;
-    owner?: string;
+    owner?: IUser;
     status?: string;
+    statusHistory?: IAnalysisStatusHistory[];
     input?: IAnalysisInput;
     progress?: number;
 }
@@ -41,7 +53,7 @@ export interface IAnalysis {
 export class Analysis implements IAnalysis {
     id: string;
     input: IAnalysisInput;
-    owner: string;
+    owner: IUser;
     status: string;
     type: string;
 }

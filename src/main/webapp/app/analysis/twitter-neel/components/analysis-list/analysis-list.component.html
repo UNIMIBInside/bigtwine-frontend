@@ -34,7 +34,7 @@
         <tr *ngFor="let analysis of analyses$ | async">
             <td>{{analysis.input.type}}</td>
             <td>{{analysis.input | json}}</td>
-            <td>{{analysis.owner}}</td>
+            <td>{{analysis.owner.username}}</td>
             <td>{{analysis.status}}</td>
             <td><a class="btn btn-outline-primary btn-sm" [routerLink]="analysis.input.type + '/view/' + analysis.id">View</a></td>
         </tr>

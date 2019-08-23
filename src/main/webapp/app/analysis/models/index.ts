@@ -9,3 +9,4 @@ export * from './page.model';
 export * from './page-details.model';
 export * from './results-filter-query.model';
 export * from './document.model';
+export * from './user.model';
