@@ -5,11 +5,13 @@
             *ngIf="option.optionType === 'text'"
             [option]="option"
             [value]="userSettings.getOptionValue(groupKey, option.key)"
+            [disabled]="isOptionDisabled(groupKey, option.key)"
             (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-text-option>
         <btw-number-option
             *ngIf="option.optionType === 'number'"
             [option]="option"
             [value]="userSettings.getOptionValue(groupKey, option.key)"
+            [disabled]="isOptionDisabled(groupKey, option.key)"
             [minValue]="option.minValue"
             [maxValue]="option.maxValue"
             [step]="option.step"
@@ -17,14 +19,18 @@
         <btw-choices-option
             *ngIf="option.optionType === 'choices'"
             [option]="option"
+            [disabled]="isOptionDisabled(groupKey, option.key)"
             [value]="userSettings.getOptionValue(groupKey, option.key)"
             (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-choices-option>
         <btw-boolean-option
             *ngIf="option.optionType === 'boolean'"
             [option]="option"
+            [disabled]="isOptionDisabled(groupKey, option.key)"
             [value]="userSettings.getOptionValue(groupKey, option.key)"
             (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-boolean-option>
     </div>
 
-    <button (click)="userSettings.saveChanges(groupKey)">Apply</button>
+    <button
+        [disabled]="isOptionsGroupDisabled(groupKey)"
+        (click)="userSettings.saveChanges(groupKey)">Apply</button>
 </div>

@@ -3,6 +3,7 @@
         <button
             type="button"
             class="btn btn-secondary btn-sm"
+            [disabled]="disabled"
             (click)="onMinusBtnClick()">-</button>
     </div>
     <input
@@ -15,6 +16,7 @@
         <button
             type="button"
             class="btn btn-secondary btn-sm"
+            [disabled]="disabled"
             (click)="onPlusBtnClick()">+</button>
     </div>
 </div>

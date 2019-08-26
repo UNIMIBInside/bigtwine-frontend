@@ -8,6 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class StepperComponent {
     @Input() value = 0;
     @Output() valueChange = new EventEmitter<number>();
+    @Input() disabled = false;
     @Input() step = 1;
     @Input() minValue = Number.MIN_VALUE;
     @Input() maxValue = Number.MAX_VALUE;
