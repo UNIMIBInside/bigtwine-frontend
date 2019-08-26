@@ -1,7 +1,7 @@
 import { OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, ReplaySubject } from 'rxjs';
-import { first, take, takeUntil } from 'rxjs/operators';
+import { first, last, take, takeUntil } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import {
     ActionTypes,
@@ -22,12 +22,14 @@ import {
     StopListenAnalysisResults,
     IPaginationInfo
 } from 'app/analysis';
+import { UserSettingsService } from 'app/analysis/services/user-settings.service';
 
 export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
     protected destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
     currentAnalysis$: Observable<IAnalysis>;
     lastError$: Observable<any>;
+    lastAnalysisId: string = null;
 
     get currentAnalysis(): IAnalysis {
         let currentAnalysis: IAnalysis = null;
@@ -77,7 +79,8 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
     protected constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected analysisStore: Store<AnalysisState>
+        protected analysisStore: Store<AnalysisState>,
+        protected userSettings: UserSettingsService
     ) { }
 
     ngOnDestroy(): void {
@@ -136,11 +139,23 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
             if (analysis.status === AnalysisStatus.Completed && !this.paginationInfo.enabled) {
                 this.fetchFirstResultsPage();
             }
+
+            if (this.lastAnalysisId !== analysis.id) {
+                this.lastAnalysisId = analysis.id;
+                this.onCurrentAnalysisIdChange(this.lastAnalysisId);
+            }
         } else {
             this.stopListenAnalysisChanges();
             this.stopListenAnalysisResults();
+
+            if (this.lastAnalysisId !== null) {
+                this.lastAnalysisId = null;
+                this.onCurrentAnalysisIdChange(null);
+            }
         }
     }
+
+    onCurrentAnalysisIdChange(analysisId: string) {}
 
     handleAnalysisNotFound() {
         this.router

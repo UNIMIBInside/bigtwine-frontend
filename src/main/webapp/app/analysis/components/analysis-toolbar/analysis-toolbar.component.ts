@@ -15,6 +15,7 @@ import { select, Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AnalysisStatusHistoryComponent } from 'app/analysis/components/analysis-status-history/analysis-status-history.component';
+import { AnalysisSettingsComponent } from 'app/analysis/components';
 
 export enum AnalysisToolbarActionBtnType {
     Create = 'create',
@@ -85,6 +86,12 @@ export class AnalysisToolbarComponent implements OnInit, OnDestroy {
     onStatusLabelClick() {
         if (!this.modal.hasOpenModals()) {
             this.modal.open(AnalysisStatusHistoryComponent);
+        }
+    }
+
+    openSettings() {
+        if (!this.modal.hasOpenModals()) {
+            this.modal.open(AnalysisSettingsComponent);
         }
     }
 

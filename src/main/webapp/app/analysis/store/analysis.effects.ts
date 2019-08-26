@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AnalysisService } from 'app/analysis/services/analysis.service';
 import { of, Observable } from 'rxjs';
-import { bufferTime, catchError, filter, map, mergeMap, takeUntil } from 'rxjs/operators';
-import { Action } from '@ngrx/store';
+import { bufferTime, catchError, filter, map, mergeMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { Action, Store } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
 import * as AnalysisActions from './analysis.action';
+import { LocalStorageService } from 'ngx-webstorage';
+import { UserSettingsService } from 'app/analysis/services/user-settings.service';
+import { AnalysisState, IAnalysis, selectCurrentAnalysis } from 'app/analysis';
 
 @Injectable({providedIn: 'root'})
 export class AnalysisEffects {
@@ -158,5 +161,41 @@ export class AnalysisEffects {
             ))
     );
 
-    constructor(private analysisService: AnalysisService, private action$: Actions) {}
+    @Effect()
+    saveAnalysisUserSettings$: Observable<Action> = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.SaveUserSettings),
+        filter((action: AnalysisActions.SaveUserSettings) => action.group === this.userSettingsService.ANALYSIS_OPTIONS_GROUP_KEY),
+        withLatestFrom(this.store$.select(selectCurrentAnalysis)),
+        filter(([, currentAnalysis]: [AnalysisActions.SaveUserSettings, IAnalysis]) =>
+            (currentAnalysis != null && currentAnalysis.id != null)),
+        map(([action, currentAnalysis]: [AnalysisActions.SaveUserSettings, IAnalysis]) =>
+            new AnalysisActions.UpdateAnalysis(currentAnalysis.id, {userSettings: action.values})),
+    );
+
+    @Effect()
+    saveGlobalUserSettings$: Observable<Action> = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.SaveUserSettings),
+        filter((action: AnalysisActions.SaveUserSettings) => action.group === this.userSettingsService.GLOBAL_OPTIONS_GROUP_KEY),
+        map((action: AnalysisActions.SaveUserSettings) => {
+            this.storageService.store('appPrefs', action.values);
+            return new AnalysisActions.ApplyUserSettings(action.group, action.values);
+        }),
+    );
+
+    @Effect()
+    restoreGlobalUserSettings$: Observable<Action> = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.RestoreUserSettings),
+        map(() => {
+            const prefs = this.storageService.retrieve('appPrefs');
+            this.userSettingsService.setGroupValues(this.userSettingsService.GLOBAL_OPTIONS_GROUP_KEY, prefs);
+            return new AnalysisActions.ApplyUserSettings(this.userSettingsService.GLOBAL_OPTIONS_GROUP_KEY, prefs);
+        }),
+    );
+
+    constructor(
+        private analysisService: AnalysisService,
+        private action$: Actions,
+        private store$: Store<AnalysisState>,
+        private storageService: LocalStorageService,
+        private userSettingsService: UserSettingsService) {}
 }

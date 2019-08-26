@@ -15,7 +15,17 @@ import {
     AnalysisEffects,
     rxStompConfigFactory,
 } from './';
-import { AnalysisHomeComponent, AnalysisNotFoundComponent } from 'app/analysis/components';
+import {
+    AnalysisHomeComponent,
+    AnalysisNotFoundComponent,
+    AnalysisSettingsComponent,
+    ChoicesOptionComponent,
+    NumberOptionComponent,
+    TextOptionComponent,
+    BooleanOptionComponent,
+    OptionWrapperComponent,
+    StepperComponent,
+} from 'app/analysis/components';
 
 @NgModule({
     imports: [
@@ -27,6 +37,16 @@ import { AnalysisHomeComponent, AnalysisNotFoundComponent } from 'app/analysis/c
     declarations: [
         AnalysisHomeComponent,
         AnalysisNotFoundComponent,
+        AnalysisSettingsComponent,
+        ChoicesOptionComponent,
+        NumberOptionComponent,
+        TextOptionComponent,
+        BooleanOptionComponent,
+        OptionWrapperComponent,
+        StepperComponent,
+    ],
+    entryComponents: [
+        AnalysisSettingsComponent,
     ],
     providers: [
         {
@@ -39,10 +59,10 @@ import { AnalysisHomeComponent, AnalysisNotFoundComponent } from 'app/analysis/c
             useFactory: rxStompServiceFactory,
             deps: [InjectableRxStompConfig]
         },
-        /*{
+        {
             provide: AnalysisService,
             useClass: MockAnalysisService
-        },*/
+        },
     ]
 })
 export class BigtwineAnalysisModule { }

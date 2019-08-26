@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AnalysisState, CreateAnalysis } from 'app/analysis/store';
 import { AnalysisToolbarActionBtnType, StreamAnalysisViewComponent } from 'app/analysis/components';
 import { AnalysisInputType, AnalysisType, IAnalysis, IQueryAnalysisInput } from 'app/analysis';
+import { UserSettingsService } from 'app/analysis/services/user-settings.service';
+import { STREAM_ANALYSIS_OPTIONS } from 'app/analysis/twitter-neel/configs';
 
 @Component({
   selector: 'btw-query-view',
@@ -25,14 +27,23 @@ export class QueryViewComponent extends StreamAnalysisViewComponent {
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected analysisStore: Store<AnalysisState>
+        protected analysisStore: Store<AnalysisState>,
+        protected userSettings: UserSettingsService
     ) {
-        super(router, route, analysisStore);
+        super(router, route, analysisStore, userSettings);
     }
 
     onToolbarActionBtnClick(btn: AnalysisToolbarActionBtnType) {
         if (btn === AnalysisToolbarActionBtnType.Create) {
             this.createAnalysis();
+        }
+    }
+
+    onCurrentAnalysisIdChange(analysisId: string) {
+        super.onCurrentAnalysisIdChange(analysisId);
+
+        if (analysisId) {
+            this.userSettings.registerAnalysisOptions(STREAM_ANALYSIS_OPTIONS, this.currentAnalysis.userSettings);
         }
     }
 

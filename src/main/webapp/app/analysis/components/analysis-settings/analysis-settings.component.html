@@ -1,0 +1,30 @@
+<div *ngFor="let groupKey of userSettings.registeredGroups">
+    <h2>{{groupKey}}</h2>
+    <div *ngFor="let option of userSettings.getOptions(groupKey)">
+        <btw-text-option
+            *ngIf="option.optionType === 'text'"
+            [option]="option"
+            [value]="userSettings.getOptionValue(groupKey, option.key)"
+            (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-text-option>
+        <btw-number-option
+            *ngIf="option.optionType === 'number'"
+            [option]="option"
+            [value]="userSettings.getOptionValue(groupKey, option.key)"
+            [minValue]="option.minValue"
+            [maxValue]="option.maxValue"
+            [step]="option.step"
+            (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-number-option>
+        <btw-choices-option
+            *ngIf="option.optionType === 'choices'"
+            [option]="option"
+            [value]="userSettings.getOptionValue(groupKey, option.key)"
+            (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-choices-option>
+        <btw-boolean-option
+            *ngIf="option.optionType === 'boolean'"
+            [option]="option"
+            [value]="userSettings.getOptionValue(groupKey, option.key)"
+            (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-boolean-option>
+    </div>
+
+    <button (click)="userSettings.saveChanges(groupKey)">Apply</button>
+</div>

@@ -46,6 +46,9 @@ export enum ActionTypes {
     GetDocumentMeta = '[Analysis] GET_DOCUMENT_META',
     GetDocumentMetaSuccess = '[Analysis] GET_DOCUMENT_META_SUCCESS',
     GetDocumentMetaError = '[Analysis] GET_DOCUMENT_META_ERROR',
+    SaveUserSettings = '[Analysis] SAVE_USER_SETTINGS',
+    ApplyUserSettings = '[Analysis] APPLY_USER_SETTINGS',
+    RestoreUserSettings = '[Analysis] RESTORE_USER_SETTINGS',
     GenericAnalysisError = '[Analysis] GENERIC_ANALYSIS_ERROR',
 }
 
@@ -315,6 +318,24 @@ export class GetDocumentMetaError extends GenericAnalysisError {
     }
 }
 
+export class SaveUserSettings implements Action {
+    readonly type = ActionTypes.SaveUserSettings;
+
+    constructor(readonly group: string, readonly values: {[name: string]: any}) {}
+}
+
+export class ApplyUserSettings implements Action {
+    readonly type = ActionTypes.ApplyUserSettings;
+
+    constructor(readonly group: string, readonly values: {[name: string]: any}) {}
+}
+
+export class RestoreUserSettings implements Action {
+    readonly type = ActionTypes.RestoreUserSettings;
+
+    constructor() {}
+}
+
 export type All = GetAnalysis | GetAnalysisSuccess | GetAnalysisError |
     GetAnalyses | GetAnalysesSuccess | GetAnalysesError |
     CreateAnalysis | CreateAnalysisSuccess | CreateAnalysisError |
@@ -328,4 +349,5 @@ export type All = GetAnalysis | GetAnalysisSuccess | GetAnalysisError |
     StartListenAnalysisChanges | StopListenAnalysisChanges | AnalysisChangeReceived | ListeningAnalysisChangesError |
     StartListenAnalysisResults | StopListenAnalysisResults | AnalysisResultsReceived | ListeningAnalysisResultsError |
     GetDocumentMeta | GetDocumentMetaSuccess | GetDocumentMetaError |
+    SaveUserSettings | ApplyUserSettings | RestoreUserSettings |
     GenericAnalysisError;

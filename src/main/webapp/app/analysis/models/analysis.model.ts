@@ -48,6 +48,7 @@ export interface IAnalysis {
     statusHistory?: IAnalysisStatusHistory[];
     input?: IAnalysisInput;
     progress?: number;
+    userSettings?: {[name: string]: any};
 }
 
 export class Analysis implements IAnalysis {
@@ -56,4 +57,5 @@ export class Analysis implements IAnalysis {
     owner: IUser;
     status: string;
     type: string;
+    userSettings: {[name: string]: any};
 }

@@ -151,6 +151,27 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                     }
                 }
             };
+        case AnalysisActions.ActionTypes.ApplyUserSettings:
+            const values = (action as AnalysisActions.ApplyUserSettings).values;
+            if (values && values['pageSize']) {
+                const pageSize = values['pageSize'];
+                return {
+                    ...state,
+                    resultsPagination: {
+                        ...state.resultsPagination,
+                        pageSize,
+                    },
+                    resultsFilters: {
+                        ...state.resultsFilters,
+                        pagination: {
+                            ...state.resultsFilters.pagination,
+                            pageSize,
+                        }
+                    }
+                };
+            } else {
+                return state;
+            }
         case AnalysisActions.ActionTypes.ListeningAnalysisChangesError:
             return {
                 ...pushLastError(state, (action as AnalysisActions.GenericAnalysisError)),
