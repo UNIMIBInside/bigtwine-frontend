@@ -1,5 +1,6 @@
 import { initAnalysisState, AnalysisState } from './analysis.state';
 import * as AnalysisActions from './analysis.action';
+import { ExportAnalysisResultsSuccess } from './analysis.action';
 
 export const initialState: AnalysisState = initAnalysisState();
 
@@ -172,6 +173,14 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
             } else {
                 return state;
             }
+        case AnalysisActions.ActionTypes.ExportAnalysisResultsSuccess:
+            return {
+                ...state,
+                currentAnalysis: {
+                    ...state.currentAnalysis,
+                    export: (action as AnalysisActions.ExportAnalysisResultsSuccess).analysisExport
+                }
+            };
         case AnalysisActions.ActionTypes.ListeningAnalysisChangesError:
             return {
                 ...pushLastError(state, (action as AnalysisActions.GenericAnalysisError)),
@@ -192,6 +201,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
         case AnalysisActions.ActionTypes.SearchAnalysisResultsError:
         case AnalysisActions.ActionTypes.GetAnalysisResultsError:
         case AnalysisActions.ActionTypes.GetDocumentMetaError:
+        case AnalysisActions.ActionTypes.ExportAnalysisResultsError:
         case AnalysisActions.ActionTypes.GenericAnalysisError:
             return pushLastError(state, (action as AnalysisActions.GenericAnalysisError));
         default:

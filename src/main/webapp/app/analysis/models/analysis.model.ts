@@ -40,6 +40,14 @@ export interface IAnalysisStatusHistory {
     date: Date;
 }
 
+export interface IAnalysisExport {
+    documentId: string;
+    progress: number;
+    completed: boolean;
+    failed: boolean;
+    message: string;
+}
+
 export interface IAnalysis {
     id?: string;
     type?: string;
@@ -49,6 +57,7 @@ export interface IAnalysis {
     input?: IAnalysisInput;
     progress?: number;
     userSettings?: {[name: string]: any};
+    export?: IAnalysisExport;
 }
 
 export class Analysis implements IAnalysis {
@@ -58,4 +67,5 @@ export class Analysis implements IAnalysis {
     status: string;
     type: string;
     userSettings: {[name: string]: any};
+    export: IAnalysisExport;
 }

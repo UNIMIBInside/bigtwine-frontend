@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import { IAnalysis, IPage, IPageDetails, IResultsFilterQuery } from 'app/analysis';
+import { IAnalysis, IAnalysisExport, IPage, IPageDetails, IResultsFilterQuery } from 'app/analysis';
 import { IAnalysisResult } from 'app/analysis/models/analysis-result.model';
 import { IDocument } from 'app/analysis/models/document.model';
 
@@ -49,6 +49,9 @@ export enum ActionTypes {
     SaveUserSettings = '[Analysis] SAVE_USER_SETTINGS',
     ApplyUserSettings = '[Analysis] APPLY_USER_SETTINGS',
     RestoreUserSettings = '[Analysis] RESTORE_USER_SETTINGS',
+    ExportAnalysisResults = '[Analysis] EXPORT_ANALYSIS_RESULTS',
+    ExportAnalysisResultsSuccess = '[Analysis] EXPORT_ANALYSIS_RESULTS_SUCCESS',
+    ExportAnalysisResultsError = '[Analysis] EXPORT_ANALYSIS_RESULTS_ERROR',
     GenericAnalysisError = '[Analysis] GENERIC_ANALYSIS_ERROR',
 }
 
@@ -336,6 +339,24 @@ export class RestoreUserSettings implements Action {
     constructor() {}
 }
 
+export class ExportAnalysisResults implements Action {
+    readonly type = ActionTypes.ExportAnalysisResults;
+
+    constructor(readonly analysisId: string) {}
+}
+
+export class ExportAnalysisResultsSuccess implements Action {
+    readonly type = ActionTypes.ExportAnalysisResultsSuccess;
+
+    constructor(readonly analysisExport: IAnalysisExport) {}
+}
+
+export class ExportAnalysisResultsError extends GenericAnalysisError {
+    constructor(readonly error: any) {
+        super(ActionTypes.ExportAnalysisResultsError, error);
+    }
+}
+
 export type All = GetAnalysis | GetAnalysisSuccess | GetAnalysisError |
     GetAnalyses | GetAnalysesSuccess | GetAnalysesError |
     CreateAnalysis | CreateAnalysisSuccess | CreateAnalysisError |
@@ -350,4 +371,5 @@ export type All = GetAnalysis | GetAnalysisSuccess | GetAnalysisError |
     StartListenAnalysisResults | StopListenAnalysisResults | AnalysisResultsReceived | ListeningAnalysisResultsError |
     GetDocumentMeta | GetDocumentMetaSuccess | GetDocumentMetaError |
     SaveUserSettings | ApplyUserSettings | RestoreUserSettings |
+    ExportAnalysisResults | ExportAnalysisResultsSuccess | ExportAnalysisResultsError |
     GenericAnalysisError;

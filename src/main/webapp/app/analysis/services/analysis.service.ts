@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { EMPTY, Observable, timer } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
-import { AnalysisStatus, IAnalysis, IDocument, IPage, IResultsFilterQuery } from '../';
+import { AnalysisStatus, IAnalysis, IAnalysisExport, IDocument, IPage, IResultsFilterQuery } from '../';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { map } from 'rxjs/operators';
 import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
@@ -25,6 +25,7 @@ export interface IAnalysisService {
     getAnalysisResults(analysisId: string, page: IPage): Observable<IPagedAnalysisResults>;
     searchAnalysisResults(analysisId: string, query: IResultsFilterQuery, page: IPage): Observable<IPagedAnalysisResults>;
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount>;
+    exportAnalysisResults(analysisId: string): Observable<IAnalysisExport>;
     getDocumentById(documentId: string): Observable<IDocument>;
 }
 
@@ -105,6 +106,11 @@ export class AnalysisService implements IAnalysisService {
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount> {
         return this.http
             .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}/count`) as Observable<IAnalysisResultsCount>;
+    }
+
+    exportAnalysisResults(analysisId: string): Observable<IAnalysisExport> {
+        return this.http
+            .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}/export`) as Observable<IAnalysisExport>;
     }
 
     getDocumentById(documentId: string): Observable<IDocument> {

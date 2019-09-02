@@ -3,7 +3,7 @@ import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { Observable, ReplaySubject } from 'rxjs';
 import {
     AnalysisState,
-    AnalysisStatus,
+    AnalysisStatus, ExportAnalysisResults,
     GetAnalysisResults,
     IAnalysis,
     IPaginationInfo,
@@ -84,6 +84,19 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         return this.pagination !== null;
     }
 
+    get canExport(): boolean {
+        return true;
+    }
+
+    get shouldShowExportBtn(): boolean {
+        const acceptedStatuses = new Set<string>([
+            AnalysisStatus.Failed,
+            AnalysisStatus.Completed,
+            AnalysisStatus.Cancelled,
+        ]);
+        return this.currentAnalysis && acceptedStatuses.has(this.currentAnalysis.status);
+    }
+
     constructor(
         private analysisStore: Store<AnalysisState>,
         @Inject(RESULTS_FILTER_SERVICE) private resultsFilterService: IResultsFilterService) {}
@@ -139,6 +152,11 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         } else if (this.resultsPagination.enabled) {
             this.fetchPage(page);
         }
+    }
+
+    onExportBtnClick() {
+        const action: Action = new ExportAnalysisResults(this.currentAnalysis.id);
+        this.analysisStore.dispatch(action);
     }
 
     performLiveSearch() {

@@ -36,6 +36,23 @@
         </div>
     </div>
     <div class="col text-right">
+        <ng-container *ngIf="shouldShowExportBtn">
+            <button
+                *ngIf="!currentAnalysis.export; else analysisExport"
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                [disabled]="!canExport"
+                (click)="onExportBtnClick()">Export</button>
+
+            <ng-template #analysisExport>
+                <span *ngIf="!(currentAnalysis.export.completed || currentAnalysis.export.failed)">
+                    {{ (currentAnalysis.export.progress * 100) | number:'1.0-0'}}%
+                </span>
+                <a href="" *ngIf="currentAnalysis.export.completed">Download results</a>
+                <span *ngIf="currentAnalysis.export.failed">Export failed</span>
+            </ng-template>
+        </ng-container>
+
         <ng-content select=".space-right"></ng-content>
     </div>
 </div>

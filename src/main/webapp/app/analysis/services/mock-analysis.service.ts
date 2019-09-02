@@ -1,4 +1,4 @@
-import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IAnalysisInput, IDocument, IPage, IResultsFilterQuery } from 'app/analysis';
+import { AnalysisInputType, AnalysisStatus, AnalysisType, IAnalysis, IAnalysisExport, IAnalysisInput, IDocument, IPage, IResultsFilterQuery } from 'app/analysis';
 import { interval, Observable, of, Subject, throwError } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
 import { ILinkedEntity } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
@@ -171,6 +171,17 @@ export class MockAnalysisService implements IAnalysisService {
             analysisId,
             count: Math.round(Math.random() * 1000),
             timestamp: (new Date()).toISOString()
+        };
+        return of(response).pipe(delay(this.rms));
+    }
+
+    exportAnalysisResults(analysisId: string): Observable<IAnalysisExport> {
+        const response: IAnalysisExport = {
+            documentId: this.uuidv4(),
+            progress: 0.5,
+            completed: false,
+            failed: false,
+            message: null
         };
         return of(response).pipe(delay(this.rms));
     }

@@ -152,6 +152,16 @@ export class AnalysisEffects {
     );
 
     @Effect()
+    exportAnalysisResults$: Observable<Action> = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.ExportAnalysisResults),
+        mergeMap((action: AnalysisActions.ExportAnalysisResults) => this.analysisService.exportAnalysisResults(action.analysisId)
+            .pipe(
+                map(response => new AnalysisActions.ExportAnalysisResultsSuccess(response)),
+                catchError(e => of(new AnalysisActions.ExportAnalysisResultsError(e)))
+            ))
+    );
+
+    @Effect()
     getDocument$: Observable<Action> = this.action$.pipe(
         ofType(AnalysisActions.ActionTypes.GetDocumentMeta),
         mergeMap((action: AnalysisActions.GetDocumentMeta) => this.analysisService.getDocumentById(action.documentId)
