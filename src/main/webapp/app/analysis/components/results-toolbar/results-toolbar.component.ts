@@ -16,6 +16,7 @@ import { select, Store, Action } from '@ngrx/store';
 import { FormControl } from '@angular/forms';
 import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
+import { AnalysisService } from 'app/analysis/services/analysis.service';
 
 @Component({
     selector: 'btw-results-toolbar',
@@ -97,9 +98,15 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         return this.currentAnalysis && acceptedStatuses.has(this.currentAnalysis.status);
     }
 
+    get exportLink(): string {
+        return this.analysisService
+            .getDocumentDownloadLink(this.currentAnalysis.export.documentId);
+    }
+
     constructor(
         private analysisStore: Store<AnalysisState>,
-        @Inject(RESULTS_FILTER_SERVICE) private resultsFilterService: IResultsFilterService) {}
+        @Inject(RESULTS_FILTER_SERVICE) private resultsFilterService: IResultsFilterService,
+        private analysisService: AnalysisService) {}
 
     ngOnInit(): void {
         this.currentAnalysis$ = this.analysisStore.pipe(select(selectCurrentAnalysis));

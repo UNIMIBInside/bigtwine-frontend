@@ -10,6 +10,7 @@ import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-result
 import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-count.model';
 import { IPagedAnalyses } from 'app/analysis/models/paged-analyses.model';
 import { Message } from 'webstomp-client';
+import { AuthServerProvider } from 'app/core';
 
 export interface IAnalysisService {
     createAnalysis(analysis: IAnalysis): Observable<IAnalysis>;
@@ -27,6 +28,7 @@ export interface IAnalysisService {
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount>;
     exportAnalysisResults(analysisId: string): Observable<IAnalysisExport>;
     getDocumentById(documentId: string): Observable<IDocument>;
+    getDocumentDownloadLink(documentId: string): string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -36,7 +38,8 @@ export class AnalysisService implements IAnalysisService {
 
     constructor(
         private http: HttpClient,
-        private stompService: RxStompService
+        private stompService: RxStompService,
+        private authService: AuthServerProvider
     ) {}
 
     createAnalysis(analysis: IAnalysis): Observable<IAnalysis> {
@@ -116,6 +119,15 @@ export class AnalysisService implements IAnalysisService {
     getDocumentById(documentId: string): Observable<IDocument> {
         return this.http
             .get(`${this.ANALYSIS_API}/documents/${documentId}`) as Observable<IDocument>;
+    }
+
+    getDocumentDownloadLink(documentId: string): string {
+        const jwt = this.authService.getToken();
+        if (!jwt) {
+            return null;
+        }
+
+        return `${this.ANALYSIS_API}/documents/${documentId}/download?access_token=${jwt}`;
     }
 
     private buildSearchQuery(query: IResultsFilterQuery): string {

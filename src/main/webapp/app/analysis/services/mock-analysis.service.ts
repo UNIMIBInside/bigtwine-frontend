@@ -197,6 +197,10 @@ export class MockAnalysisService implements IAnalysisService {
         }).pipe(delay(this.rms));
     }
 
+    getDocumentDownloadLink(documentId: string): string {
+        return `/documents/${documentId}/download?access_token=jwt`;
+    }
+
     private tweetText(len: number) {
         const s = Math.floor(Math.random() * (this.lorem.length - len));
         return this.lorem.substr(s, len).replace(/\n/g, ' ');

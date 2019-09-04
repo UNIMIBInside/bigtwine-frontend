@@ -48,7 +48,7 @@
                 <span *ngIf="!(currentAnalysis.export.completed || currentAnalysis.export.failed)">
                     {{ (currentAnalysis.export.progress * 100) | number:'1.0-0'}}%
                 </span>
-                <a href="" *ngIf="currentAnalysis.export.completed">Download results</a>
+                <a *ngIf="currentAnalysis.export.completed" [href]="exportLink" target="_blank">Download results</a>
                 <span *ngIf="currentAnalysis.export.failed">Export failed</span>
             </ng-template>
         </ng-container>
