@@ -179,7 +179,7 @@ export class AnalysisEffects {
         filter(([, currentAnalysis]: [AnalysisActions.SaveUserSettings, IAnalysis]) =>
             (currentAnalysis != null && currentAnalysis.id != null)),
         map(([action, currentAnalysis]: [AnalysisActions.SaveUserSettings, IAnalysis]) =>
-            new AnalysisActions.UpdateAnalysis(currentAnalysis.id, {userSettings: action.values})),
+            new AnalysisActions.UpdateAnalysis(currentAnalysis.id, {settings: action.values})),
     );
 
     @Effect()

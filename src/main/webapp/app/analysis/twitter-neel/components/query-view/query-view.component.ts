@@ -43,7 +43,7 @@ export class QueryViewComponent extends StreamAnalysisViewComponent {
         super.onCurrentAnalysisIdChange(analysisId);
 
         if (analysisId) {
-            this.userSettings.registerAnalysisOptions(STREAM_ANALYSIS_OPTIONS, this.currentAnalysis.userSettings);
+            this.userSettings.registerAnalysisOptions(STREAM_ANALYSIS_OPTIONS, this.currentAnalysis.settings);
         }
     }
 

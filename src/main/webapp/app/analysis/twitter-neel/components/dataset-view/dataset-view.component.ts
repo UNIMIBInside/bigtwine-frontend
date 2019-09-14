@@ -30,7 +30,7 @@ export class DatasetViewComponent extends BoundedAnalysisViewComponent {
         super.onCurrentAnalysisIdChange(analysisId);
 
         if (analysisId) {
-            this.userSettings.registerAnalysisOptions(DATASET_ANALYSIS_OPTIONS, this.currentAnalysis.userSettings);
+            this.userSettings.registerAnalysisOptions(DATASET_ANALYSIS_OPTIONS, this.currentAnalysis.settings);
         }
     }
 }
