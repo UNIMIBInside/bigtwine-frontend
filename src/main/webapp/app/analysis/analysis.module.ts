@@ -26,6 +26,7 @@ import {
     OptionWrapperComponent,
     StepperComponent,
 } from 'app/analysis/components';
+import { AnalysisAlertsService } from 'app/analysis/services/analysis-alerts.service';
 
 @NgModule({
     imports: [
@@ -58,6 +59,10 @@ import {
             provide: RxStompService,
             useFactory: rxStompServiceFactory,
             deps: [InjectableRxStompConfig]
+        },
+        {
+            provide: AnalysisAlertsService,
+            useClass: AnalysisAlertsService,
         },
         /*{
             provide: AnalysisService,

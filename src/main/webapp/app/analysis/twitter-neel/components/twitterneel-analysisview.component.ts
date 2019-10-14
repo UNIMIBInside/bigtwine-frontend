@@ -1,6 +1,6 @@
 import { AnalysisViewComponent } from 'app/analysis/components/analysis-view.component';
-import { AnalysisType, GetAnalysisResults, IAnalysis } from 'app/analysis';
-import { IPaginationInfo, selectPagination, StartListenTwitterNeelResults, StopListenTwitterNeelResults, TwitterNeelState } from 'app/analysis/twitter-neel';
+import { AnalysisType, GetAnalysisResults, IAnalysis, IPaginationInfo, selectResultsPagination } from 'app/analysis';
+import { StartListenTwitterNeelResults, StopListenTwitterNeelResults, TwitterNeelState } from 'app/analysis/twitter-neel';
 import { take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
@@ -14,25 +14,16 @@ export abstract class TwitterNeelAnalysisViewComponent extends AnalysisViewCompo
     get paginationInfo(): IPaginationInfo {
         let pagination = null;
         this.tNeelStore
-            .select(selectPagination)
+            .select(selectResultsPagination)
             .pipe(take(1))
             .subscribe(p => pagination = p);
 
         return pagination;
     }
 
-    startListenAnalysisResults(analysis: IAnalysis) {
-        this.analysisStore.dispatch(new StartListenTwitterNeelResults(analysis.id));
-    }
-
-    stopListenAnalysisResults(analysis?: IAnalysis) {
-        const analysisId = analysis ? analysis.id : null;
-        this.analysisStore.dispatch(new StopListenTwitterNeelResults(analysisId));
-    }
-
     fetchResultsPage(page: number) {
         const pageSize = this.paginationInfo.pageSize;
-        const action = new GetAnalysisResults(this.currentAnalysis.id, page, pageSize);
+        const action = new GetAnalysisResults(this.currentAnalysis.id, {page, pageSize});
 
         this.analysisStore.dispatch(action);
     }

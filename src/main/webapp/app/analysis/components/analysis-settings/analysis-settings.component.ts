@@ -22,7 +22,7 @@ export class AnalysisSettingsComponent implements OnInit {
         return currentAnalysis;
     }
 
-    constructor(private userSettings: UserSettingsService, private store: Store<AnalysisState>) {
+    constructor(public userSettings: UserSettingsService, private store: Store<AnalysisState>) {
         this.userSettings.registerGlobalOptions([
             new NumberOptionConfig(
                 'pageSize',

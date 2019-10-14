@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { IAnalysis, IPaginationInfo, IDocument } from 'app/analysis/models';
+import { IAlert } from 'app/analysis/models/alert.model';
 
 export interface AnalysisState {
     analyses: {
@@ -18,7 +19,7 @@ export interface AnalysisState {
         byId: {[key: string]: IDocument}
     };
     lastError: {type: string, error: Error};
-    errorHistory: {type: string, error: Error}[];
+    alerts: IAlert[];
 }
 
 export const initAnalysisState = (): AnalysisState => {
@@ -51,7 +52,7 @@ export const initAnalysisState = (): AnalysisState => {
             byId: {}
         },
         lastError: null,
-        errorHistory: [],
+        alerts: [],
     });
 };
 
@@ -75,6 +76,11 @@ export const selectAnalysesByType = (analysisType: string) => createSelector(
 export const selectLastError = createSelector(
     selectAnalysisFeature,
     (state: AnalysisState) => state.lastError,
+);
+
+export const selectAlerts = createSelector(
+    selectAnalysisFeature,
+    (state: AnalysisState) => state.alerts,
 );
 
 export const selectResultsPagination = createSelector(

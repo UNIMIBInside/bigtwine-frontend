@@ -1,10 +1,11 @@
 import { initAnalysisState, AnalysisState } from './analysis.state';
 import * as AnalysisActions from './analysis.action';
 import { ExportAnalysisResultsSuccess } from './analysis.action';
+import { AnalysisStatus, IAnalysis } from 'app/analysis';
 
 export const initialState: AnalysisState = initAnalysisState();
 
-function pushLastError(state: AnalysisState, errAction: AnalysisActions.GenericAnalysisError) {
+function pushLastError(state: AnalysisState, errAction: AnalysisActions.GenericAnalysisError): AnalysisState {
     const err = {
         type: errAction.type,
         error: errAction.error
@@ -12,7 +13,15 @@ function pushLastError(state: AnalysisState, errAction: AnalysisActions.GenericA
     return {
         ...state,
         lastError: err,
-        errorHistory: [...state.errorHistory, err]
+        alerts: [
+            {
+                type: 'danger',
+                title:  errAction.type,
+                message: errAction.error.message,
+                error:  errAction.error
+            },
+            ...state.alerts
+        ]
     };
 }
 
@@ -20,6 +29,58 @@ function clearLastError(state: AnalysisState) {
     return {
         ...state,
         lastError: null,
+    };
+}
+
+function notifyAnalysisUpdates(state: AnalysisState, updatedAnalysis: IAnalysis) {
+    let alerts = state.alerts;
+    if (state.currentAnalysis) {
+        if (state.currentAnalysis.status !== updatedAnalysis.status) {
+            alerts = [
+                {
+                    type: updatedAnalysis.status === AnalysisStatus.Failed ? 'danger' : 'info',
+                    title: 'Analysis status updated',
+                    message: 'Analysis status changed to ' + updatedAnalysis.status,
+                },
+                ...alerts
+            ];
+        }
+
+        if (!state.currentAnalysis.export && updatedAnalysis.export) {
+            alerts = [
+                {
+                    type: 'info',
+                    title: 'Analysis results export started',
+                },
+                ...alerts
+            ];
+        }
+
+        if (state.currentAnalysis.export && updatedAnalysis.export) {
+            if (!state.currentAnalysis.export.completed && updatedAnalysis.export) {
+                alerts = [
+                    {
+                        type: 'success',
+                        title: 'Analysis results export completed',
+                    },
+                    ...alerts
+                ];
+            } else if (!state.currentAnalysis.export.failed && updatedAnalysis.export.failed) {
+                alerts = [
+                    {
+                        type: 'danger',
+                        title: 'Analysis results export failed',
+                        message: updatedAnalysis.export.message
+                    },
+                    ...alerts
+                ];
+            }
+        }
+    }
+
+    return {
+        ...state,
+        alerts
     };
 }
 
@@ -65,7 +126,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
             }
 
             return {
-                ...clearLastError(state),
+                ...notifyAnalysisUpdates(clearLastError(state), currentAnalysis),
                 analyses: {
                     ...state.analyses,
                     all: state.analyses.all.map(a => (a.id === updatedAnalysis.id) ? updatedAnalysis : a),

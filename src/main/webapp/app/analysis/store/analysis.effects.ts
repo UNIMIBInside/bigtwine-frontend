@@ -9,6 +9,7 @@ import * as AnalysisActions from './analysis.action';
 import { LocalStorageService } from 'ngx-webstorage';
 import { UserSettingsService } from 'app/analysis/services/user-settings.service';
 import { AnalysisState, IAnalysis, selectCurrentAnalysis } from 'app/analysis';
+import { AnalysisAlertsService } from 'app/analysis/services/analysis-alerts.service';
 
 @Injectable({providedIn: 'root'})
 export class AnalysisEffects {
@@ -204,6 +205,7 @@ export class AnalysisEffects {
 
     constructor(
         private analysisService: AnalysisService,
+        private analysisAlertsService: AnalysisAlertsService,
         private action$: Actions,
         private store$: Store<AnalysisState>,
         private storageService: LocalStorageService,
