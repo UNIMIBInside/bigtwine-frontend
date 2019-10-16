@@ -32,7 +32,7 @@ import { RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.ser
 import { ViewModeSwitcherComponent } from 'app/analysis/twitter-neel/components/view-mode-switcher/view-mode-switcher.component';
 import { DatasetDetailsComponent } from 'app/analysis/twitter-neel/components/dataset-details/dataset-details.component';
 import { AnalysisStatusHistoryComponent } from 'app/analysis/components/analysis-status-history/analysis-status-history.component';
-import { AnalysisListComponent } from 'app/analysis/components';
+import { AnalysisListComponent, AnalysisStatusBadgeComponent, AnalysisInputBadgeComponent } from 'app/analysis/components';
 import { TwitterNeelHomeComponent } from 'app/analysis/twitter-neel/components/twitter-neel-home/twitter-neel-home.component';
 
 @NgModule({
@@ -65,6 +65,8 @@ import { TwitterNeelHomeComponent } from 'app/analysis/twitter-neel/components/t
         ResultsToolbarComponent,
         ViewModeSwitcherComponent,
         DatasetDetailsComponent,
+        AnalysisStatusBadgeComponent,
+        AnalysisInputBadgeComponent,
     ],
     entryComponents: [
         AnalysisStatusHistoryComponent,

@@ -20,6 +20,7 @@ export enum AnalysisType {
 
 export interface IAnalysisInput {
     type: AnalysisInputType;
+    bounded?: boolean;
 }
 
 export interface IQueryAnalysisInput extends IAnalysisInput {
@@ -29,6 +30,8 @@ export interface IQueryAnalysisInput extends IAnalysisInput {
 
 export interface IDatasetAnalysisInput extends IAnalysisInput {
     documentId: string;
+    name: string;
+    size: number;
 }
 
 export interface IAnalysisStatusHistory {
@@ -58,6 +61,7 @@ export interface IAnalysis {
     progress?: number;
     settings?: {[name: string]: any};
     export?: IAnalysisExport;
+    resultsCount?: number;
 }
 
 export class Analysis implements IAnalysis {
@@ -68,4 +72,5 @@ export class Analysis implements IAnalysis {
     type: string;
     settings: {[name: string]: any};
     export: IAnalysisExport;
+    resultsCount: number;
 }

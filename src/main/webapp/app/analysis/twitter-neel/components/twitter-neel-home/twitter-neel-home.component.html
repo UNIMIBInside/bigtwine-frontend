@@ -1,19 +1,25 @@
-<div class="row">
-    <div class="col-12 text-right">
-        <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-primary" id="dropdownBasic2" ngbDropdownToggle>New</button>
-            <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
-                <div ngbDropdownItem>
-                    <a [routerLink]="'query/new'">Query</a>
-                </div>
-                <div ngbDropdownItem>
-                    <a [routerLink]="'dataset/new'">Dataset</a>
-                </div>
-                <div ngbDropdownItem>
-                    <a [routerLink]="'coordinates/new'">Coordinates</a>
+<div class="wrapper wrapper--toolbar">
+    <div class="toolbar toolbar--fixed toolbar--last">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div ngbDropdown class="d-inline-block mr-2">
+                        <button class="btn btn-sm btn-outline-primary" id="newAnalysisDropdown" ngbDropdownToggle>New</button>
+                        <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="newAnalysisDropdown">
+                            <a class="dropdown-item" ngbDropdownItem [routerLink]="'query/new'">Query</a>
+                            <a class="dropdown-item" ngbDropdownItem [routerLink]="'dataset/new'">Dataset</a>
+                            <a class="dropdown-item" ngbDropdownItem [routerLink]="'coordinates/new'">Coordinates</a>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary mr-2" (click)="refresh()">Refresh</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="wrapper__content">
+        <div class="container-fluid">
+            <btw-analysis-list analysisType="twitter-neel" [owned]="true"></btw-analysis-list>
+        </div>
+    </div>
 </div>
-<btw-analysis-list analysisType="twitter-neel"></btw-analysis-list>

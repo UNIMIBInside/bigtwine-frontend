@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
-import { AnalysisStatus, IAnalysis, IAnalysisExport, IDocument, IPage, IResultsFilterQuery } from '../';
+import { AnalysisStatus, AnalysisType, IAnalysis, IAnalysisExport, IDocument, IPage, IResultsFilterQuery } from '../';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { map } from 'rxjs/operators';
 import { IPagedAnalysisResults } from 'app/analysis/models/paged-analysis-results.model';
@@ -15,7 +15,7 @@ import { AuthServerProvider } from 'app/core';
 export interface IAnalysisService {
     createAnalysis(analysis: IAnalysis): Observable<IAnalysis>;
     getAnalysisById(analysisId: string): Observable<IAnalysis>;
-    getAnalyses(): Observable<IPagedAnalyses>;
+    getAnalyses(page: IPage, type?: AnalysisType, owned?: boolean): Observable<IPagedAnalyses>;
     stopAnalysis(analysisId: string): Observable<IAnalysis>;
     startAnalysis(analysisId: string): Observable<IAnalysis>;
     completeAnalysis(analysisId: string): Observable<IAnalysis>;
@@ -50,8 +50,15 @@ export class AnalysisService implements IAnalysisService {
         return this.http.get(`${this.ANALYSIS_API}/analyses/${analysisId}`) as Observable<IAnalysis>;
     }
 
-    getAnalyses(): Observable<IPagedAnalyses> {
-        return this.http.get(`${this.ANALYSIS_API}/analyses`) as Observable<IPagedAnalyses>;
+    getAnalyses(page: IPage = {page: 0, pageSize: 250}, type = null, owned = false): Observable<IPagedAnalyses> {
+        let url = `${this.ANALYSIS_API}/analyses?page=${page.page}&pageSize=${page.pageSize}&owned=${owned}`;
+
+        if (type) {
+            url += `&analysisType=${type}`;
+        }
+
+        return this.http
+            .get(url) as Observable<IPagedAnalyses>;
     }
 
     stopAnalysis(analysisId: string): Observable<IAnalysis> {

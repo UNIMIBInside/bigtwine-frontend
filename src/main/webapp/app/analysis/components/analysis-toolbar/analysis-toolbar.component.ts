@@ -51,23 +51,6 @@ export class AnalysisToolbarComponent implements OnInit, OnDestroy {
         return currentAnalysis;
     }
 
-    get currentAnalysisStatusLabelClasses() {
-        const classes = ['badge'];
-        const status = this.currentAnalysis.status;
-
-        if (status === AnalysisStatus.Ready || status === AnalysisStatus.Stopped) {
-            classes.push('badge-secondary');
-        } else if (status === AnalysisStatus.Started) {
-            classes.push('badge-primary');
-        } else if (status === AnalysisStatus.Completed) {
-            classes.push('badge-success');
-        } else if (status === AnalysisStatus.Cancelled || status === AnalysisStatus.Failed) {
-            classes.push('badge-danger');
-        }
-
-        return classes;
-    }
-
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,

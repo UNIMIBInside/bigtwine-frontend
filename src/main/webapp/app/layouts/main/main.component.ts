@@ -5,7 +5,8 @@ import { JhiLanguageHelper } from 'app/core';
 
 @Component({
     selector: 'btw-main',
-    templateUrl: './main.component.html'
+    templateUrl: './main.component.html',
+    styleUrls: ['./main.component.scss']
 })
 export class BtwMainComponent implements OnInit {
     constructor(private jhiLanguageHelper: JhiLanguageHelper, private router: Router) {}

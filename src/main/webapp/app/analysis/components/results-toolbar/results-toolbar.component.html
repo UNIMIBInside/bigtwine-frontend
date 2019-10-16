@@ -1,4 +1,6 @@
-<div class="row my-2">
+<div class="toolbar toolbar--secondary">
+    <div class="container-fluid">
+        <div class="row">
     <div class="col">
         <div class="input-group input-group-sm">
             <input
@@ -11,7 +13,7 @@
                 <button
                     *ngIf="!liveSearchEnabled"
                     type="button"
-                    class="btn btn-secondary btn-sm"
+                    class="btn btn-outline-light btn-sm"
                     [disabled]="!shouldSearch"
                     (click)="onSearchBtnCLick()">Search</button>
             </div>
@@ -20,39 +22,67 @@
     </div>
     <div class="col">
         <div class="pagination" *ngIf="paginationEnabled">
-            Page {{ pagination.currentPage + 1 }} / {{ pagination.pagesCount }} | Results: {{ pagination.allItemsCount }}
-            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+            <div class="btn-group btn-group-sm" role="group">
                 <button
                     type="button"
-                    class="btn btn-secondary"
+                    class="btn btn-outline-light"
+                    [disabled]="pagination.currentPage === 0"
+                    (click)="onChangePageBtnClick(-1)">First</button>
+                <button
+                    type="button"
+                    class="btn btn-outline-light"
                     [disabled]="(pagination.currentPage - 1) < 0"
                     (click)="onChangePageBtnClick(-1)">Prev</button>
+
                 <button
                     type="button"
-                    class="btn btn-secondary"
+                    class="btn btn-outline-light"
+                    [disabled]="true">
+                    {{ pagination.currentPage + 1 }} / {{ pagination.pagesCount }}
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-outline-light"
                     [disabled]="(pagination.currentPage + 1) >= pagination.pagesCount"
                     (click)="onChangePageBtnClick(+1)">Next</button>
+                <button
+                    type="button"
+                    class="btn btn-outline-light"
+                    [disabled]="pagination.currentPage === pagination.pagesCount"
+                    (click)="onChangePageBtnClick(+1)">Last</button>
             </div>
+
+            <span class="ml-2">
+                {{ pagination.allItemsCount | numeral:"0a" }} results
+            </span>
         </div>
     </div>
     <div class="col text-right">
-        <ng-container *ngIf="shouldShowExportBtn">
-            <button
-                *ngIf="!currentAnalysis.export; else analysisExport"
-                type="button"
-                class="btn btn-outline-secondary btn-sm"
-                [disabled]="!canExport"
-                (click)="onExportBtnClick()">Export</button>
+        <div class="d-inline-flex">
 
-            <ng-template #analysisExport>
-                <span *ngIf="!(currentAnalysis.export.completed || currentAnalysis.export.failed)">
-                    {{ (currentAnalysis.export.progress * 100) | number:'1.0-0'}}%
-                </span>
-                <a *ngIf="currentAnalysis.export.completed" [href]="exportLink" target="_blank">Download results</a>
-                <span *ngIf="currentAnalysis.export.failed">Export failed</span>
-            </ng-template>
-        </ng-container>
+            <ng-container *ngIf="shouldShowExportBtn">
+                <button
+                    *ngIf="!currentAnalysis.export; else analysisExport"
+                    type="button"
+                    class="btn btn-outline-light btn-sm mr-4"
+                    [disabled]="!canExport"
+                    (click)="onExportBtnClick()">
+                    <fa-icon icon="download"></fa-icon>
+                </button>
 
-        <ng-content select=".space-right"></ng-content>
+                <ng-template #analysisExport>
+                    <span *ngIf="!(currentAnalysis.export.completed || currentAnalysis.export.failed)">
+                        {{ (currentAnalysis.export.progress * 100) | number:'1.0-0'}}%
+                    </span>
+                    <a *ngIf="currentAnalysis.export.completed" [href]="exportLink" target="_blank">Download results</a>
+                    <span *ngIf="currentAnalysis.export.failed">Export failed</span>
+                </ng-template>
+            </ng-container>
+
+            <ng-content select=".space-right"></ng-content>
+        </div>
+    </div>
+</div>
     </div>
 </div>

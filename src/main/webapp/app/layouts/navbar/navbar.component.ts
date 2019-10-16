@@ -4,9 +4,15 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { SessionStorageService } from 'ngx-webstorage';
 
-import { VERSION } from 'app/app.constants';
+import { VERSION, ADMIN_URL } from 'app/app.constants';
 import { JhiLanguageHelper, AccountService, LoginModalService, LoginService } from 'app/core';
 import { ProfileService } from '../profiles/profile.service';
+
+interface AnalysisHomepage {
+    type: string;
+    title: string;
+    route: string;
+}
 
 @Component({
     selector: 'btw-navbar',
@@ -20,6 +26,8 @@ export class NavbarComponent implements OnInit {
     swaggerEnabled: boolean;
     modalRef: NgbModalRef;
     version: string;
+    adminUrl: string;
+    analysesHomepages: AnalysisHomepage[];
 
     constructor(
         private loginService: LoginService,
@@ -32,7 +40,15 @@ export class NavbarComponent implements OnInit {
         private router: Router
     ) {
         this.version = VERSION ? 'v' + VERSION : '';
+        this.adminUrl = ADMIN_URL;
         this.isNavbarCollapsed = true;
+        this.analysesHomepages = [
+            {
+                type: 'twitter-neel',
+                title: 'Twitter NEEL',
+                route: 'analysis/twitter-neel',
+            }
+        ];
     }
 
     ngOnInit() {

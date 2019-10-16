@@ -5,6 +5,8 @@ export * from './analysis-settings/analysis-settings.component';
 export * from './analysis-settings/options';
 export * from './analysis-list/analysis-list.component';
 export * from './analysis-status-history/analysis-status-history.component';
+export * from './analysis-status-badge/analysis-status-badge.component';
+export * from './analysis-input-badge/analysis-input-badge.component';
 export * from './analysis-view.component';
 export * from './stream-analysis-view-component';
 export * from './bounded-analysis-view-component';

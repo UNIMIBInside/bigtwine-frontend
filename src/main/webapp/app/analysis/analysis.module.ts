@@ -64,10 +64,10 @@ import { AnalysisAlertsService } from 'app/analysis/services/analysis-alerts.ser
             provide: AnalysisAlertsService,
             useClass: AnalysisAlertsService,
         },
-        /*{
+        {
             provide: AnalysisService,
             useClass: MockAnalysisService
-        },*/
+        },
     ]
 })
 export class BigtwineAnalysisModule { }

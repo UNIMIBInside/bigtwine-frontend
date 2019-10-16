@@ -37,7 +37,7 @@ export class AnalysisEffects {
     @Effect()
     getAnalyses$: Observable<Action> = this.action$.pipe(
         ofType(AnalysisActions.ActionTypes.GetAnalyses),
-        mergeMap(() => this.analysisService.getAnalyses()
+        mergeMap((action: AnalysisActions.GetAnalyses) => this.analysisService.getAnalyses(action.page, action.type, action.owned)
             .pipe(
                 map(response => new AnalysisActions.GetAnalysesSuccess(response.objects)),
                 catchError(e => of(new AnalysisActions.GetAnalysesError(e)))

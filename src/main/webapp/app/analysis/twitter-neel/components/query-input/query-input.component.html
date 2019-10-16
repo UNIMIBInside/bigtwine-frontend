@@ -4,7 +4,8 @@
             [(ngModel)]="tokens"
             (onAdd)="onTagsChanged()"
             (onRemove)="onTagsChanged()"
-            [modelAsStrings]="true"></tag-input>
+            [modelAsStrings]="true"
+            theme="bigtwine-theme"></tag-input>
     </div>
     <div class="col-auto">
         <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="joiner" (change)="onTagsChanged()">

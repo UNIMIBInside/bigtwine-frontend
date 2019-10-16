@@ -57,8 +57,9 @@ module.exports = (options) => ({
             'process.env': {
                 NODE_ENV: `'${options.env}'`,
                 BUILD_TIMESTAMP: `'${new Date().getTime()}'`,
-                VERSION: `'${utils.parseVersion()}'`,
+                VERSION: JSON.stringify(require("../package.json").version),
                 DEBUG_INFO_ENABLED: options.env === 'development',
+                ADMIN_URL: options.env === 'development' ? `'http://localhost:9000/'` : `'http://admin.bigtwine.doublerew.net/'`,
                 // The root URL for API calls, ending with a '/' - for example: `"https://www.jhipster.tech:8081/myservice/"`.
                 // If this URL is left empty (""), then it will be relative to the current context.
                 // If you use an API server, in `prod` mode, you will need to enable CORS

@@ -7,15 +7,16 @@ import {
     BigtwineSharedCommonModule,
     BtwLoginModalComponent,
     HasAnyAuthorityDirective,
-    SocialSignInButtonsComponent
+    SocialSignInButtonsComponent,
+    NumeralPipe,
 } from './';
 
 @NgModule({
     imports: [BigtwineSharedLibsModule, BigtwineSharedCommonModule],
-    declarations: [BtwLoginModalComponent, HasAnyAuthorityDirective, SocialSignInButtonsComponent],
+    declarations: [BtwLoginModalComponent, HasAnyAuthorityDirective, SocialSignInButtonsComponent, NumeralPipe],
     providers: [{ provide: NgbDateAdapter, useClass: NgbDateMomentAdapter }],
     entryComponents: [BtwLoginModalComponent],
-    exports: [BigtwineSharedCommonModule, BtwLoginModalComponent, HasAnyAuthorityDirective, SocialSignInButtonsComponent],
+    exports: [BigtwineSharedCommonModule, BtwLoginModalComponent, HasAnyAuthorityDirective, SocialSignInButtonsComponent, NumeralPipe],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class BigtwineSharedModule {

@@ -1,12 +1,6 @@
-<btw-page-ribbon></btw-page-ribbon>
-<div>
-    <router-outlet name="navbar"></router-outlet>
-</div>
-<div class="container-fluid">
-    <div class="card jh-card">
-        <router-outlet></router-outlet>
-        <router-outlet name="popup"></router-outlet>
-    </div>
-    <btw-footer></btw-footer>
+<router-outlet name="navbar"></router-outlet>
+<div class="page-wrapper">
+    <router-outlet></router-outlet>
+    <router-outlet name="popup"></router-outlet>
 </div>
 <btw-alert></btw-alert>

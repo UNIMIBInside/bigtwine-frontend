@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { AnalysisState, GetAnalyses, IAnalysis, selectAnalysesByType } from 'app/analysis';
+import { AnalysisState, AnalysisStatus, AnalysisType, GetAnalyses, IAnalysis, selectAnalysesByType } from 'app/analysis';
 import { Store } from '@ngrx/store';
 import { takeUntil } from 'rxjs/operators';
 
@@ -14,6 +14,21 @@ export class AnalysisListComponent implements OnInit, OnDestroy {
     analyses$: Observable<IAnalysis[]>;
 
     @Input() analysisType: string;
+    @Input() owned = true;
+
+    analysisProgressBarStyle(analysis: IAnalysis): string {
+        switch (analysis.status) {
+            case AnalysisStatus.Failed:
+            case AnalysisStatus.Cancelled:
+                return 'danger';
+            case AnalysisStatus.Started:
+                return 'primary';
+            case AnalysisStatus.Completed:
+                return 'success';
+            default:
+                return 'secondary';
+        }
+    }
 
     constructor(private analysisStore: Store<AnalysisState>) {}
 
@@ -30,7 +45,11 @@ export class AnalysisListComponent implements OnInit, OnDestroy {
         this.destroyed$.complete();
     }
 
-    refresh() {
-        this.analysisStore.dispatch(new GetAnalyses());
+    public refresh() {
+        this.analysisStore.dispatch(new GetAnalyses(
+            {page: 0, pageSize: 250},
+            this.analysisType as AnalysisType,
+            this.owned
+        ));
     }
 }

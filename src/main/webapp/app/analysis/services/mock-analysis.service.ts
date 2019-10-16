@@ -40,19 +40,56 @@ export class MockAnalysisService implements IAnalysisService {
     }
 
     constructor() {
-        const analysis: IAnalysis = {
-            id: 'completed-analysis',
+        const analysis1: IAnalysis = {
+            id: 'analysis1',
             status: AnalysisStatus.Completed,
             input: {
                 type: AnalysisInputType.Query,
+                bounded: false,
                 tokens: ['query', 'di', 'prova'],
                 joinOperator: 'all',
             } as IAnalysisInput,
             type: AnalysisType.TwitterNeel,
-            owner: {uid: 'user-1', username: 'user-1'},
+            owner: {uid: 'user-1', username: 'User1'},
+            progress: -1,
+            resultsCount: 1239123
         };
 
-        this.analysisDb.set(analysis.id, analysis);
+        const analysis2: IAnalysis = {
+            id: 'analysis2',
+            status: AnalysisStatus.Started,
+            input: {
+                type: AnalysisInputType.Dataset,
+                bounded: true,
+                documentId: 'document-1',
+                name: 'dataset.tsv',
+                size: 3347744
+            } as IAnalysisInput,
+            type: AnalysisType.TwitterNeel,
+            owner: {uid: 'user-1', username: 'User1'},
+            progress: 0.6633838,
+            resultsCount: 28283
+        };
+
+        const analysis3: IAnalysis = {
+            id: 'analysis3',
+            status: AnalysisStatus.Completed,
+            input: {
+                type: AnalysisInputType.Dataset,
+                bounded: true,
+                documentId: 'document-2',
+                name: 'dataset-large.tsv',
+                size: 28229011
+            } as IAnalysisInput,
+            type: AnalysisType.TwitterNeel,
+            owner: {uid: 'user-1', username: 'User1'},
+            progress: 1,
+            resultsCount: 229283
+        };
+
+        this.analysisDb.set(analysis1.id, analysis1);
+        this.analysisDb.set(analysis2.id, analysis2);
+        this.analysisDb.set(analysis3.id, analysis3);
     }
 
     createAnalysis(analysis: IAnalysis): Observable<IAnalysis> {
@@ -75,7 +112,7 @@ export class MockAnalysisService implements IAnalysisService {
         }
     }
 
-    getAnalyses(): Observable<IPagedAnalyses> {
+    getAnalyses(page: IPage = {page: 0, pageSize: 250}, type = null, owned = false): Observable<IPagedAnalyses> {
         return of({
             totalCount: this.analysisDb.size,
             page: 0,

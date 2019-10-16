@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import { IAnalysis, IAnalysisExport, IPage, IPageDetails, IResultsFilterQuery } from 'app/analysis';
+import { AnalysisType, IAnalysis, IAnalysisExport, IPage, IPageDetails, IResultsFilterQuery } from 'app/analysis';
 import { IAnalysisResult } from 'app/analysis/models/analysis-result.model';
 import { IDocument } from 'app/analysis/models/document.model';
 
@@ -83,6 +83,8 @@ export class GetAnalysisError extends GenericAnalysisError {
 
 export class GetAnalyses implements Action {
     readonly type = ActionTypes.GetAnalyses;
+
+    constructor(readonly page: IPage, readonly analysisType?: AnalysisType, readonly owned?: boolean) {}
 }
 
 export class GetAnalysesSuccess implements Action {
