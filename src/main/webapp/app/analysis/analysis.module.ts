@@ -18,19 +18,14 @@ import {
 import {
     AnalysisHomeComponent,
     AnalysisNotFoundComponent,
-    AnalysisSettingsComponent,
-    ChoicesOptionComponent,
-    NumberOptionComponent,
-    TextOptionComponent,
-    BooleanOptionComponent,
-    OptionWrapperComponent,
-    StepperComponent,
 } from 'app/analysis/components';
 import { AnalysisAlertsService } from 'app/analysis/services/analysis-alerts.service';
+import { AnalysisSharedModule } from 'app/analysis/analysis-shared.module';
 
 @NgModule({
     imports: [
         BigtwineSharedModule,
+        AnalysisSharedModule.forRoot(),
         RouterModule.forChild(analysisState),
         StoreModule.forFeature('analysis', AnalysisReducer),
         EffectsModule.forFeature([AnalysisEffects])
@@ -38,17 +33,8 @@ import { AnalysisAlertsService } from 'app/analysis/services/analysis-alerts.ser
     declarations: [
         AnalysisHomeComponent,
         AnalysisNotFoundComponent,
-        AnalysisSettingsComponent,
-        ChoicesOptionComponent,
-        NumberOptionComponent,
-        TextOptionComponent,
-        BooleanOptionComponent,
-        OptionWrapperComponent,
-        StepperComponent,
     ],
-    entryComponents: [
-        AnalysisSettingsComponent,
-    ],
+    entryComponents: [],
     providers: [
         {
             provide: InjectableRxStompConfig,

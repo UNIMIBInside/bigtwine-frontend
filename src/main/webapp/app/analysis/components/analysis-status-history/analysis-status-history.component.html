@@ -1,3 +1,4 @@
+<h2>Status history</h2>
 <ul *ngIf="currentAnalysis && currentAnalysis.statusHistory">
     <li *ngFor="let entry of currentAnalysis.statusHistory">
         {{entry.oldStatus}} => {{entry.newStatus}}<br>

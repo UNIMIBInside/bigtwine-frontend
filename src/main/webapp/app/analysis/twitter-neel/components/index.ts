@@ -1,6 +1,6 @@
 export * from './query-view/query-view.component';
 export * from './query-new/query-new.component';
-export * from './query-input/query-input.component';
+export * from '../../components/query-input/query-input.component';
 export * from './map-results-viewer/map-results-viewer.component';
 export * from './list-results-viewer/list-results-viewer.component';
 export * from './dataset-view/dataset-view.component';
