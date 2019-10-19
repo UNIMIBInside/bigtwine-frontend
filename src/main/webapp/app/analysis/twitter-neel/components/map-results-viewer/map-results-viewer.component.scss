@@ -1,3 +1,6 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
 @import '~app/variables';
 
 .sebm-google-map-container {
@@ -30,7 +33,9 @@
 }
 
 .tweets-container, .resources-container {
-    padding-top: 44px;
+    @include media-breakpoint-up(lg) {
+        padding-top: 44px;
+    }
 }
 
 .tweets-column, .entities-column {

@@ -15,6 +15,22 @@ $info: #17a2b8;
 $warning: #ffc107;
 $danger: #dc3545;
 
+// Grid breakpoints
+$grid-breakpoints: (
+    xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1360px
+);
+
+$container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1280px
+);
+
 // Options:
 // Quickly modify global styling by enabling or disabling optional features.
 $enable-rounded: true;
