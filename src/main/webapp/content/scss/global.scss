@@ -1,4 +1,5 @@
 @import 'bootstrap-variables';
+@import "variables";
 
 /* ==============================================================
 Bootstrap tweaks
@@ -13,12 +14,12 @@ h4 {
 }
 
 a {
-    color: #533f03;
+    color: $accent-color;
     font-weight: bold;
 }
 
 a:hover {
-    color: #533f03;
+    color: $accent-color;
     font-weight: bold;
     /* make sure browsers use the pointer cursor for anchors, even with no href */
     cursor: pointer;
@@ -97,6 +98,10 @@ a.dropdown-item, a.btn {
         font-weight: normal;
         color: $primary;
     }
+}
+
+.object-fit-cover {
+    object-fit: cover !important;
 }
 
 /* ==========================================================================
@@ -238,18 +243,20 @@ toolbars
 ========================================================================== */
 .toolbar {
     padding: 0.75rem 0;
-    background-color: #2E3848;
-    border-bottom: 1px solid #1B1C1D;
-    color: #fff;
+    background-color: $toolbar-bg-color;
+    border-bottom: 1px solid $toolbar-separator-color;
+    color: $toolbar-text-color;
+    height: 54px;
 
     &--last {
-        box-shadow: 0 1px 2px rgba(0,0,0,0.75);
+        box-shadow: $toolbar-shadow;
         border-bottom: none;
     }
 
     &--secondary {
         padding: 0.4rem 0;
-        background-color: rgba(#2E3848, 0.95);
+        background-color: $toolbar-secondary-bg-color;
+        height: 44px;
     }
 
     &--fixed {
@@ -257,17 +264,44 @@ toolbars
         width: 100%;
         z-index: 800;
     }
+
+    .form-control {
+        background-color: rgba($toolbar-text-color, 0.25);
+        color: $toolbar-text-color;
+        border-color: $toolbar-text-color;
+
+        &::-webkit-input-placeholder {
+            color: rgba($toolbar-text-color, 0.75);
+        }
+
+        &::-moz-placeholder {
+            color: rgba($toolbar-text-color, 0.75);
+        }
+
+        &::-ms-input-placeholder {
+            color: rgba($toolbar-text-color, 0.75);
+        }
+    }
 }
 
 .multi-toolbars-container {
     position: fixed;
     width: 100%;
     z-index: 800;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.75);
+
+    > :last-child .toolbar {
+        border-bottom: none;
+        box-shadow: $toolbar-shadow;
+    }
 }
 
 .wrapper {
     $root: &;
+    height: 100%;
+
+    &__content {
+        height: 100%;
+    }
 
     &--toolbar {
         #{$root}__content {
@@ -280,4 +314,9 @@ toolbars
             padding-top: 98px;
         }
     }
+}
+
+.scrollable-container {
+    height: 100%;
+    overflow-y: auto;
 }
