@@ -1,0 +1,15 @@
+.resource {
+    &__name {
+        font-weight: bold;
+    }
+
+    &__desc {
+        line-height: 0.7rem;
+        font-size: 0.6rem;
+        display: inline-block;
+        max-height: 1.4rem;
+        overflow: hidden;
+    }
+
+    &__icons {}
+}

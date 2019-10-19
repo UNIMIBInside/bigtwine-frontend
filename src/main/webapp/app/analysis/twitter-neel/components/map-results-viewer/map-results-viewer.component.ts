@@ -3,22 +3,33 @@ import { Observable, ReplaySubject } from 'rxjs';
 import { map, take, takeUntil, throttleTime } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import {
+    selectCurrentAnalysis,
+    selectResultsPagination,
     IAnalysis,
     AnalysisState,
-    selectCurrentAnalysis, GetAnalysisResults, IPaginationInfo, selectResultsPagination
+    IPaginationInfo,
 } from 'app/analysis';
 import {
     buildNilEntityIdentifier,
     selectAllResources,
-    selectAllTweets, selectLocationsBySource,
-    selectNilEntities, selectNilEntitiesTweetsCount,
+    selectAllTweets,
+    selectLocationsBySource,
+    selectNilEntities,
+    selectNilEntitiesTweetsCount,
     selectResourcesTweetsCount,
     TwitterNeelState,
-    ILinkedEntity, INeelProcessedTweet, INilEntity, IResource, ILocation, LocationSource
+    ILinkedEntity,
+    INeelProcessedTweet,
+    INilEntity,
+    IResource,
+    ILocation,
+    LocationSource,
 } from 'app/analysis/twitter-neel';
 import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/results-viewer.component';
 import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
+import mapStyle from 'app/shared/gmap-styles';
+import { ClusterStyle } from '@agm/js-marker-clusterer/services/google-clusterer-types';
 
 @Component({
     templateUrl: './map-results-viewer.component.html',
@@ -52,6 +63,8 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
 
     currentPage = 1;
     pageSize = 250;
+
+    mapStyle = mapStyle;
 
     get currentAnalysis(): IAnalysis {
         let currentAnalysis: IAnalysis = null;
@@ -191,26 +204,26 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
 
     tweetCssClass(tweet: INeelProcessedTweet) {
         if (this.selectedTweet != null) {
-            return (this.selectedTweet.status.id === tweet.status.id) ? 'status active' : 'status inactive';
+            return (this.selectedTweet.status.id === tweet.status.id) ? 'item-list__item active' : 'item-list__item inactive';
         } else {
-            return '';
+            return 'item-list__item';
         }
     }
 
     resourceCssClass(resource: IResource) {
         if (this.selectedResource != null) {
-            return (this.selectedResource.url === resource.url) ? 'resource active' : 'resource inactive';
+            return (this.selectedResource.url === resource.url) ? 'item-list__item active' : 'item-list__item inactive';
         } else {
-            return '';
+            return 'item-list__item';
         }
     }
 
     nilEntityCssClass(entity: INilEntity) {
         if (this.selectedNilEntity != null) {
             return (this.selectedNilEntity.value === entity.value && this.selectedNilEntity.nilCluster === entity.nilCluster) ?
-                'resource active' : 'resource inactive';
+                'item-list__item active' : 'item-list__item inactive';
         } else {
-            return '';
+            return 'item-list__item';
         }
     }
 
@@ -220,5 +233,35 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
 
     selectedTweetNilEntities() {
         return this.selectedTweet.entities.filter(e => e.isNil);
+    }
+
+    getClusterStyles(group: string): ClusterStyle[] {
+        return [
+            {
+                url: `content/images/markers/${group}-m1.svg`,
+                height: 48,
+                width: 48
+            },
+            {
+                url: `content/images/markers/${group}-m2.svg`,
+                height: 56,
+                width: 56
+            },
+            {
+                url: `content/images/markers/${group}-m3.svg`,
+                height: 64,
+                width: 64
+            },
+            {
+                url: `content/images/markers/${group}-m4.svg`,
+                height: 72,
+                width: 72
+            },
+            {
+                url: `content/images/markers/${group}-m5.svg`,
+                height: 80,
+                width: 80
+            }
+        ];
     }
 }

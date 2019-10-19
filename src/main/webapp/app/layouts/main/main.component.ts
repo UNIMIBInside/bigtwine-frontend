@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, NavigationEnd } from '@angular/router';
 
 import { JhiLanguageHelper } from 'app/core';
+const vhCheck = require('vh-check');
 
 @Component({
     selector: 'btw-main',
@@ -25,5 +26,7 @@ export class BtwMainComponent implements OnInit {
                 this.jhiLanguageHelper.updateTitle(this.getPageTitle(this.router.routerState.snapshot.root));
             }
         });
+
+        vhCheck();
     }
 }

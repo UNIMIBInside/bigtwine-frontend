@@ -1,88 +1,103 @@
 <div class="toolbar toolbar--secondary">
-    <div class="container-fluid">
-        <div class="row">
-    <div class="col">
-        <div class="input-group input-group-sm">
-            <input
-                class="form-control"
-                placeholder="Filter results by text"
-                type="text"
-                [(ngModel)]="searchQuery"
-                [formControl]="searchQueryControl">
-            <div class="input-group-append">
-                <button
-                    *ngIf="!liveSearchEnabled"
-                    type="button"
-                    class="btn btn-outline-light btn-sm"
-                    [disabled]="!shouldSearch"
-                    (click)="onSearchBtnCLick()">Search</button>
+    <div class="row no-gutters">
+        <div class="col">
+            <div class="input-group input-group-sm px-3">
+                <div class="input-group-prepend">
+                    <div class="btn-group" ngbDropdown role="group">
+                        <button class="btn btn-sm btn-light" ngbDropdownToggle>Text</button>
+                        <div class="dropdown-menu" ngbDropdownMenu>
+                            <button class="dropdown-item" ngbDropdownItem>Text</button>
+                            <button class="dropdown-item" ngbDropdownItem>Category</button>
+                            <button class="dropdown-item" ngbDropdownItem>RDF Type</button>
+                        </div>
+                    </div>
+                </div>
+                <input
+                    class="form-control"
+                    placeholder="Filter results by text"
+                    type="text"
+                    [(ngModel)]="searchQuery"
+                    [formControl]="searchQueryControl">
+                <div class="input-group-append">
+                    <button
+                        *ngIf="!liveSearchEnabled"
+                        type="button"
+                        class="btn btn-outline-light btn-sm"
+                        [disabled]="!shouldSearch"
+                        (click)="onSearchBtnCLick()">Search</button>
+                </div>
             </div>
         </div>
+        <div class="col">
+            <div class="pagination px-3 align-items-center" *ngIf="paginationEnabled">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                        type="button"
+                        class="btn btn-outline-light"
+                        [disabled]="(pagination.currentPage - 1) < 0"
+                        (click)="onChangePageBtnClick(-1)">Prev</button>
 
-    </div>
-    <div class="col">
-        <div class="pagination" *ngIf="paginationEnabled">
-            <div class="btn-group btn-group-sm" role="group">
-                <button
-                    type="button"
-                    class="btn btn-outline-light"
-                    [disabled]="pagination.currentPage === 0"
-                    (click)="onChangePageBtnClick(-1)">First</button>
-                <button
-                    type="button"
-                    class="btn btn-outline-light"
-                    [disabled]="(pagination.currentPage - 1) < 0"
-                    (click)="onChangePageBtnClick(-1)">Prev</button>
+                    <div class="btn-group" ngbDropdown role="group">
+                        <button class="btn btn-sm btn-outline-light" ngbDropdownToggle>
+                            <span class="pl-2">{{ pagination.currentPage + 1 }} / {{ pagination.pagesCount }}</span>
+                        </button>
+                        <div class="bg-dark" ngbDropdownMenu>
+                            <div class="px-2">
+                                <div class="input-group input-group-sm">
+                                    <input
+                                        class="form-control"
+                                        placeholder="Go to page..."
+                                        type="number"
+                                        [(ngModel)]="gotoPageNumber">
+                                    <div class="input-group-append">
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-light"
+                                                (click)="onGoToPageBtnClick()">Go</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <button
-                    type="button"
-                    class="btn btn-outline-light"
-                    [disabled]="true">
-                    {{ pagination.currentPage + 1 }} / {{ pagination.pagesCount }}
-                </button>
+                    <button
+                        type="button"
+                        class="btn btn-outline-light"
+                        [disabled]="(pagination.currentPage + 1) >= pagination.pagesCount"
+                        (click)="onChangePageBtnClick(+1)">Next</button>
+                </div>
 
-                <button
-                    type="button"
-                    class="btn btn-outline-light"
-                    [disabled]="(pagination.currentPage + 1) >= pagination.pagesCount"
-                    (click)="onChangePageBtnClick(+1)">Next</button>
-                <button
-                    type="button"
-                    class="btn btn-outline-light"
-                    [disabled]="pagination.currentPage === pagination.pagesCount"
-                    (click)="onChangePageBtnClick(+1)">Last</button>
+                <span class="ml-2 badge">
+                    {{ pagination.allItemsCount | numeral:"0a" }} results
+                </span>
             </div>
-
-            <span class="ml-2">
-                {{ pagination.allItemsCount | numeral:"0a" }} results
-            </span>
         </div>
-    </div>
-    <div class="col text-right">
-        <div class="d-inline-flex">
+        <div class="col text-right">
+            <div class="d-inline-flex">
+                <ng-container *ngIf="shouldShowExportBtn">
+                    <div *ngIf="!currentAnalysis.export; else analysisExport"
+                         class="btn-group px-3" ngbDropdown placement="bottom-right" role="group">
+                        <button class="btn btn-sm btn-outline-light" ngbDropdownToggle>
+                            <fa-icon icon="download"></fa-icon>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                            <button *ngFor="let format of getExportFormats()"
+                                    class="dropdown-item"
+                                    (click)="onExportBtnClick(format.type)"
+                                    ngbDropdownItem>{{format.label}}</button>
+                        </div>
+                    </div>
 
-            <ng-container *ngIf="shouldShowExportBtn">
-                <button
-                    *ngIf="!currentAnalysis.export; else analysisExport"
-                    type="button"
-                    class="btn btn-outline-light btn-sm mr-4"
-                    [disabled]="!canExport"
-                    (click)="onExportBtnClick()">
-                    <fa-icon icon="download"></fa-icon>
-                </button>
+                    <ng-template #analysisExport>
+                        <span class="px-3" *ngIf="!(currentAnalysis.export.completed || currentAnalysis.export.failed)">
+                            {{ (currentAnalysis.export.progress * 100) | number:'1.0-0'}}%
+                        </span>
+                        <a *ngIf="currentAnalysis.export.completed" [href]="exportLink" target="_blank">Download results</a>
+                        <span class="px-3" *ngIf="currentAnalysis.export.failed">Export failed</span>
+                    </ng-template>
+                </ng-container>
 
-                <ng-template #analysisExport>
-                    <span *ngIf="!(currentAnalysis.export.completed || currentAnalysis.export.failed)">
-                        {{ (currentAnalysis.export.progress * 100) | number:'1.0-0'}}%
-                    </span>
-                    <a *ngIf="currentAnalysis.export.completed" [href]="exportLink" target="_blank">Download results</a>
-                    <span *ngIf="currentAnalysis.export.failed">Export failed</span>
-                </ng-template>
-            </ng-container>
-
-            <ng-content select=".space-right"></ng-content>
+                <ng-content select=".space-right"></ng-content>
+            </div>
         </div>
-    </div>
-</div>
     </div>
 </div>

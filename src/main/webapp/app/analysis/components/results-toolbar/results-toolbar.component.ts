@@ -18,6 +18,11 @@ import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/serv
 import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
 import { AnalysisService } from 'app/analysis/services/analysis.service';
 
+interface AnalysisResultsExportFormat {
+    type: string;
+    label: string;
+}
+
 @Component({
     selector: 'btw-results-toolbar',
     templateUrl: './results-toolbar.component.html',
@@ -29,6 +34,7 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
 
     searchQueryControl = new FormControl('');
     searchQuery: string;
+    gotoPageNumber: number;
 
     get currentAnalysis(): IAnalysis {
         let currentAnalysis: IAnalysis = null;
@@ -150,6 +156,23 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         }
 
         const page = this.pagination.currentPage + move;
+        this.gotoPage(page);
+    }
+
+    onGoToPageBtnClick() {
+        if (!this.paginationEnabled) {
+            return;
+        }
+
+        this.gotoPage(this.gotoPageNumber - 1);
+    }
+
+    onExportBtnClick(formatType: string) {
+        const action: Action = new ExportAnalysisResults(this.currentAnalysis.id);
+        this.analysisStore.dispatch(action);
+    }
+
+    gotoPage(page) {
         if (page < 0 || page >= this.pagination.pagesCount) {
             return;
         }
@@ -159,11 +182,6 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         } else if (this.resultsPagination.enabled) {
             this.fetchPage(page);
         }
-    }
-
-    onExportBtnClick() {
-        const action: Action = new ExportAnalysisResults(this.currentAnalysis.id);
-        this.analysisStore.dispatch(action);
     }
 
     performLiveSearch() {
@@ -192,6 +210,14 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
             const action: Action = new SearchAnalysisResults(analysisId, query, page);
             this.analysisStore.dispatch(action);
         }
+    }
+
+    getExportFormats(): AnalysisResultsExportFormat[] {
+        return [
+            {type: 'json', label: 'JSON'},
+            {type: 'tsv', label: 'TSV'},
+            {type: 'neel-challenge-output', label: 'NEEL Challenge Output'},
+        ];
     }
 
     private buildQuery(): IResultsFilterQuery {

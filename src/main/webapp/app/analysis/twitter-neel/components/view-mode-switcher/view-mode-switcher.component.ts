@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterEvent } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
+import { faMap, faStream } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@fortawesome/fontawesome-svg-core';
 
 @Component({
     selector: 'btw-view-mode-switcher',
@@ -60,5 +62,16 @@ export class ViewModeSwitcherComponent implements OnInit, OnDestroy {
 
     modeLabel(mode: string): string {
         return mode;
+    }
+
+    modeIcon(mode: string): IconDefinition {
+        switch (mode) {
+            case this.VIEW_MODE_MAP:
+                return faMap;
+            case this.VIEW_MODE_LIST:
+                return faStream;
+            default:
+                return null;
+        }
     }
 }

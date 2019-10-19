@@ -1,16 +1,16 @@
 @import "../../../../../../../node_modules/ngx-chips/core/styles/core/core";
 
-$bigtwine-primary: #e8e8e8;
+$bigtwine-primary: #fff;
 $bigtwine-primary-dark: darken($bigtwine-primary, 10%);
-$bigtwine-tag-height: 23px;
+$bigtwine-tag-height: 21px;
 $bigtwine-container-padding: 4px;
 
 // this is the container's theme
 $bigtwine-theme: (
     container-padding: $bigtwine-container-padding,
     container-border-bottom: none,
-    container-border-bottom-focused: none,
-    container-border-bottom-invalid: none,
+    container-border-bottom-focused: 1px solid $bigtwine-primary,
+    container-border-bottom-invalid: 1px solid $bigtwine-primary,
     border-radius: 0.1rem,
     container-height: $bigtwine-tag-height + $bigtwine-container-padding * 2,
 );
@@ -49,6 +49,7 @@ $bigtwine-tag-input-form-theme: (
 
     background-color: rgba(#fff, 0.25);
     max-width: 360px;
+    border: 1px solid #fff;
 
     &.ng2-tag-input--focused {
         box-shadow: 0 0 0 3pt rgba(#007bff, 0.25);
@@ -102,5 +103,6 @@ $bigtwine-tag-input-form-theme: (
         border-radius: 0.15rem;
         background-color: rgba(#fff, 0.5);
         display: block;
+        color: $bigtwine-primary;
     }
 }

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { INeelProcessedTweet } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
+import { INeelProcessedTweet, ITwitterStatus } from 'app/analysis/twitter-neel/models/neel-processed-tweet.model';
 
 @Component({
     selector: 'btw-neel-processed-tweet',
@@ -9,6 +9,10 @@ import { INeelProcessedTweet } from 'app/analysis/twitter-neel/models/neel-proce
 export class NeelProcessedTweetComponent {
 
     @Input() tweet: INeelProcessedTweet;
+
+    get status(): ITwitterStatus {
+        return this.tweet.status;
+    }
 
     constructor() { }
 }

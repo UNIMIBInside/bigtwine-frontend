@@ -245,6 +245,7 @@ export class MockAnalysisService implements IAnalysisService {
 
     private createAnalysisResult(analysisId: string): IAnalysisResult {
         const tweetText = this.tweetText((Math.random() * 120) + 20);
+        const randomUser = Math.round((Math.random() * 10000));
 
         return {
             id: this.uuidv4(),
@@ -257,10 +258,10 @@ export class MockAnalysisService implements IAnalysisService {
                     text: tweetText,
                     user: {
                         id: this.uuidv4(),
-                        name: 'user' + Math.random(),
-                        screenName: 'user' + Math.random(),
-                        location: '',
-                        profileImageUrl: '',
+                        name: 'User ' + randomUser,
+                        screenName: 'user' + randomUser,
+                        location: 'Location ' + Math.round((Math.random() * 10000)),
+                        profileImageUrl: 'https://i.pravatar.cc/64?u=' + randomUser,
                         coordinates: this.randomCoordinates(0.8),
                     },
                     coordinates: this.randomCoordinates(0.1)
@@ -285,6 +286,7 @@ export class MockAnalysisService implements IAnalysisService {
         const words = text.split(/\s+/).filter(w => w.length > 2);
         const c = Math.min((Math.random() * 5 - 2), words.length);
         const e: ILinkedEntity[] = [];
+        const categories = ['Character', 'Event', 'Location', 'Organization', 'Person', 'Product', 'Thing'];
 
         const usedWords = [];
         for (let i = 0; i < c; ++i) {
@@ -301,16 +303,16 @@ export class MockAnalysisService implements IAnalysisService {
                 d = {
                     value: word,
                     isNil: false,
-                    confidence: 1,
-                    category: 'general',
+                    confidence: Math.random(),
+                    category: categories[Math.floor(Math.random() * categories.length)],
                     link: url,
                     nilCluster: null,
                     position: {start: text.indexOf(word), end: text.indexOf(word) + word.length},
                     resource: {
                         name: 'Entity: ' + word,
-                        shortDesc: '',
-                        thumb: '',
-                        thumbLarge: '',
+                        shortDesc: this.tweetText((Math.random() * 200) + 50),
+                        thumb: 'http://placeimg.com/64/64/any?u=' + word,
+                        thumbLarge: 'http://placeimg.com/640/360/any?u=' + word,
                         url,
                         coordinates: this.randomCoordinates(0.5),
                     }
@@ -319,8 +321,8 @@ export class MockAnalysisService implements IAnalysisService {
                 d = {
                     value: word,
                     isNil: true,
-                    confidence: 1,
-                    category: 'general',
+                    confidence: Math.random(),
+                    category: categories[Math.floor(Math.random() * categories.length)],
                     link: null,
                     nilCluster: '1',
                     position: {start: text.indexOf(word), end: text.indexOf(word) + word.length},

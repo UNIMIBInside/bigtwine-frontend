@@ -1,13 +1,13 @@
 export * from './query-view/query-view.component';
 export * from './query-new/query-new.component';
-export * from '../../components/query-input/query-input.component';
 export * from './map-results-viewer/map-results-viewer.component';
 export * from './list-results-viewer/list-results-viewer.component';
 export * from './dataset-view/dataset-view.component';
 export * from './dataset-upload/dataset-upload.component';
 export * from './neel-processed-tweet/neel-processed-tweet.component';
 export * from './neel-processed-tweet-large/neel-processed-tweet-large.component';
+export * from './linked-entity/linked-entity.component';
+export * from './nil-entity/nil-entity.component';
 export * from './highlighted-tweet-text/highlighted-tweet-text.component';
-export * from '../../components/results-toolbar/results-toolbar.component';
 export * from './twitter-neel-home/twitter-neel-home.component';
 // export * from './results-viewer.component';

@@ -7,6 +7,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CookieModule } from 'ngx-cookie';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgCircleProgressModule } from 'ng-circle-progress';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import CIRCLE_PROGRESS_DEFAULTS from './config/circle-progress-defaults';
 
 @NgModule({
     imports: [
@@ -14,24 +16,8 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
         InfiniteScrollModule,
         CookieModule.forRoot(),
         FontAwesomeModule,
-        NgCircleProgressModule.forRoot({
-            'backgroundPadding': 0,
-            'radius': 16,
-            'space': -2,
-            'toFixed': 1,
-            'maxPercent': 100,
-            'outerStrokeWidth': 2,
-            'outerStrokeColor': '#fff',
-            'innerStrokeColor': 'rgba(232,232,232,0.1)',
-            'innerStrokeWidth': 2,
-            'titleFontSize': '12',
-            'animation': false,
-            'animateTitle': false,
-            'animationDuration': 1000,
-            'showTitle': false,
-            'showUnits': false,
-            'showBackground': false,
-        }),
+        NgCircleProgressModule.forRoot(CIRCLE_PROGRESS_DEFAULTS),
+        LazyLoadImageModule,
     ],
     exports: [
         FormsModule,
@@ -42,6 +28,7 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
         InfiniteScrollModule,
         FontAwesomeModule,
         NgCircleProgressModule,
+        LazyLoadImageModule,
     ]
 })
 export class BigtwineSharedLibsModule {

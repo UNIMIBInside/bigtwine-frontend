@@ -21,6 +21,8 @@ import {
     NeelProcessedTweetComponent,
     HighlightedTweetTextComponent,
     NeelProcessedTweetLargeComponent,
+    LinkedEntityComponent,
+    NilEntityComponent,
 } from './';
 import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/services/tweet-entity-highlighter.service';
 import { ResultsFilterService } from 'app/analysis/twitter-neel/services/results-filter.service';
@@ -28,6 +30,9 @@ import { RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.ser
 import { ViewModeSwitcherComponent } from 'app/analysis/twitter-neel/components/view-mode-switcher/view-mode-switcher.component';
 import { TwitterNeelHomeComponent } from 'app/analysis/twitter-neel/components/twitter-neel-home/twitter-neel-home.component';
 import { AnalysisSharedModule } from 'app/analysis/analysis-shared.module';
+import { TweetsCounterIconComponent } from './components/tweets-counter-icon/tweets-counter-icon.component';
+import { EntityCategoryIconComponent } from './components/entity-category-icon/entity-category-icon.component';
+import { ConfidenceIconComponent } from './components/confidence-icon/confidence-icon.component';
 
 @NgModule({
     imports: [
@@ -53,6 +58,11 @@ import { AnalysisSharedModule } from 'app/analysis/analysis-shared.module';
         NeelProcessedTweetLargeComponent,
         HighlightedTweetTextComponent,
         ViewModeSwitcherComponent,
+        LinkedEntityComponent,
+        NilEntityComponent,
+        TweetsCounterIconComponent,
+        EntityCategoryIconComponent,
+        ConfidenceIconComponent,
     ],
     providers: [
         {
