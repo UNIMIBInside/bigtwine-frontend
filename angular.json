@@ -20,7 +20,7 @@
             "inlineTemplate": false,
             "spec": false,
             "prefix": "btw",
-            "styleExt": "scss"
+            "styleext": "scss"
         },
         "@schematics/angular:directive": {
             "spec": false,
