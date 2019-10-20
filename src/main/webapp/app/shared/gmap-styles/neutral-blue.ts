@@ -1,5 +1,8 @@
 /* tslint:disable */
-export const MAP_STYLE = [
+import { MapTypeStyle } from '@agm/core';
+
+export const NEUTRAL_BLUE_BG = "#193341";
+export const NEUTRAL_BLUE: MapTypeStyle[] = [
     {
         "featureType": "water",
         "elementType": "geometry",
@@ -104,4 +107,4 @@ export const MAP_STYLE = [
     }
 ];
 
-export default MAP_STYLE;
+export default NEUTRAL_BLUE;

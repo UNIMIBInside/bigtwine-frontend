@@ -1,31 +1,31 @@
 <div class="toolbar toolbar--secondary">
     <div class="row no-gutters">
         <div class="col">
-            <div class="input-group input-group-sm px-3">
-                <div class="input-group-prepend">
-                    <div class="btn-group" ngbDropdown role="group">
-                        <button class="btn btn-sm btn-light" ngbDropdownToggle>Text</button>
-                        <div class="dropdown-menu" ngbDropdownMenu>
-                            <button class="dropdown-item" ngbDropdownItem>Text</button>
-                            <button class="dropdown-item" ngbDropdownItem>Category</button>
-                            <button class="dropdown-item" ngbDropdownItem>RDF Type</button>
+            <div class="d-inline-flex px-3">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <div class="btn-group" ngbDropdown role="group">
+                            <button class="btn btn-sm btn-light" ngbDropdownToggle>Text</button>
+                            <div class="dropdown-menu" ngbDropdownMenu>
+                                <button class="dropdown-item" ngbDropdownItem>Text</button>
+                                <button class="dropdown-item" ngbDropdownItem>Category</button>
+                                <button class="dropdown-item" ngbDropdownItem>RDF Type</button>
+                            </div>
                         </div>
                     </div>
+                    <input
+                        class="form-control"
+                        placeholder="Filter results by text"
+                        type="text"
+                        [(ngModel)]="searchQuery"
+                        [formControl]="searchQueryControl">
                 </div>
-                <input
-                    class="form-control"
-                    placeholder="Filter results by text"
-                    type="text"
-                    [(ngModel)]="searchQuery"
-                    [formControl]="searchQueryControl">
-                <div class="input-group-append">
-                    <button
-                        *ngIf="!liveSearchEnabled"
-                        type="button"
-                        class="btn btn-outline-light btn-sm"
-                        [disabled]="!shouldSearch"
-                        (click)="onSearchBtnCLick()">Search</button>
-                </div>
+                <button
+                    *ngIf="!liveSearchEnabled"
+                    type="button"
+                    class="btn btn-outline-light btn-sm ml-2"
+                    [disabled]="!shouldSearch"
+                    (click)="onSearchBtnCLick()">Search</button>
             </div>
         </div>
         <div class="col">

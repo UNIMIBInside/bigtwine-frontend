@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/results-viewer.component';
 import { Observable, ReplaySubject } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { selectAllTweets, TwitterNeelState, INeelProcessedTweet } from 'app/analysis/twitter-neel';
+import { selectAllTweets, TwitterNeelState, INeelProcessedTweet, ILinkedEntity } from 'app/analysis/twitter-neel';
 import { map } from 'rxjs/operators';
 import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
@@ -16,15 +16,24 @@ export class ListResultsViewerComponent extends ResultsViewerComponent implement
 
     private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
-    tweets$: Observable<INeelProcessedTweet[]>;
+    private _tweets$: Observable<INeelProcessedTweet[]>;
 
     filterQuery: IResultsFilterQuery = null;
 
     filteredTweets$: Observable<INeelProcessedTweet[]>;
     paginatedTweets$: Observable<INeelProcessedTweet[]>;
+    get tweets$(): Observable<INeelProcessedTweet[]> {
+        if (this.isFilteringEnabled) {
+            return this.filteredTweets$;
+        } else {
+            return this.paginatedTweets$;
+        }
+    }
 
     currentPage = 1;
     pageSize = 250;
+    selectedEntity: ILinkedEntity;
+    selectedEntityTweet: INeelProcessedTweet;
 
     get isFilteringEnabled() {
         return this.filterQuery !== null;
@@ -36,8 +45,8 @@ export class ListResultsViewerComponent extends ResultsViewerComponent implement
     }
 
     ngOnInit() {
-        this.tweets$ = this.tNeelStore.pipe(select(selectAllTweets));
-        this.paginatedTweets$ = this.tweets$.pipe(
+        this._tweets$ = this.tNeelStore.pipe(select(selectAllTweets));
+        this.paginatedTweets$ = this._tweets$.pipe(
             map(tweets => tweets.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize))
         );
 
@@ -57,6 +66,10 @@ export class ListResultsViewerComponent extends ResultsViewerComponent implement
         if (query) {
             this.filteredTweets$ = this.resultsFilterService.filteredResults$;
         }
+    }
+
+    onSelectedEntityChange(entity: ILinkedEntity, tweet: INeelProcessedTweet) {
+        this.selectedEntityTweet = entity ? tweet : null;
     }
 
 }

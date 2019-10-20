@@ -1,14 +1,14 @@
 /* tslint:disable */
 import { MapTypeStyle } from '@agm/core';
 
-export const NEUTRAL_GRAY_BG = "#29303B";
-export const NEUTRAL_GRAY: MapTypeStyle[] = [
+export const NEUTRAL_GRAY_ALT_BG = "#1A2533";
+export const NEUTRAL_GRAY_ALT: MapTypeStyle[] = [
     {
         "featureType": "water",
         "elementType": "geometry",
         "stylers": [
             {
-                "color": "#29303B"
+                "color": "#1A2533"
             }
         ]
     },
@@ -104,4 +104,4 @@ export const NEUTRAL_GRAY: MapTypeStyle[] = [
     }
 ];
 
-export default NEUTRAL_GRAY;
+export default NEUTRAL_GRAY_ALT;

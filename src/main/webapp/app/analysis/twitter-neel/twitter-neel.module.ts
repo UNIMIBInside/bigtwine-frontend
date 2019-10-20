@@ -33,6 +33,7 @@ import { AnalysisSharedModule } from 'app/analysis/analysis-shared.module';
 import { TweetsCounterIconComponent } from './components/tweets-counter-icon/tweets-counter-icon.component';
 import { EntityCategoryIconComponent } from './components/entity-category-icon/entity-category-icon.component';
 import { ConfidenceIconComponent } from './components/confidence-icon/confidence-icon.component';
+import { LinkedEntityDetailsComponent } from './components/linked-entity-details/linked-entity-details.component';
 
 @NgModule({
     imports: [
@@ -63,6 +64,7 @@ import { ConfidenceIconComponent } from './components/confidence-icon/confidence
         TweetsCounterIconComponent,
         EntityCategoryIconComponent,
         ConfidenceIconComponent,
+        LinkedEntityDetailsComponent,
     ],
     providers: [
         {

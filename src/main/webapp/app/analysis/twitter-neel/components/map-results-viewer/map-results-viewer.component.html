@@ -70,46 +70,51 @@
             [zoom]="2"
             [disableDefaultUI]="false"
             [zoomControl]="true"
-            [styles]="mapStyle"
-            backgroundColor="#29303B">
+            [styles]="mapStyles"
+            [backgroundColor]="mapBg">
 
             <ng-container *ngIf="selectedTweet === null; else selectedTweetMarkers">
                 <agm-marker-cluster
-                    [styles]="getClusterStyles('tweets')">
+                    [styles]="getClusterStyles('tweets')"
+                    title="Tweets marker cluster">
                     <ng-container *ngFor="let l of statusLocations$ | async">
                         <agm-marker
                             *ngIf="l.source === 'status'"
                             [latitude]="l.coordinates.latitude"
                             [longitude]="l.coordinates.longitude"
-                            [label]="''"
                             [markerDraggable]="false"
-                            iconUrl="content/images/markers/tweets.svg">
+                            iconUrl="content/images/markers/tweets.svg"
+                            label=""
+                            title="Tweet location">
                         </agm-marker>
                     </ng-container>
-
                 </agm-marker-cluster>
 
                 <agm-marker-cluster
-                    [styles]="getClusterStyles('resources')">
-                    <agm-marker
-                        *ngFor="let l of resourceLocations$ | async"
-                        [latitude]="l.coordinates.latitude"
-                        [longitude]="l.coordinates.longitude"
-                        [label]="''"
-                        [markerDraggable]="false"
-                        iconUrl="content/images/markers/resources.svg">
-                    </agm-marker>
-                </agm-marker-cluster>
-
-                <agm-marker-cluster
-                    [styles]="getClusterStyles('users')">
+                    [styles]="getClusterStyles('users')"
+                    title="Twitter users marker cluster">
                     <agm-marker
                         *ngFor="let l of userLocations$ | async"
                         [latitude]="l.coordinates.latitude"
                         [longitude]="l.coordinates.longitude"
-                        [label]="''"
                         [markerDraggable]="false"
-                        iconUrl="content/images/markers/users.svg">
+                        iconUrl="content/images/markers/users.svg"
+                        label=""
+                        title="Twitter user location">
+                    </agm-marker>
+                </agm-marker-cluster>
+
+                <agm-marker-cluster
+                    [styles]="getClusterStyles('resources')"
+                    title="Resources marker cluster">
+                    <agm-marker
+                        *ngFor="let l of resourceLocations$ | async"
+                        [latitude]="l.coordinates.latitude"
+                        [longitude]="l.coordinates.longitude"
+                        [markerDraggable]="false"
+                        iconUrl="content/images/markers/resources.svg"
+                        label=""
+                        title="Resource location">
                     </agm-marker>
                 </agm-marker-cluster>
             </ng-container>
@@ -118,18 +123,20 @@
                     *ngIf="selectedTweet.status.coordinates"
                     [latitude]="selectedTweet.status.coordinates.latitude"
                     [longitude]="selectedTweet.status.coordinates.longitude"
-                    [label]="''"
                     [markerDraggable]="false"
-                    iconUrl="content/images/markers/tweets.svg">
+                    iconUrl="content/images/markers/tweets.svg"
+                    label=""
+                    title="Tweet location">
                 </agm-marker>
 
                 <agm-marker
                     *ngIf="selectedTweet.status.user.coordinates"
                     [latitude]="selectedTweet.status.user.coordinates.latitude"
                     [longitude]="selectedTweet.status.user.coordinates.longitude"
-                    [label]="''"
                     [markerDraggable]="false"
-                    iconUrl="content/images/markers/users.svg">
+                    iconUrl="content/images/markers/users.svg"
+                    label=""
+                    title="Twitter user location">
                 </agm-marker>
 
                 <ng-container *ngFor="let entity of selectedTweet.entities">
@@ -137,9 +144,10 @@
                         *ngIf="entity.resource && entity.resource.coordinates"
                         [latitude]="entity.resource.coordinates.latitude"
                         [longitude]="entity.resource.coordinates.longitude"
-                        [label]="''"
                         [markerDraggable]="false"
-                        iconUrl="content/images/markers/resources.svg">
+                        iconUrl="content/images/markers/resources.svg"
+                        label=""
+                        title="Resource location">
                     </agm-marker>
                 </ng-container>
             </ng-template>

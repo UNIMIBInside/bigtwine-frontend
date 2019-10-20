@@ -334,4 +334,9 @@ toolbars
 .scrollable-container {
     height: 100%;
     overflow-y: auto;
+
+    &--horizontal {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
 }

@@ -22,4 +22,6 @@ export class LinkedEntityComponent {
     get entity(): ILinkedEntity {
         return this._entity;
     }
+
+    @Input() vertical: boolean;
 }

@@ -1,4 +1,6 @@
 .resource {
+    $root: &;
+
     &__name {
         font-weight: bold;
     }
@@ -12,4 +14,11 @@
     }
 
     &__icons {}
+
+    &--vertical {
+        #{$root}__desc {
+            height: 2.8rem;
+            max-height: 2.8rem;
+        }
+    }
 }

@@ -28,7 +28,7 @@ import {
 import { ResultsViewerComponent } from 'app/analysis/twitter-neel/components/results-viewer.component';
 import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
-import mapStyle from 'app/shared/gmap-styles';
+import { DEFAULT_MAP_STYLES, DEFAULT_MAP_BG } from 'app/shared/gmap-styles';
 import { ClusterStyle } from '@agm/js-marker-clusterer/services/google-clusterer-types';
 
 @Component({
@@ -64,7 +64,8 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
     currentPage = 1;
     pageSize = 250;
 
-    mapStyle = mapStyle;
+    mapStyles = DEFAULT_MAP_STYLES;
+    mapBg = DEFAULT_MAP_BG;
 
     get currentAnalysis(): IAnalysis {
         let currentAnalysis: IAnalysis = null;
