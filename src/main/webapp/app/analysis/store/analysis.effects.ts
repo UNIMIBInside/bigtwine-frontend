@@ -173,14 +173,10 @@ export class AnalysisEffects {
     );
 
     @Effect()
-    saveAnalysisUserSettings$: Observable<Action> = this.action$.pipe(
-        ofType(AnalysisActions.ActionTypes.SaveUserSettings),
-        filter((action: AnalysisActions.SaveUserSettings) => action.group === this.userSettingsService.ANALYSIS_OPTIONS_GROUP_KEY),
-        withLatestFrom(this.store$.select(selectCurrentAnalysis)),
-        filter(([, currentAnalysis]: [AnalysisActions.SaveUserSettings, IAnalysis]) =>
-            (currentAnalysis != null && currentAnalysis.id != null)),
-        map(([action, currentAnalysis]: [AnalysisActions.SaveUserSettings, IAnalysis]) =>
-            new AnalysisActions.UpdateAnalysis(currentAnalysis.id, {settings: action.values})),
+    saveAnalysisSettings$: Observable<Action> = this.action$.pipe(
+        ofType(AnalysisActions.ActionTypes.SaveAnalysisSettings),
+        map((action: AnalysisActions.SaveAnalysisSettings) =>
+            new AnalysisActions.UpdateAnalysis(action.analysisId, {settings: action.values})),
     );
 
     @Effect()

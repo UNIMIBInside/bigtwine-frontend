@@ -11,6 +11,7 @@ import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-coun
 import { IPagedAnalyses } from 'app/analysis/models/paged-analyses.model';
 import { Message } from 'webstomp-client';
 import { AuthServerProvider } from 'app/core';
+import { IAnalysisSetting } from 'app/analysis/models/analysis-setting.model';
 
 export interface IAnalysisService {
     createAnalysis(analysis: IAnalysis): Observable<IAnalysis>;
@@ -27,6 +28,7 @@ export interface IAnalysisService {
     searchAnalysisResults(analysisId: string, query: IResultsFilterQuery, page: IPage): Observable<IPagedAnalysisResults>;
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount>;
     exportAnalysisResults(analysisId: string): Observable<IAnalysisExport>;
+    getAnalysisSettings(analysisId: string): Observable<IAnalysisSetting[]>;
     getDocumentById(documentId: string): Observable<IDocument>;
     getDocumentDownloadLink(documentId: string): string;
 }
@@ -121,6 +123,11 @@ export class AnalysisService implements IAnalysisService {
     exportAnalysisResults(analysisId: string): Observable<IAnalysisExport> {
         return this.http
             .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}/export`) as Observable<IAnalysisExport>;
+    }
+
+    getAnalysisSettings(analysisId: string): Observable<IAnalysisSetting[]> {
+        return this.http
+            .get(`${this.ANALYSIS_API}/analyses/${analysisId}/settings`) as Observable<IAnalysisSetting[]>;
     }
 
     getDocumentById(documentId: string): Observable<IDocument> {

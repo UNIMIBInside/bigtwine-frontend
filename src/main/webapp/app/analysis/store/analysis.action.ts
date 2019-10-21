@@ -43,6 +43,7 @@ export enum ActionTypes {
     SearchAnalysisResultsError = '[Analysis] SEARCH_ANALYSIS_RESULTS_ERROR',
     AnalysisResultsReceived = '[Analysis] ANALYSIS_RESULTS_RECEIVED',
     ClearAnalysisResults = '[Analysis] CLEAR_ANALYSIS_RESULTS',
+    SaveAnalysisSettings = '[Analysis] SAVE_ANALYSIS_SETTINGS',
     GetDocumentMeta = '[Analysis] GET_DOCUMENT_META',
     GetDocumentMetaSuccess = '[Analysis] GET_DOCUMENT_META_SUCCESS',
     GetDocumentMetaError = '[Analysis] GET_DOCUMENT_META_ERROR',
@@ -303,6 +304,12 @@ export class ListeningAnalysisResultsError extends GenericAnalysisError {
     constructor(readonly error: any) {
         super(ActionTypes.ListeningAnalysisResultsError, error);
     }
+}
+
+export class SaveAnalysisSettings implements Action {
+    readonly type = ActionTypes.SaveAnalysisSettings;
+
+    constructor(readonly analysisId: string, readonly values: {[name: string]: any}) {}
 }
 
 export class GetDocumentMeta implements Action {

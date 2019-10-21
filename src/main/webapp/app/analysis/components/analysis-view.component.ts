@@ -1,7 +1,7 @@
 import { OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, ReplaySubject } from 'rxjs';
-import { first, last, take, takeUntil } from 'rxjs/operators';
+import { first, take, takeUntil } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import {
     ActionTypes,
@@ -22,7 +22,6 @@ import {
     StopListenAnalysisResults,
     IPaginationInfo
 } from 'app/analysis';
-import { UserSettingsService } from 'app/analysis/services/user-settings.service';
 
 export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
     protected destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -79,8 +78,7 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
     protected constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected analysisStore: Store<AnalysisState>,
-        protected userSettings: UserSettingsService
+        protected analysisStore: Store<AnalysisState>
     ) { }
 
     ngOnDestroy(): void {

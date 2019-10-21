@@ -1,36 +1,72 @@
-<div *ngFor="let groupKey of userSettings.registeredGroups">
-    <h2>{{groupKey}}</h2>
-    <div *ngFor="let option of userSettings.getOptions(groupKey)">
-        <btw-text-option
-            *ngIf="option.optionType === 'text'"
-            [option]="option"
-            [value]="userSettings.getOptionValue(groupKey, option.key)"
-            [disabled]="isOptionDisabled(groupKey, option.key)"
-            (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-text-option>
-        <btw-number-option
-            *ngIf="option.optionType === 'number'"
-            [option]="option"
-            [value]="userSettings.getOptionValue(groupKey, option.key)"
-            [disabled]="isOptionDisabled(groupKey, option.key)"
-            [minValue]="option.minValue"
-            [maxValue]="option.maxValue"
-            [step]="option.step"
-            (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-number-option>
-        <btw-choices-option
-            *ngIf="option.optionType === 'choices'"
-            [option]="option"
-            [disabled]="isOptionDisabled(groupKey, option.key)"
-            [value]="userSettings.getOptionValue(groupKey, option.key)"
-            (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-choices-option>
-        <btw-boolean-option
-            *ngIf="option.optionType === 'boolean'"
-            [option]="option"
-            [disabled]="isOptionDisabled(groupKey, option.key)"
-            [value]="userSettings.getOptionValue(groupKey, option.key)"
-            (change)="userSettings.setOptionValue(groupKey, $event.optionKey, $event.value)"></btw-boolean-option>
-    </div>
-
-    <button
-        [disabled]="isOptionsGroupDisabled(groupKey)"
-        (click)="userSettings.saveChanges(groupKey)">Apply</button>
+<div class="modal-header">
+    <h4 class="modal-title">Analysis settings</h4>
+    <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">x</span>
+    </button>
 </div>
+<div class="modal-body">
+    <div class="row justify-content-center">
+        <div class="col">
+            <ng-container *ngIf="isLoading; else ready">
+                <img class="loading" src="/content/images/loading.svg" alt="">
+            </ng-container>
+            <ng-template #ready>
+                <form>
+                    <div class="form-group" *ngFor="let setting of settings">
+                        <label [for]="setting.name" class="form-control-label">{{setting.name}}</label>
+
+                        <!-- Number field -->
+                        <input
+                            *ngIf="setting.type === 'number'"
+                            [id]="setting.name"
+                            [name]="setting.name"
+                            [(ngModel)]="setting.currentValue"
+                            class="form-control"
+                            type="number">
+
+                        <!-- Number field -->
+                        <input
+                            *ngIf="setting.type === 'string'"
+                            [id]="setting.name"
+                            [name]="setting.name"
+                            [(ngModel)]="setting.currentValue"
+                            class="form-control"
+                            type="text">
+
+                        <!-- Boolean field -->
+                        <input *ngIf="setting.type === 'boolean'"
+                               [name]="setting.name"
+                               [id]="setting.name"
+                               [(ngModel)]="setting.currentValue"
+                               class="form-check"
+                               type="checkbox">
+
+                        <!-- Textarea -->
+                        <textarea *ngIf="setting.type === 'text'"
+                                  [name]="setting.name"
+                                  [id]="setting.name"
+                                  [(ngModel)]="setting.currentValue"
+                                  class="form-control"></textarea>
+
+                        <!-- Select -->
+                        <select *ngIf="setting.type === 'single-choice' || setting.type === 'multiple-choices'"
+                                [name]="setting.name"
+                                [id]="setting.name"
+                                [attr.multiple]="setting.type === 'multiple-choices' ? 'multiple' : null"
+                                [(ngModel)]="setting.currentValue"
+                                class="form-control">
+                            <option *ngFor="let choice of setting.choices"
+                                    [ngValue]="choice.value">{{choice.name}}</option>
+                        </select>
+                        <small class="form-text text-muted" *ngIf="setting.description">{{setting.description}}</small>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-outline-light" (click)="save()">Save</button>
+                    </div>
+                </form>
+
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+

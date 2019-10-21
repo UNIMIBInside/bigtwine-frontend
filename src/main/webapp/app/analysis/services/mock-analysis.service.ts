@@ -8,6 +8,7 @@ import { IAnalysisResultsCount } from 'app/analysis/models/analysis-results-coun
 import { IAnalysisService } from 'app/analysis/services/analysis.service';
 import { IPagedAnalyses } from 'app/analysis/models/paged-analyses.model';
 import { IAnalysisResult } from 'app/analysis/models/analysis-result.model';
+import { AnalysisSettingType, IAnalysisSetting } from 'app/analysis/models/analysis-setting.model';
 
 export class MockAnalysisService implements IAnalysisService {
     private analysisDb: Map<string, IAnalysis> = new Map();
@@ -221,6 +222,66 @@ export class MockAnalysisService implements IAnalysisService {
             message: null
         };
         return of(response).pipe(delay(this.rms));
+    }
+
+    getAnalysisSettings(analysisId: string): Observable<IAnalysisSetting[]> {
+        const settings: IAnalysisSetting[] = [
+            {
+                name: 'twitter-stream-sampling',
+                type: AnalysisSettingType.Number,
+                editable: true,
+                description: null,
+                defaultValue: -1,
+                currentValue: 1,
+                choices: null
+            },
+            {
+                name: 'ner-recognizer',
+                type: AnalysisSettingType.SingleChoice,
+                editable: true,
+                description: 'Descrizione di prova ner',
+                defaultValue: 'default',
+                currentValue: null,
+                choices: [
+                    {value: 'default', name: 'Default'},
+                    {value: 'ritter', name: 'Ritter'},
+                ]
+            },
+            {
+                name: 'nel-linker',
+                type: AnalysisSettingType.SingleChoice,
+                editable: false,
+                description: 'Descrizione di prova nel',
+                defaultValue: 'default',
+                currentValue: null,
+                choices: [
+                    {value: 'default', name: 'Default'},
+                    {value: 'mind2016', name: 'Mind 2016'},
+                ]
+            },
+            {
+                name: 'geo-decoder',
+                type: AnalysisSettingType.MultipleChoices,
+                editable: false,
+                description: null,
+                defaultValue: 'decoder1',
+                currentValue: null,
+                choices: [
+                    {value: 'decoder1', name: 'Decoder 1'},
+                    {value: 'decoder2', name: 'Decoder 2'},
+                ]
+            },
+            {
+                name: 'text-field',
+                type: AnalysisSettingType.Text,
+                editable: true,
+                description: null,
+                defaultValue: null,
+                currentValue: 'prova prova',
+                choices: null
+            },
+        ];
+        return of(settings).pipe(delay(this.rms));
     }
 
     getDocumentById(documentId: string): Observable<IDocument> {

@@ -3,8 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AnalysisState, IDatasetAnalysisInput } from 'app/analysis';
 import { BoundedAnalysisViewComponent } from 'app/analysis/components';
-import { UserSettingsService } from 'app/analysis/services/user-settings.service';
-import { DATASET_ANALYSIS_OPTIONS } from 'app/analysis/twitter-neel/configs';
 
 @Component({
   selector: 'btw-dataset-view',
@@ -20,17 +18,12 @@ export class DatasetViewComponent extends BoundedAnalysisViewComponent {
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected analysisStore: Store<AnalysisState>,
-        protected userSettings: UserSettingsService
+        protected analysisStore: Store<AnalysisState>
     ) {
-        super(router, route, analysisStore, userSettings);
+        super(router, route, analysisStore);
     }
 
     onCurrentAnalysisIdChange(analysisId: string) {
         super.onCurrentAnalysisIdChange(analysisId);
-
-        if (analysisId) {
-            this.userSettings.registerAnalysisOptions(DATASET_ANALYSIS_OPTIONS, this.currentAnalysis.settings);
-        }
     }
 }

@@ -52,6 +52,7 @@ $border-radius-sm: 0.1rem;
 // Settings for the `<body>` element.
 
 $body-bg: $page-bg-color;
+$body-color: $text-color;
 
 // Typography:
 // Font, line-height, and color for body text, headings, and more.
@@ -62,3 +63,11 @@ $font-size-base: 1rem;
 $table-dark-bg: $page-bg-color;
 $table-dark-color: rgb(216, 227, 255);
 $table-dark-border-color: lighten($table-dark-bg, 10);
+
+// Modal:
+$modal-content-bg: $page-bg-color;
+$modal-header-border-color: $page-separator-color;
+$modal-content-border-color: $page-separator-color;
+
+$close-color: $text-color;
+$close-text-shadow: none;
