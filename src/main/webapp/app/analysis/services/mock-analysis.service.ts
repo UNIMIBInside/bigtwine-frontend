@@ -44,6 +44,32 @@ export class MockAnalysisService implements IAnalysisService {
         const analysis1: IAnalysis = {
             id: 'analysis1',
             status: AnalysisStatus.Completed,
+            statusHistory: [
+                {
+                    oldStatus: AnalysisStatus.Stopped,
+                    newStatus: AnalysisStatus.Completed,
+                    user: {uid: 'admin', username: 'admin'},
+                    message: '',
+                    errorCode: null,
+                    date: new Date()
+                },
+                {
+                    oldStatus: AnalysisStatus.Started,
+                    newStatus: AnalysisStatus.Stopped,
+                    user: null,
+                    message: 'Stopped by system',
+                    errorCode: null,
+                    date: new Date()
+                },
+                {
+                    oldStatus: AnalysisStatus.Ready,
+                    newStatus: AnalysisStatus.Started,
+                    user: {uid: 'admin', username: 'admin'},
+                    message: '',
+                    errorCode: null,
+                    date: new Date()
+                }
+            ],
             input: {
                 type: AnalysisInputType.Query,
                 bounded: false,

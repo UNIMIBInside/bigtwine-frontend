@@ -1,10 +1,29 @@
-<h2>Status history</h2>
-<ul *ngIf="currentAnalysis && currentAnalysis.statusHistory">
-    <li *ngFor="let entry of currentAnalysis.statusHistory">
-        {{entry.oldStatus}} => {{entry.newStatus}}<br>
-        <ng-container *ngIf="entry.message">
-            {{entry.message}}<br>
-        </ng-container>
-        {{entry.user ? entry.user.username : 'system'}} - {{entry.date}}
-    </li>
-</ul>
+<div class="modal-header">
+    <h4 class="modal-title">Analysis status history</h4>
+    <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">x</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row justify-content-center">
+        <div class="col">
+            <table class="table table-dark table-striped" *ngIf="currentAnalysis && currentAnalysis.statusHistory">
+                <thead>
+                    <tr>
+                        <th>STATUS</th>
+                        <th>MESSAGE</th>
+                        <th>USER</th>
+                        <th>DATE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let entry of currentAnalysis.statusHistory">
+                        <td class="text-center"><btw-analysis-status-badge [analysisStatus]="entry.newStatus"></btw-analysis-status-badge></td>
+                        <td>{{entry.message}}</td>
+                        <td>{{entry.user ? entry.user.username : 'system'}}</td>
+                        <td>{{entry.date | date:"short"}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AnalysisState, IAnalysis, selectCurrentAnalysis } from 'app/analysis';
 import { take } from 'rxjs/operators';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'btw-analysis-status-history',
@@ -20,5 +21,6 @@ export class AnalysisStatusHistoryComponent {
     }
 
     constructor(
-        protected analysisStore: Store<AnalysisState>) {}
+        protected analysisStore: Store<AnalysisState>,
+        public activeModal: NgbActiveModal) {}
 }
