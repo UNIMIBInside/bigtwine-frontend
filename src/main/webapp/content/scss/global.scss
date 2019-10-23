@@ -299,6 +299,13 @@ toolbars
     }
 }
 
+.toolbar-container {
+    .toolbar {
+        border-bottom: none;
+        box-shadow: $toolbar-shadow;
+    }
+}
+
 .multi-toolbars-container {
     position: fixed;
     width: 100%;

@@ -79,7 +79,14 @@ export class MockAnalysisService implements IAnalysisService {
             type: AnalysisType.TwitterNeel,
             owner: {uid: 'user-1', username: 'User1'},
             progress: -1,
-            resultsCount: 1239123
+            resultsCount: 1239123,
+            export: {
+                completed: true,
+                failed: false,
+                progress: 1,
+                documentId: '123456',
+                message: null
+            }
         };
 
         const analysis2: IAnalysis = {
@@ -111,12 +118,36 @@ export class MockAnalysisService implements IAnalysisService {
             type: AnalysisType.TwitterNeel,
             owner: {uid: 'user-1', username: 'User1'},
             progress: 1,
-            resultsCount: 229283
+            resultsCount: 229283,
+            export: {
+                completed: false,
+                failed: true,
+                progress: 0.3,
+                documentId: '123456',
+                message: null
+            }
+        };
+
+        const analysis4: IAnalysis = {
+            id: 'analysis4',
+            status: AnalysisStatus.Completed,
+            input: {
+                type: AnalysisInputType.Dataset,
+                bounded: true,
+                documentId: 'document-2',
+                name: 'dataset-large.tsv',
+                size: 28229011
+            } as IAnalysisInput,
+            type: AnalysisType.TwitterNeel,
+            owner: {uid: 'user-1', username: 'User1'},
+            progress: 1,
+            resultsCount: 229283,
         };
 
         this.analysisDb.set(analysis1.id, analysis1);
         this.analysisDb.set(analysis2.id, analysis2);
         this.analysisDb.set(analysis3.id, analysis3);
+        this.analysisDb.set(analysis4.id, analysis4);
     }
 
     createAnalysis(analysis: IAnalysis): Observable<IAnalysis> {

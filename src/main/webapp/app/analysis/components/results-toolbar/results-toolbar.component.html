@@ -74,26 +74,7 @@
         <div class="col text-right">
             <div class="d-inline-flex">
                 <ng-container *ngIf="shouldShowExportBtn">
-                    <div *ngIf="!currentAnalysis.export; else analysisExport"
-                         class="btn-group px-3" ngbDropdown placement="bottom-right" role="group">
-                        <button class="btn btn-sm btn-outline-light" ngbDropdownToggle>
-                            <fa-icon icon="download"></fa-icon>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
-                            <button *ngFor="let format of getExportFormats()"
-                                    class="dropdown-item"
-                                    (click)="onExportBtnClick(format.type)"
-                                    ngbDropdownItem>{{format.label}}</button>
-                        </div>
-                    </div>
-
-                    <ng-template #analysisExport>
-                        <span class="px-3" *ngIf="!(currentAnalysis.export.completed || currentAnalysis.export.failed)">
-                            {{ (currentAnalysis.export.progress * 100) | number:'1.0-0'}}%
-                        </span>
-                        <a *ngIf="currentAnalysis.export.completed" [href]="exportLink" target="_blank">Download results</a>
-                        <span class="px-3" *ngIf="currentAnalysis.export.failed">Export failed</span>
-                    </ng-template>
+                    <btw-results-export-btn [analysis]="currentAnalysis"></btw-results-export-btn>
                 </ng-container>
 
                 <ng-content select=".space-right"></ng-content>

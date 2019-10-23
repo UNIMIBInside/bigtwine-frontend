@@ -3,7 +3,7 @@ import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { Observable, ReplaySubject } from 'rxjs';
 import {
     AnalysisState,
-    AnalysisStatus, ExportAnalysisResults,
+    AnalysisStatus,
     GetAnalysisResults,
     IAnalysis,
     IPaginationInfo,
@@ -17,11 +17,6 @@ import { FormControl } from '@angular/forms';
 import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
 import { AnalysisService } from 'app/analysis/services/analysis.service';
-
-interface AnalysisResultsExportFormat {
-    type: string;
-    label: string;
-}
 
 @Component({
     selector: 'btw-results-toolbar',
@@ -101,18 +96,12 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
             AnalysisStatus.Completed,
             AnalysisStatus.Cancelled,
         ]);
-        return this.currentAnalysis && acceptedStatuses.has(this.currentAnalysis.status);
-    }
-
-    get exportLink(): string {
-        return this.analysisService
-            .getDocumentDownloadLink(this.currentAnalysis.export.documentId);
+        return this.canExport && this.currentAnalysis && acceptedStatuses.has(this.currentAnalysis.status);
     }
 
     constructor(
         private analysisStore: Store<AnalysisState>,
-        @Inject(RESULTS_FILTER_SERVICE) private resultsFilterService: IResultsFilterService,
-        private analysisService: AnalysisService) {}
+        @Inject(RESULTS_FILTER_SERVICE) private resultsFilterService: IResultsFilterService) {}
 
     ngOnInit(): void {
         this.currentAnalysis$ = this.analysisStore.pipe(select(selectCurrentAnalysis));
@@ -167,11 +156,6 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         this.gotoPage(this.gotoPageNumber - 1);
     }
 
-    onExportBtnClick(formatType: string) {
-        const action: Action = new ExportAnalysisResults(this.currentAnalysis.id);
-        this.analysisStore.dispatch(action);
-    }
-
     gotoPage(page) {
         if (page < 0 || page >= this.pagination.pagesCount) {
             return;
@@ -210,14 +194,6 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
             const action: Action = new SearchAnalysisResults(analysisId, query, page);
             this.analysisStore.dispatch(action);
         }
-    }
-
-    getExportFormats(): AnalysisResultsExportFormat[] {
-        return [
-            {type: 'json', label: 'JSON'},
-            {type: 'tsv', label: 'TSV'},
-            {type: 'neel-challenge-output', label: 'NEEL Challenge Output'},
-        ];
     }
 
     private buildQuery(): IResultsFilterQuery {

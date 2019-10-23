@@ -1,7 +1,0 @@
-<div *ngIf="document; else loading">
-    {{document.filename}} ({{humanFileSize(document.size)}})
-</div>
-
-<ng-template #loading>
-    {{documentId}}
-</ng-template>

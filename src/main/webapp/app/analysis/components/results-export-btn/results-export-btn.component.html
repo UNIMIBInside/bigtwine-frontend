@@ -1,0 +1,37 @@
+<div class="px-3">
+    <div *ngIf="!analysis.export; else analysisExport"
+         class="btn-group" ngbDropdown placement="bottom-right" role="group">
+        <button class="btn btn-sm btn-outline-light" ngbDropdownToggle>
+            <fa-icon icon="download"></fa-icon>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+            <button *ngFor="let format of getExportFormats()"
+                    class="dropdown-item"
+                    (click)="onExportBtnClick(format.type)"
+                    ngbDropdownItem>{{format.label}}</button>
+        </div>
+    </div>
+
+    <ng-template #analysisExport>
+        <circle-progress
+            *ngIf="!(analysis.export.completed || analysis.export.failed)"
+            [percent]="analysis.export.progress * 100"
+            [subtitle]="((analysis.export.progress * 100) | number:'1.0-0') + '%'"></circle-progress>
+
+        <a *ngIf="analysis.export.completed"
+           class="btn btn-sm btn-outline-success"
+           [href]="exportLink"
+           target="_blank"
+           ngbTooltip="Analysis results export completed, click to download"
+           placement="bottom">
+            <fa-icon icon="download"></fa-icon>
+        </a>
+
+        <button *ngIf="analysis.export.failed"
+                class="btn btn-sm btn-outline-danger"
+                disabled
+                ngbTooltip="Analysis results export failed">
+            <fa-icon icon="download"></fa-icon>
+        </button>
+    </ng-template>
+</div>

@@ -1,13 +1,30 @@
-<btw-analysis-toolbar
-    [showStartBtn]="showStartBtn"
-    [showCancelBtn]="showCancelBtn">
-    <div class="space-center" *ngIf="currentAnalysis && currentAnalysis.input">
-        <btw-dataset-details [documentId]="datasetDocumentId"></btw-dataset-details>
+<div class="wrapper wrapper--toolbar">
+    <div class="multi-toolbars-container">
+        <btw-analysis-toolbar
+            [showStartBtn]="showStartBtn"
+            [showCancelBtn]="showCancelBtn">
+            <div class="space-left" *ngIf="currentAnalysis && currentAnalysis.input">
+                <div class="d-flex">
+                    <div class="px-3" *ngIf="currentAnalysis && currentAnalysis.progress < 1">
+                        <circle-progress
+                            [percent]="currentAnalysis.progress * 100"
+                            [subtitle]="((currentAnalysis.progress * 100) | number:'1.0-0') + '%'"></circle-progress>
+                    </div>
+                    <div class="px-3">
+                        <btw-dataset-details [document]="datasetDocument"></btw-dataset-details>
+                    </div>
+                </div>
+            </div>
+        </btw-analysis-toolbar>
+        <btw-results-toolbar>
+            <div class="space-right">
+                <div class="px-3">
+                    <btw-view-mode-switcher></btw-view-mode-switcher>
+                </div>
+            </div>
+        </btw-results-toolbar>
     </div>
-</btw-analysis-toolbar>
-<btw-results-toolbar>
-    <div class="space-right">
-        <btw-view-mode-switcher></btw-view-mode-switcher>
+    <div class="wrapper__content">
+        <router-outlet name="results-viewer"></router-outlet>
     </div>
-</btw-results-toolbar>
-<router-outlet name="results-viewer"></router-outlet>
+</div>
