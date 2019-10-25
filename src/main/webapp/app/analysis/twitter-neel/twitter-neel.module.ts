@@ -6,7 +6,6 @@ import { AgmCoreModule } from '@agm/core';
 import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { NgxUploadModule } from '@wkoza/ngx-upload';
 
 import {
     twitterNeelState,
@@ -44,8 +43,7 @@ import { LinkedEntityDetailsComponent } from './components/linked-entity-details
         StoreModule.forFeature('twitterNeel', TwitterNeelReducer),
         EffectsModule.forFeature([TwitterNeelEffects]),
         AgmCoreModule,
-        AgmJsMarkerClustererModule,
-        NgxUploadModule.forRoot()
+        AgmJsMarkerClustererModule
     ],
     declarations: [
         TwitterNeelHomeComponent,

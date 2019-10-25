@@ -14,7 +14,7 @@ export class DatasetViewComponent extends BoundedAnalysisViewComponent {
     get datasetDocument(): IDocument {
         const docInput = (this.currentAnalysis.input as IDatasetAnalysisInput);
         return {
-            documentId: docInput.documentId,
+            id: docInput.documentId,
             filename: docInput.name,
             size: docInput.size
         };

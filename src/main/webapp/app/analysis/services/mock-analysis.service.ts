@@ -343,7 +343,7 @@ export class MockAnalysisService implements IAnalysisService {
 
     getDocumentById(documentId: string): Observable<IDocument> {
         return of({
-            documentId,
+            id: documentId,
             filename: 'testdocument.csv',
             size: Math.ceil(Math.random() * 100000000),
             contentType: 'text/csv',
@@ -354,6 +354,14 @@ export class MockAnalysisService implements IAnalysisService {
 
     getDocumentDownloadLink(documentId: string): string {
         return `/documents/${documentId}/download?access_token=jwt`;
+    }
+
+    getDocuments(documentType?: string, category?: string, analysisType?: string): Observable<IDocument[]> {
+        const docs = [];
+        for (let i = 0; i < 100; ++i) {
+            docs.push(this.randomDoc(documentType, category, analysisType));
+        }
+        return of(docs).pipe(delay(this.rms));
     }
 
     private tweetText(len: number) {
@@ -452,5 +460,19 @@ export class MockAnalysisService implements IAnalysisService {
         }
 
         return e;
+    }
+
+    private randomDoc(documentType?: string, category?: string, analysisType?: string): IDocument {
+        return {
+            id: this.uuidv4(),
+            filename: 'testdocument' + Math.ceil(Math.random() * 100) + '.csv',
+            size: Math.ceil(Math.random() * 100000000),
+            contentType: 'text/csv',
+            uploadDate: new Date(),
+            user: {uid: 'user-1', username: 'user-1'},
+            type: documentType,
+            analysisType,
+            category
+        };
     }
 }

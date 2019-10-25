@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TagInputModule } from 'ngx-chips';
+import { NgxUploadModule } from '@wkoza/ngx-upload';
 import { BigtwineSharedModule } from 'app/shared';
 import {
     AnalysisInputBadgeComponent,
@@ -19,7 +20,10 @@ import {
     OptionWrapperComponent,
     StepperComponent,
     QueryInputComponent,
-    DatasetDetailsComponent,
+    DocumentDetailsComponent,
+    DocumentPickerComponent,
+    DocumentLibraryComponent,
+    DocumentUploaderComponent,
 } from 'app/analysis/components';
 
 @NgModule({
@@ -28,6 +32,7 @@ import {
         BigtwineSharedModule,
         RouterModule,
         TagInputModule,
+        NgxUploadModule.forRoot(),
     ],
     declarations: [
         AnalysisToolbarComponent,
@@ -45,7 +50,10 @@ import {
         OptionWrapperComponent,
         StepperComponent,
         QueryInputComponent,
-        DatasetDetailsComponent,
+        DocumentDetailsComponent,
+        DocumentPickerComponent,
+        DocumentLibraryComponent,
+        DocumentUploaderComponent,
     ],
     exports: [
         AnalysisToolbarComponent,
@@ -63,6 +71,9 @@ import {
         StepperComponent,
         QueryInputComponent,
         DocumentDetailsComponent,
+        DocumentPickerComponent,
+        DocumentLibraryComponent,
+        DocumentUploaderComponent,
     ],
     entryComponents: [
         AnalysisStatusHistoryComponent,

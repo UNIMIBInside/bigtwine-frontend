@@ -31,6 +31,7 @@ export interface IAnalysisService {
     getAnalysisSettings(analysisId: string): Observable<IAnalysisSetting[]>;
     getDocumentById(documentId: string): Observable<IDocument>;
     getDocumentDownloadLink(documentId: string): string;
+    getDocuments(documentType?: string, category?: string, analysisType?: string): Observable<IDocument[]>;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -142,6 +143,24 @@ export class AnalysisService implements IAnalysisService {
         }
 
         return `${this.ANALYSIS_API}/documents/${documentId}/download?access_token=${jwt}`;
+    }
+
+    getDocuments(documentType?: string, category?: string, analysisType?: string): Observable<IDocument[]> {
+        let qs = '';
+        if (documentType) {
+            qs += `documentType=${documentType}`;
+        }
+
+        if (category) {
+            qs += `category=${category}`;
+        }
+
+        if (analysisType) {
+            qs += `analysisType=${analysisType}`;
+        }
+
+        return this.http
+            .get(`${this.ANALYSIS_API}/documents?${qs}`) as Observable<IDocument[]>;
     }
 
     private buildSearchQuery(query: IResultsFilterQuery): string {
