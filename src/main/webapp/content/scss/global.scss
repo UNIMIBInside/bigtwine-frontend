@@ -29,6 +29,10 @@ a:hover {
     cursor: pointer;
 }
 
+.dropdown-menu {
+    color: $text-dark-color;
+}
+
 /* ==========================================================================
 Browser Upgrade Prompt
 ========================================================================== */
@@ -353,4 +357,57 @@ toolbars
     margin: 1rem auto;
     width: 64px;
     height: auto;
+}
+
+.sign-in-divider {
+    $root: &;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 1rem 0;
+
+    &:before, &:after {
+        content: '';
+        position: relative;
+        display: block;
+        flex-grow: 1;
+        height: 1px;
+        width: 100%;
+        background: $text-color;
+    }
+
+    &__label {
+        padding: 0 1rem;
+        flex-grow: 0;
+    }
+
+    &--md-vertical {
+        @include media-breakpoint-up(md) {
+            flex-direction: column;
+            margin: 0 1rem;
+            height: 100%;
+
+            &:before, &:after {
+                width: 1px;
+                height: 100%;
+            }
+
+            #{$root}__label {
+                padding: 1rem 0;
+            }
+        }
+    }
+}
+
+.page-container {
+    margin-top: 2rem;
+
+    @include media-breakpoint-up(md) {
+        max-width: 820px;
+    }
+
+    @include media-breakpoint-up(lg) {
+        max-width: 960px;
+    }
 }

@@ -60,6 +60,9 @@ $body-color: $text-color;
 $font-size-base: 1rem;
 
 // Tables:
+$table-bg: $page-bg-color;
+$table-color: rgb(216, 227, 255);
+$table-border-color: lighten($table-bg, 10);
 $table-dark-bg: $page-bg-color;
 $table-dark-color: rgb(216, 227, 255);
 $table-dark-border-color: lighten($table-dark-bg, 10);

@@ -77,11 +77,11 @@ export class BtwLoginModalComponent implements AfterViewInit {
 
     register() {
         this.activeModal.dismiss('to state register');
-        this.router.navigate(['/register']);
+        this.router.navigate(['/account/register']);
     }
 
     requestResetPassword() {
         this.activeModal.dismiss('to state requestReset');
-        this.router.navigate(['/reset', 'request']);
+        this.router.navigate(['/account/reset', 'request']);
     }
 }
