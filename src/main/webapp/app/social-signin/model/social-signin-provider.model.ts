@@ -3,17 +3,17 @@ export enum SocialSignInType {
 }
 
 export interface ISocialSignInProvider {
-    id: String;
-    name: String;
+    id: string;
+    name: string;
     readonly type: SocialSignInType;
 }
 
 export class SocialSignInProvider implements ISocialSignInProvider {
-    readonly id: String;
-    readonly name: String;
+    readonly id: string;
+    readonly name: string;
     readonly type: SocialSignInType;
 
-    constructor(id: String, name: String, type: SocialSignInType) {
+    constructor(id: string, name: string, type: SocialSignInType) {
         this.id = id;
         this.name = name;
         this.type = type;

@@ -1,6 +1,6 @@
-<div>
+<div class="container page-container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-12">
             <h2 jhiTranslate="settings.title" translateValues="{username: '{{settingsAccount.login}}'}" *ngIf="settingsAccount">User settings for [<b>{{settingsAccount.login}}</b>]</h2>
 
             <div class="alert alert-success" *ngIf="success" jhiTranslate="settings.messages.success">
@@ -78,15 +78,47 @@
                         <option *ngFor="let language of languages" [value]="language">{{language | findLanguageFromKey}}</option>
                     </select>
                 </div>
-                <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-primary" jhiTranslate="settings.form.button">Save</button>
+                <div class="text-right mt-4">
+                    <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-outline-primary" jhiTranslate="settings.form.button">Save</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+    <div class="row justify-content-center mt-5">
+        <div class="col-12">
             <h2>Social connections</h2>
-            <btw-social-signin-buttons></btw-social-signin-buttons>
+            <table class="table table-striped">
+                <thead>
+                <th>Provider</th>
+                <th>Account</th>
+                <th class="text-right">Action</th>
+                </thead>
+                <tbody>
+                <tr *ngFor="let provider of ssiProviders">
+                    <td>{{provider.name}}</td>
+                    <ng-container *ngIf="ssiConnectionLoaded(provider.id); else ssiWaiting">
+                        <ng-container *ngIf="ssiConnections[provider.id] !== null && ssiConnections[provider.id].connected; else ssiNotConnected">
+                            <td>{{ssiConnections[provider.id].displayName}}</td>
+                            <td class="text-right">
+                                <button class="btn btn-outline-danger btn-sm" (click)="ssiDeleteConnection(provider.id)">Sign Out</button>
+                            </td>
+                        </ng-container>
+                        <ng-template #ssiNotConnected>
+                            <td colspan="2" class="text-right">
+                                <btw-social-signin-buttons [provider]="provider.id"></btw-social-signin-buttons>
+                            </td>
+                        </ng-template>
+
+                    </ng-container>
+                    <ng-template #ssiWaiting>
+                        <td colspan="2" class="text-center">
+                            <img class="loading" src="/content/images/loading.svg" alt="" height="12">
+                        </td>
+                    </ng-template>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 

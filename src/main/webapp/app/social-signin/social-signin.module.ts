@@ -5,9 +5,13 @@ import {
     SocialSignInOauthCallbackComponent,
     socialSignInState
 } from './';
+import { BigtwineSharedModule } from 'app/shared';
 
 @NgModule({
-    imports: [RouterModule.forChild(socialSignInState)],
-    declarations: [SocialSignInOauthCallbackComponent]
+    imports: [
+        BigtwineSharedModule,
+        RouterModule.forChild(socialSignInState)
+    ],
+    declarations: [SocialSignInOauthCallbackComponent],
 })
 export class BigtwineSocialSignInModule {}

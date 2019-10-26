@@ -1,6 +1,6 @@
-import {AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import {SocialSignInService} from 'app/social-signin/social-signin.service';
-import {ISocialSignInProvider} from 'app/social-signin/social-signin-provider.model';
+import {ISocialSignInProvider} from 'app/social-signin/model/social-signin-provider.model';
 
 @Component({
     selector: 'btw-social-signin-buttons',
@@ -8,9 +8,12 @@ import {ISocialSignInProvider} from 'app/social-signin/social-signin-provider.mo
     styleUrls: ['social-signin-buttons.scss']
 })
 export class SocialSignInButtonsComponent implements AfterViewInit {
-    constructor(private ssiService: SocialSignInService) {
 
-    }
+    @Input() provider: string;
+
+    constructor(
+        private ssiService: SocialSignInService,
+    ) {}
 
     ngAfterViewInit(): void {
         console.log(this.ssiService);

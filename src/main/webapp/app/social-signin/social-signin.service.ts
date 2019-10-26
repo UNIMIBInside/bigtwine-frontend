@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
-import {Location} from '@angular/common';
 
-import {AuthServerProvider} from '../core/auth/auth-jwt.service';
-import {ISocialSignInProvider, SocialSignInProvider, SocialSignInType} from 'app/social-signin/social-signin-provider.model';
+import {ISocialSignInProvider, SocialSignInProvider, SocialSignInType} from './model';
 import {HttpClient} from '@angular/common/http';
 import {SERVER_API_URL} from 'app/app.constants';
-import {AccountService, WindowRef} from 'app/core';
+import {AuthServerProvider, WindowRef} from 'app/core';
+import { ConnectResponse } from 'app/social-signin/model/connect-response.model';
+import {AccountService} from 'app/core/auth/account.service';
+import { ConnectionResponse } from 'app/social-signin/model/connection-response.model';
 
 export const SOCIAL_SIGNIN_PROVIDERS: ISocialSignInProvider[] = [
     new SocialSignInProvider('twitter', 'Twitter', SocialSignInType.OAuth10),
@@ -14,15 +15,15 @@ export const SOCIAL_SIGNIN_PROVIDERS: ISocialSignInProvider[] = [
 @Injectable({ providedIn: 'root' })
 export class SocialSignInService {
 
+    get signInProviders(): ISocialSignInProvider[] {
+        return SOCIAL_SIGNIN_PROVIDERS;
+    }
+
     constructor(
         private authServerProvider: AuthServerProvider,
         private accountService: AccountService,
         private http: HttpClient,
         private $window: WindowRef) {}
-
-    get signInProviders(): ISocialSignInProvider[] {
-        return SOCIAL_SIGNIN_PROVIDERS;
-    }
 
     startSignInRoutine(provider: ISocialSignInProvider): Promise<any> {
         if (provider.type === SocialSignInType.OAuth10) {
@@ -44,24 +45,35 @@ export class SocialSignInService {
         return response;
     }
 
-    async completeSignInOAuth10Routine(providerId: String, oauthToken: String, oauthVerifier: String): Promise<any> {
+    async completeSignInOAuth10Routine(providerId: String, oauthToken: String, oauthVerifier: String): Promise<ConnectResponse> {
         const data = {
             allowImplicitSignUp: true,
             requestToken: oauthToken,
             verifier: oauthVerifier
         };
 
-        await this.accountService.identity();
-        const action = this.accountService.isAuthenticated() ? 'connect' : 'signin';
+        const isAuthenticated = !!(await this.accountService.identity());
+        const action = isAuthenticated ? 'connect' : 'signin';
 
-        const response: any = await this.http.post(`${SERVER_API_URL}socials/api/oauth/${action}/${providerId}`, data).toPromise();
+        const response = (await this.http
+            .post(`${SERVER_API_URL}socials/api/oauth/${action}/${providerId}`, data)
+            .toPromise()) as ConnectResponse;
 
-        await this.authServerProvider.loginWithToken(response.idToken, true);
-        if (this.$window.nativeWindow.opener) {
-            this.$window.nativeWindow.opener.location.reload(true);
-            this.$window.nativeWindow.close();
+        if (response.idToken) {
+            await this.authServerProvider.loginWithToken(response.idToken, true);
         }
 
         return response;
+    }
+
+    getConnection(providerId: string): Promise<ConnectionResponse> {
+        return this.http
+            .get<ConnectionResponse>(`${SERVER_API_URL}socials/api/oauth/connect/${providerId}`)
+            .toPromise();
+    }
+
+    deleteConnection(providerId: string) {
+        return this.http
+            .delete(`${SERVER_API_URL}socials/api/oauth/connect/${providerId}`);
     }
 }
