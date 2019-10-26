@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AnalysisHomeComponent } from 'app/analysis/components/analysis-home/analysis-home.component';
 import { AnalysisNotFoundComponent } from 'app/analysis/components';
+import { UserRouteAccessService } from 'app/core';
 
 export const analysisState: Routes = [
     {
@@ -21,6 +22,11 @@ export const analysisState: Routes = [
                 loadChildren: './twitter-neel/twitter-neel.module#TwitterNeelModule'
                 // children: twitterNeelState
             }
-        ]
+        ],
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: ''
+        },
+        canActivate: [UserRouteAccessService]
     },
 ];

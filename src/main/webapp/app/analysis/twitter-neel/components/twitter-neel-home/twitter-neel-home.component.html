@@ -19,10 +19,19 @@
 
     <div class="wrapper__content">
         <div class="scrollable-container">
+            <div class="container" *ngIf="hasTwitterConnection === false">
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-warning my-4">
+                            You have not connected your account to Twitter, some functionality may not work properly (e.g. real time analyses).
+                            Go to the <a routerLink="/account/settings">settings</a> page to proceed.
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="container-fluid">
                 <btw-analysis-list analysisType="twitter-neel" [owned]="true"></btw-analysis-list>
             </div>
-            <div style="min-height: 2000px"></div>
         </div>
     </div>
 </div>

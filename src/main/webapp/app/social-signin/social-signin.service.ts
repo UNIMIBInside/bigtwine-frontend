@@ -8,8 +8,12 @@ import { ConnectResponse } from 'app/social-signin/model/connect-response.model'
 import {AccountService} from 'app/core/auth/account.service';
 import { ConnectionResponse } from 'app/social-signin/model/connection-response.model';
 
+export const enum SocialSignInProviderId {
+    Twitter = 'twitter'
+}
+
 export const SOCIAL_SIGNIN_PROVIDERS: ISocialSignInProvider[] = [
-    new SocialSignInProvider('twitter', 'Twitter', SocialSignInType.OAuth10),
+    new SocialSignInProvider(SocialSignInProviderId.Twitter, 'Twitter', SocialSignInType.OAuth10),
 ];
 
 @Injectable({ providedIn: 'root' })
