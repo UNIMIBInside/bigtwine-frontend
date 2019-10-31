@@ -270,9 +270,10 @@ export class MockAnalysisService implements IAnalysisService {
         return of(response).pipe(delay(this.rms));
     }
 
-    exportAnalysisResults(analysisId: string): Observable<IAnalysisExport> {
+    exportAnalysisResults(analysisId: string, format: string): Observable<IAnalysisExport> {
         const response: IAnalysisExport = {
             documentId: this.uuidv4(),
+            format,
             progress: 0.5,
             completed: false,
             failed: false,

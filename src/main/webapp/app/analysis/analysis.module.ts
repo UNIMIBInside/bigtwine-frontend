@@ -50,10 +50,10 @@ import { AnalysisSharedModule } from 'app/analysis/analysis-shared.module';
             provide: AnalysisAlertsService,
             useClass: AnalysisAlertsService,
         },
-        {
+        /*{
             provide: AnalysisService,
             useClass: MockAnalysisService
-        },
+        },*/
     ]
 })
 export class BigtwineAnalysisModule { }

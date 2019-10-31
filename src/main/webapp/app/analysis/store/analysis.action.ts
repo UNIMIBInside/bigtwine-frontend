@@ -351,7 +351,7 @@ export class RestoreUserSettings implements Action {
 export class ExportAnalysisResults implements Action {
     readonly type = ActionTypes.ExportAnalysisResults;
 
-    constructor(readonly analysisId: string) {}
+    constructor(readonly analysisId: string, readonly format: string) {}
 }
 
 export class ExportAnalysisResultsSuccess implements Action {

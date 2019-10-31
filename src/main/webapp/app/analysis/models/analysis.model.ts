@@ -45,6 +45,7 @@ export interface IAnalysisStatusHistory {
 
 export interface IAnalysisExport {
     documentId: string;
+    format: string;
     progress: number;
     completed: boolean;
     failed: boolean;

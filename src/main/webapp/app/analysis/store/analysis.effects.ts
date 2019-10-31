@@ -37,7 +37,7 @@ export class AnalysisEffects {
     @Effect()
     getAnalyses$: Observable<Action> = this.action$.pipe(
         ofType(AnalysisActions.ActionTypes.GetAnalyses),
-        mergeMap((action: AnalysisActions.GetAnalyses) => this.analysisService.getAnalyses(action.page, action.type, action.owned)
+        mergeMap((action: AnalysisActions.GetAnalyses) => this.analysisService.getAnalyses(action.page, action.analysisType, action.owned)
             .pipe(
                 map(response => new AnalysisActions.GetAnalysesSuccess(response.objects)),
                 catchError(e => of(new AnalysisActions.GetAnalysesError(e)))
@@ -155,7 +155,7 @@ export class AnalysisEffects {
     @Effect()
     exportAnalysisResults$: Observable<Action> = this.action$.pipe(
         ofType(AnalysisActions.ActionTypes.ExportAnalysisResults),
-        mergeMap((action: AnalysisActions.ExportAnalysisResults) => this.analysisService.exportAnalysisResults(action.analysisId)
+        mergeMap((action: AnalysisActions.ExportAnalysisResults) => this.analysisService.exportAnalysisResults(action.analysisId, action.format)
             .pipe(
                 map(response => new AnalysisActions.ExportAnalysisResultsSuccess(response)),
                 catchError(e => of(new AnalysisActions.ExportAnalysisResultsError(e)))

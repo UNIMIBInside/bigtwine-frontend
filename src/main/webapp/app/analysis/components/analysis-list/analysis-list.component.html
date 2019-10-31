@@ -16,7 +16,14 @@
             <td>{{analysis.input.type}}</td>
             <td><btw-analysis-input-badge [analysisInput]="analysis.input"></btw-analysis-input-badge></td>
             <td class="text-center" *ngIf="!owned">{{analysis.owner.username}}</td>
-            <td class="text-center">{{analysis.resultsCount | numeral:"0.0 a"}}</td>
+            <td class="text-center" >
+                <ng-container *ngIf="analysis.resultsCount < 1000; else formattedResultsCount">
+                    {{ analysis.resultsCount }}
+                </ng-container>
+                <ng-template #formattedResultsCount>
+                    {{ analysis.resultsCount | numeral:"0.0 a"}}
+                </ng-template>
+            </td>
             <td class="text-center" [ngSwitch]="analysis.input.bounded">
                 <fa-icon icon="infinity" *ngSwitchCase="false"></fa-icon>
                 <ng-container *ngSwitchCase="true">

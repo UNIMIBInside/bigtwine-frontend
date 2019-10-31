@@ -1,12 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AnalysisState, ExportAnalysisResults, IAnalysis } from 'app/analysis';
+import { Component, Inject, Input, OnInit } from '@angular/core';
+import { AnalysisState, ExportAnalysisResults, IAnalysis, IAnalysisResultsExportFormat } from 'app/analysis';
 import { Action, Store } from '@ngrx/store';
 import { AnalysisService } from 'app/analysis/services/analysis.service';
-
-interface AnalysisResultsExportFormat {
-    type: string;
-    label: string;
-}
+import { IResultsExportService, RESULTS_EXPORT_SERVICE } from 'app/analysis/services/results-export.service';
 
 @Component({
     selector: 'btw-results-export-btn',
@@ -24,22 +20,19 @@ export class ResultsExportBtnComponent implements OnInit {
 
     constructor(
         private analysisStore: Store<AnalysisState>,
-        private analysisService: AnalysisService
+        private analysisService: AnalysisService,
+        @Inject(RESULTS_EXPORT_SERVICE) private exportService: IResultsExportService
     ) { }
 
     ngOnInit() {
     }
 
     onExportBtnClick(formatType: string) {
-        const action: Action = new ExportAnalysisResults(this.analysis.id);
+        const action: Action = new ExportAnalysisResults(this.analysis.id, formatType);
         this.analysisStore.dispatch(action);
     }
 
-    getExportFormats(): AnalysisResultsExportFormat[] {
-        return [
-            {type: 'json', label: 'JSON'},
-            {type: 'tsv', label: 'TSV'},
-            {type: 'neel-challenge-output', label: 'NEEL Challenge Output'},
-        ];
+    getExportFormats(): IAnalysisResultsExportFormat[] {
+        return this.exportService.getSupportedExportFormats();
     }
 }

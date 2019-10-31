@@ -27,7 +27,7 @@ export interface IAnalysisService {
     getAnalysisResults(analysisId: string, page: IPage): Observable<IPagedAnalysisResults>;
     searchAnalysisResults(analysisId: string, query: IResultsFilterQuery, page: IPage): Observable<IPagedAnalysisResults>;
     countAnalysisResults(analysisId: string): Observable<IAnalysisResultsCount>;
-    exportAnalysisResults(analysisId: string): Observable<IAnalysisExport>;
+    exportAnalysisResults(analysisId: string, format: string): Observable<IAnalysisExport>;
     getAnalysisSettings(analysisId: string): Observable<IAnalysisSetting[]>;
     getDocumentById(documentId: string): Observable<IDocument>;
     getDocumentDownloadLink(documentId: string): string;
@@ -121,9 +121,13 @@ export class AnalysisService implements IAnalysisService {
             .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}/count`) as Observable<IAnalysisResultsCount>;
     }
 
-    exportAnalysisResults(analysisId: string): Observable<IAnalysisExport> {
+    exportAnalysisResults(analysisId: string, format: string): Observable<IAnalysisExport> {
+        const exportInfo = {
+            format
+        };
+
         return this.http
-            .get(`${this.ANALYSIS_API}/analysis-results/${analysisId}/export`) as Observable<IAnalysisExport>;
+            .post(`${this.ANALYSIS_API}/analysis-results/${analysisId}/export`, exportInfo) as Observable<IAnalysisExport>;
     }
 
     getAnalysisSettings(analysisId: string): Observable<IAnalysisSetting[]> {
@@ -148,11 +152,11 @@ export class AnalysisService implements IAnalysisService {
     getDocuments(documentType?: string, category?: string, analysisType?: string): Observable<IDocument[]> {
         let qs = '';
         if (documentType) {
-            qs += `documentType=${documentType}`;
+            qs += `documentType=${documentType}&`;
         }
 
         if (category) {
-            qs += `category=${category}`;
+            qs += `category=${category}&`;
         }
 
         if (analysisType) {
