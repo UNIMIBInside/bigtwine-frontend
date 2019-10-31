@@ -1,3 +1,4 @@
 export interface IResultsFilterQuery {
-    text: string;
+    type?: string;
+    value: any;
 }

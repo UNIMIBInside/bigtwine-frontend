@@ -16,7 +16,7 @@ import { select, Store, Action } from '@ngrx/store';
 import { FormControl } from '@angular/forms';
 import { IResultsFilterService, RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
-import { AnalysisService } from 'app/analysis/services/analysis.service';
+import { IResultsFilterType } from 'app/analysis/models/results-filter-type.model';
 
 @Component({
     selector: 'btw-results-toolbar',
@@ -27,6 +27,8 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
     private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
     private currentAnalysis$: Observable<IAnalysis>;
 
+    availableSearchTypes: IResultsFilterType[] = [];
+    activeSearchType: IResultsFilterType;
     searchQueryControl = new FormControl('');
     searchQuery: string;
     gotoPageNumber: number;
@@ -112,6 +114,20 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
                 takeUntil(this.destroyed$),
             )
             .subscribe(() => this.onSearchQueryChange());
+
+        this.currentAnalysis$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+            let searchTypes: IResultsFilterType[];
+            if (this.liveSearchEnabled) {
+                searchTypes = this.resultsFilterService.localSearchSupportedTypes();
+            } else {
+                searchTypes = this.resultsFilterService.fullSearchSupportedTypes();
+            }
+
+            if (this.availableSearchTypes !== searchTypes) {
+                this.availableSearchTypes = searchTypes;
+                this.onSearchTypeSelect(this.availableSearchTypes[0]);
+            }
+        });
     }
 
     ngOnDestroy(): void {
@@ -137,6 +153,16 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         }
 
         this.performFullSearch();
+    }
+
+    onSearchResetBtnCLick() {
+        this.searchQuery = null;
+        this.fetchFirstPage();
+    }
+
+    onSearchTypeSelect(type: IResultsFilterType) {
+        this.activeSearchType = type;
+        this.searchQuery = null;
     }
 
     onChangePageBtnClick(move: number) {
@@ -202,7 +228,8 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
         }
 
         return {
-            text: this.searchQuery
+            type: this.activeSearchType.type,
+            value: this.searchQuery
         };
     }
 

@@ -168,8 +168,19 @@ export class AnalysisService implements IAnalysisService {
     }
 
     private buildSearchQuery(query: IResultsFilterQuery): string {
-        return `
-            {$text: {$search: ${JSON.stringify(query.text)}, $caseSensitive: false}}
-        `;
+        switch (query.type) {
+            case 'category':
+                return `
+                    {"payload.entities.category": ${JSON.stringify(query.value)}}
+                `;
+            case 'rdf:type':
+                return `
+                    {"payload.entities.resource.extra.rdf:Type": {$in: [${JSON.stringify(query.value)}]}}
+                `;
+            default:
+                return `
+                    {$text: {$search: ${JSON.stringify(query.value)}, $caseSensitive: false}}
+                `;
+        }
     }
 }

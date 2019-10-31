@@ -5,20 +5,31 @@
                 <div class="input-group input-group-sm">
                     <div class="input-group-prepend">
                         <div class="btn-group" ngbDropdown role="group">
-                            <button class="btn btn-sm btn-light" ngbDropdownToggle>Text</button>
+                            <button class="btn btn-sm btn-light" ngbDropdownToggle>{{activeSearchType.label}}</button>
                             <div class="dropdown-menu" ngbDropdownMenu>
-                                <button class="dropdown-item" ngbDropdownItem>Text</button>
-                                <button class="dropdown-item" ngbDropdownItem>Category</button>
-                                <button class="dropdown-item" ngbDropdownItem>RDF Type</button>
+                                <button *ngFor="let searchType of availableSearchTypes"
+                                        (click)="onSearchTypeSelect(searchType)"
+                                        class="dropdown-item"
+                                        ngbDropdownItem>{{searchType.label}}</button>
                             </div>
                         </div>
                     </div>
-                    <input
-                        class="form-control"
-                        placeholder="Filter results by text"
-                        type="text"
-                        [(ngModel)]="searchQuery"
-                        [formControl]="searchQueryControl">
+                    <ng-container *ngIf="!activeSearchType.options; else filterWithOptions">
+                        <input
+                            class="form-control"
+                            placeholder="Filter results by query"
+                            type="text"
+                            [(ngModel)]="searchQuery"
+                            [formControl]="searchQueryControl">
+                    </ng-container>
+                    <ng-template #filterWithOptions>
+                        <select class="form-control custom-select"
+                                [(ngModel)]="searchQuery"
+                                [formControl]="searchQueryControl">
+                            <option *ngFor="let option of activeSearchType.options"
+                                    [value]="option.value">{{option.label}}</option>
+                        </select>
+                    </ng-template>
                 </div>
                 <button
                     *ngIf="!liveSearchEnabled"
@@ -26,6 +37,11 @@
                     class="btn btn-outline-light btn-sm ml-2"
                     [disabled]="!shouldSearch"
                     (click)="onSearchBtnCLick()">Search</button>
+
+                <button *ngIf="searchQuery"
+                        type="reset"
+                        class="btn btn-outline-warning btn-sm ml-2"
+                        (click)="onSearchResetBtnCLick()">Reset</button>
             </div>
         </div>
         <div class="col">

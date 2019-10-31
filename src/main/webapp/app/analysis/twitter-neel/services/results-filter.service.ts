@@ -6,6 +6,7 @@ import { INeelProcessedTweet, selectAllTweets, TwitterNeelState } from 'app/anal
 import { DEFAULT_RESULTS_FILTER_THROTTLE, IResultsFilterService } from 'app/analysis/services/results-filter.service';
 import { Injectable } from '@angular/core';
 import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
+import { IResultsFilterType } from 'app/analysis/models/results-filter-type.model';
 
 @Injectable()
 export class ResultsFilterService implements IResultsFilterService {
@@ -54,7 +55,7 @@ export class ResultsFilterService implements IResultsFilterService {
         this.tweets$
             .pipe(
                 throttleTime(throttleDuration),
-                map(allTweets => allTweets.filter(t => t.status.text.indexOf(query.text) >= 0)),
+                map(allTweets => allTweets.filter(t => t.status.text.indexOf(query.value) >= 0)),
                 map(tweets => tweets.slice(0, page.pageSize)),
                 takeUntil(this._currentQuery$.pipe(filter(q => q !== query))),
             )
@@ -67,5 +68,27 @@ export class ResultsFilterService implements IResultsFilterService {
         this._currentQuery = null;
         this._currentQuery$.next(null);
         this._filteredResults$.next(null);
+    }
+
+    fullSearchSupportedTypes(): IResultsFilterType[] {
+        return [
+            {type: 'text', label: 'Text'},
+            {type: 'category', label: 'Category', options: [
+                {value: 'Character', label: 'Character'},
+                {value: 'Event', label: 'Event'},
+                {value: 'Location', label: 'Location'},
+                {value: 'Organization', label: 'Organization'},
+                {value: 'Person', label: 'Person'},
+                {value: 'Product', label: 'Product'},
+                {value: 'Thing', label: 'Thing'},
+            ]},
+            {type: 'rdf:type', label: 'rdf:Type'},
+        ];
+    }
+
+    localSearchSupportedTypes(): IResultsFilterType[] {
+        return [
+            {type: 'text', label: 'Text'}
+        ];
     }
 }

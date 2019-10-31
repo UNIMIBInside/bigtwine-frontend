@@ -134,7 +134,8 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
                 this.stopListenAnalysisResults();
             }
 
-            if (analysis.status === AnalysisStatus.Completed && !this.paginationInfo.enabled) {
+            const endStates = [AnalysisStatus.Completed, AnalysisStatus.Cancelled, AnalysisStatus.Failed] as string[];
+            if (endStates.indexOf(analysis.status) >= 0 && !this.paginationInfo.enabled) {
                 this.fetchFirstResultsPage();
             }
 
