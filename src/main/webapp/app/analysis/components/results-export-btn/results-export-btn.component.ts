@@ -33,6 +33,6 @@ export class ResultsExportBtnComponent implements OnInit {
     }
 
     getExportFormats(): IAnalysisResultsExportFormat[] {
-        return this.exportService.getSupportedExportFormats();
+        return this.exportService.getSupportedExportFormats(this.analysis);
     }
 }

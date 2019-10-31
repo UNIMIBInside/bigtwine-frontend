@@ -21,7 +21,7 @@ describe('AnalysisReducer', () => {
         const sendActions = [
             new GetAnalysis('analysis1'),
             new CreateAnalysis(null),
-            new GetAnalyses(),
+            new GetAnalyses({page: 0, pageSize: 250}),
             new StopAnalysis('analysis1'),
             new StartAnalysis('analysis1'),
         ];

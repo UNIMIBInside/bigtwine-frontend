@@ -209,7 +209,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                     ...state.documents,
                     byId: {
                         ...state.documents.byId,
-                        [doc.documentId]: doc
+                        [doc.id]: doc
                     }
                 }
             };

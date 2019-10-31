@@ -82,6 +82,7 @@ export class MockAnalysisService implements IAnalysisService {
             resultsCount: 1239123,
             export: {
                 completed: true,
+                format: 'json',
                 failed: false,
                 progress: 1,
                 documentId: '123456',
@@ -121,6 +122,7 @@ export class MockAnalysisService implements IAnalysisService {
             resultsCount: 229283,
             export: {
                 completed: false,
+                format: 'json',
                 failed: true,
                 progress: 0.3,
                 documentId: '123456',

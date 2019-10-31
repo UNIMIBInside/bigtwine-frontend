@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterEvent } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { faMap, faStream } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@fortawesome/fontawesome-svg-core';
+import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
 @Component({
     selector: 'btw-view-mode-switcher',
