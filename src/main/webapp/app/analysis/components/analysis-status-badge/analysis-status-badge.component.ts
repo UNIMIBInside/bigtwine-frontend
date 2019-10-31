@@ -19,7 +19,9 @@ export class AnalysisStatusBadgeComponent {
             classes.push('badge-primary');
         } else if (status === AnalysisStatus.Completed) {
             classes.push('badge-success');
-        } else if (status === AnalysisStatus.Cancelled || status === AnalysisStatus.Failed) {
+        } else if (status === AnalysisStatus.Cancelled) {
+            classes.push('badge-warning');
+        } else if (status === AnalysisStatus.Failed) {
             classes.push('badge-danger');
         }
 

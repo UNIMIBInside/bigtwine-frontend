@@ -10,7 +10,8 @@ import {
     SearchAnalysisResults,
     selectCurrentAnalysis,
     selectResultsPagination,
-    selectSearchPagination
+    selectSearchPagination,
+    isAnalysisTerminated,
 } from 'app/analysis';
 import { select, Store, Action } from '@ngrx/store';
 import { FormControl } from '@angular/forms';
@@ -47,7 +48,7 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
             return true;
         }
 
-        return this.currentAnalysis.status !== AnalysisStatus.Completed;
+        return !isAnalysisTerminated(this.currentAnalysis);
     }
 
     get shouldSearch() {
@@ -93,12 +94,7 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
     }
 
     get shouldShowExportBtn(): boolean {
-        const acceptedStatuses = new Set<string>([
-            AnalysisStatus.Failed,
-            AnalysisStatus.Completed,
-            AnalysisStatus.Cancelled,
-        ]);
-        return this.canExport && this.currentAnalysis && acceptedStatuses.has(this.currentAnalysis.status);
+        return this.canExport && this.currentAnalysis && isAnalysisTerminated(this.currentAnalysis);
     }
 
     constructor(

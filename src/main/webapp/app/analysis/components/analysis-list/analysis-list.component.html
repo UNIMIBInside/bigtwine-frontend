@@ -29,7 +29,11 @@
                 <ng-container *ngSwitchCase="true">
                     <ng-container *ngIf="analysis.progress < 1; else analysisCompleted">
                         {{analysis.progress * 100 | number: "0.0-0"}} %
-                        <ngb-progressbar [type]="analysisProgressBarStyle(analysis)" [value]="analysis.progress * 100" height="2px"></ngb-progressbar>
+                        <ngb-progressbar
+                            *ngIf="analysis.status == 'started' || analysis.status == 'stopped'"
+                            [type]="analysisProgressBarStyle(analysis)"
+                            [value]="analysis.progress * 100"
+                            height="2px"></ngb-progressbar>
                     </ng-container>
                     <ng-template #analysisCompleted>
                         <fa-icon icon="check"></fa-icon>

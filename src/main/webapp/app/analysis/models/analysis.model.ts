@@ -18,6 +18,20 @@ export enum AnalysisType {
     TwitterNeel = 'twitter-neel',
 }
 
+export const ANALYSIS_END_STATUSES = [
+    AnalysisStatus.Completed,
+    AnalysisStatus.Cancelled,
+    AnalysisStatus.Failed,
+];
+
+export function isEndStatus(status: AnalysisStatus): boolean {
+    return ANALYSIS_END_STATUSES.indexOf(status) >= 0;
+}
+
+export function isAnalysisTerminated(analysis: IAnalysis): boolean {
+    return isEndStatus(analysis.status as AnalysisStatus);
+}
+
 export interface IAnalysisInput {
     type: AnalysisInputType;
     bounded?: boolean;

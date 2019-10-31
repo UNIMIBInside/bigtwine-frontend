@@ -154,6 +154,13 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                     pageSize: getResActionSuc.pageDetails.pageSize,
                     allItemsCount: getResActionSuc.pageDetails.totalCount,
                     pagesCount: Math.ceil(getResActionSuc.pageDetails.totalCount / getResActionSuc.pageDetails.pageSize)
+                },
+                resultsFilters: {
+                    ...state.resultsFilters,
+                    pagination: {
+                        ...state.resultsFilters.pagination,
+                        enabled: false,
+                    }
                 }
             };
         case AnalysisActions.ActionTypes.SearchAnalysisResults:
@@ -179,6 +186,10 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                         allItemsCount: searchActionSuc.pageDetails.totalCount,
                         pagesCount: Math.ceil(searchActionSuc.pageDetails.totalCount / searchActionSuc.pageDetails.pageSize)
                     }
+                },
+                resultsPagination: {
+                    ...state.resultsPagination,
+                    enabled: false
                 }
             };
         case AnalysisActions.ActionTypes.StartListenAnalysisChanges:
