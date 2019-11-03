@@ -10,13 +10,14 @@ import {
     SocialSignInButtonsComponent,
     NumeralPipe,
 } from './';
+import { HasNotAuthorityDirective } from 'app/shared/auth/has-not-authority.directive';
 
 @NgModule({
     imports: [BigtwineSharedLibsModule, BigtwineSharedCommonModule],
-    declarations: [BtwLoginModalComponent, HasAnyAuthorityDirective, SocialSignInButtonsComponent, NumeralPipe],
+    declarations: [BtwLoginModalComponent, HasAnyAuthorityDirective, HasNotAuthorityDirective, SocialSignInButtonsComponent, NumeralPipe],
     providers: [{ provide: NgbDateAdapter, useClass: NgbDateMomentAdapter }],
     entryComponents: [BtwLoginModalComponent],
-    exports: [BigtwineSharedCommonModule, BtwLoginModalComponent, HasAnyAuthorityDirective, SocialSignInButtonsComponent, NumeralPipe],
+    exports: [BigtwineSharedCommonModule, BtwLoginModalComponent, HasAnyAuthorityDirective, HasNotAuthorityDirective, SocialSignInButtonsComponent, NumeralPipe],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class BigtwineSharedModule {
