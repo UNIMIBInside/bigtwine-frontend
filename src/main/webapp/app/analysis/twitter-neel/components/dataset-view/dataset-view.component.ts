@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { AnalysisState, IDatasetAnalysisInput, IDocument } from 'app/analysis';
 import { BoundedAnalysisViewComponent } from 'app/analysis/components';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AccountService } from 'app/core';
 
 @Component({
   selector: 'btw-dataset-view',
@@ -23,9 +24,9 @@ export class DatasetViewComponent extends BoundedAnalysisViewComponent {
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected analysisStore: Store<AnalysisState>
-    ) {
-        super(router, route, analysisStore);
+        protected analysisStore: Store<AnalysisState>,
+        protected accountService: AccountService) {
+        super(router, route, analysisStore, accountService);
     }
 
     onCurrentAnalysisIdChange(analysisId: string) {

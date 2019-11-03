@@ -59,7 +59,7 @@
                         </select>
                         <small class="form-text text-muted" *ngIf="setting.description">{{setting.description}}</small>
                     </div>
-                    <div class="text-right">
+                    <div *btwHasNotAuthority="'ROLE_DEMO'" class="text-right">
                         <button class="btn btn-outline-light" (click)="save()">Save</button>
                     </div>
                 </form>

@@ -22,6 +22,7 @@ import {
     StopListenAnalysisResults,
     IPaginationInfo
 } from 'app/analysis';
+import { AccountService } from 'app/core';
 
 export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
     protected destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -78,7 +79,8 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
     protected constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected analysisStore: Store<AnalysisState>
+        protected analysisStore: Store<AnalysisState>,
+        protected accountService: AccountService
     ) { }
 
     ngOnDestroy(): void {

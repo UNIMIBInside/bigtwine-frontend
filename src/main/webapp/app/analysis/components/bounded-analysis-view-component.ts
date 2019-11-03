@@ -15,6 +15,10 @@ export abstract class BoundedAnalysisViewComponent extends AnalysisViewComponent
     }
 
     get showCancelBtn(): boolean {
+        if (this.accountService.hasAnyAuthority(['ROLE_DEMO'])) {
+            return false;
+        }
+
         return this._checkAnalysisStatus(AnalysisStatus.Started);
     }
 

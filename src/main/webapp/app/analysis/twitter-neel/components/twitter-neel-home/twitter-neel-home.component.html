@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div ngbDropdown class="d-inline-block mr-2">
+                    <div *btwHasNotAuthority="'ROLE_DEMO'" ngbDropdown class="d-inline-block mr-2">
                         <button class="btn btn-sm btn-outline-primary" id="newAnalysisDropdown" ngbDropdownToggle>New</button>
                         <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="newAnalysisDropdown">
                             <a class="dropdown-item" ngbDropdownItem [routerLink]="'query/new'">Query</a>

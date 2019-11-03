@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { AnalysisState, CreateAnalysis } from 'app/analysis/store';
 import { AnalysisToolbarActionBtnType, StreamAnalysisViewComponent } from 'app/analysis/components';
 import { AnalysisInputType, AnalysisType, IAnalysis, IQueryAnalysisInput } from 'app/analysis';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AccountService } from 'app/core';
 
 @Component({
   selector: 'btw-query-view',
@@ -19,15 +20,19 @@ export class QueryViewComponent extends StreamAnalysisViewComponent {
     }
 
     get showCreateBtn(): boolean {
+        if (this.accountService.hasAnyAuthority(['ROLE_DEMO'])) {
+            return false;
+        }
+
         return this.query && this.currentAnalysis && JSON.stringify(this.query) !== JSON.stringify(this.currentAnalysis.input);
     }
 
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected analysisStore: Store<AnalysisState>
-    ) {
-        super(router, route, analysisStore);
+        protected analysisStore: Store<AnalysisState>,
+        protected accountService: AccountService) {
+        super(router, route, analysisStore, accountService);
     }
 
     onToolbarActionBtnClick(btn: AnalysisToolbarActionBtnType) {
