@@ -83,6 +83,10 @@
                         [mapDraggable]="true"
                         [styles]="mapStyles"
                         [backgroundColor]="mapBg"
+                        [disableDefaultUI]="false"
+                        [zoomControl]="true"
+                        [zoomControlOptions]="{position: 8}"
+                        [streetViewControl]="false"
                         #map>
                         <agm-rectangle
                             *ngFor="let bbox of geoArea.boundingBoxes; let i = index"
