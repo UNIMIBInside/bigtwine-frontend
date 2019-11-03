@@ -12,6 +12,7 @@ export interface IResource {
     thumbLarge: string;
     url: string;
     coordinates: ICoordinates;
+    extra?: {[name: string]: any};
 }
 
 export interface ITwitterUser {

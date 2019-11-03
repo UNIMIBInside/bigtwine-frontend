@@ -175,7 +175,7 @@ export class AnalysisService implements IAnalysisService {
                 `;
             case 'rdf:type':
                 return `
-                    {"payload.entities.resource.extra.rdf:Type": {$in: [${JSON.stringify(query.value)}]}}
+                    {"payload.entities.resource.extra.rdfType": {$in: [${JSON.stringify(query.value)}]}}
                 `;
             default:
                 return `

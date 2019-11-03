@@ -1,3 +1,5 @@
+@import "~app/variables";
+
 .sebm-google-map-container {
     height: 100%;
     width: 100%;
@@ -13,5 +15,17 @@
 
     &__map {
         margin-bottom: 1rem;
+    }
+
+    &__extra {
+        .table {
+            max-width: 100%;
+            background-color: $content-bg-color;
+
+            td {
+                word-break: break-all;
+            }
+        }
+
     }
 }

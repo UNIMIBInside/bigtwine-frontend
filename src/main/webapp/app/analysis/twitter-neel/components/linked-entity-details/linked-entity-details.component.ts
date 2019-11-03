@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ICoordinates, ILinkedEntity, INeelProcessedTweet, IResource } from 'app/analysis/twitter-neel';
 import { ALT_MAP_STYLES, ALT_MAP_BG } from 'app/shared/gmap-styles';
+import { KeyValue } from '@angular/common';
 
 @Component({
     selector: 'btw-linked-entity-details',
@@ -39,6 +40,9 @@ export class LinkedEntityDetailsComponent implements OnInit {
             this.parentTweet.status.user &&
             this.parentTweet.status.user.coordinates);
     }
+    get shouldShowExtraFields(): boolean {
+        return !!(this.resource && this.resource.extra);
+    }
 
     get mapCenterCoordinates(): ICoordinates {
         const coordinates: ICoordinates[] = [];
@@ -68,5 +72,9 @@ export class LinkedEntityDetailsComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+    }
+
+    isListExtraField(field: KeyValue<string, any>) {
+        return field.value instanceof Array;
     }
 }
