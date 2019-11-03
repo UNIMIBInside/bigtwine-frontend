@@ -1,6 +1,6 @@
 {
     "name": "bigtwine",
-    "version": "0.9.3",
+    "version": "0.9.4",
     "description": "Description for bigtwine",
     "private": true,
     "license": "UNLICENSED",
@@ -55,6 +55,7 @@
         "@angular/compiler-cli": "7.1.0",
         "@ngrx/schematics": "^7.4.0",
         "@ngtools/webpack": "7.0.6",
+        "@types/googlemaps": "^3.38.0",
         "@types/jest": "23.3.9",
         "@types/node": "10.12.10",
         "@types/numeral": "0.0.26",

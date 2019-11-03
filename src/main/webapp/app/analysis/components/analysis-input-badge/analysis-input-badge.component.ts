@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AnalysisStatus, IAnalysisInput, IDatasetAnalysisInput, IQueryAnalysisInput } from 'app/analysis';
+import { AnalysisStatus, IAnalysisInput, IDatasetAnalysisInput, IGeoAreaAnalysisInput, IQueryAnalysisInput } from 'app/analysis';
 
 @Component({
     selector: 'btw-analysis-input-badge',
@@ -15,5 +15,9 @@ export class AnalysisInputBadgeComponent {
 
     get datasetAnalysisInput(): IDatasetAnalysisInput {
         return this.analysisInput as IDatasetAnalysisInput;
+    }
+
+    get geoAreaAnalysisInput(): IGeoAreaAnalysisInput {
+        return this.analysisInput as IGeoAreaAnalysisInput;
     }
 }

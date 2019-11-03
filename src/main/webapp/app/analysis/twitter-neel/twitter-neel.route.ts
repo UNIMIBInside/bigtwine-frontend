@@ -9,6 +9,8 @@ import {
     ListResultsViewerComponent,
     TwitterNeelHomeComponent
 } from './';
+import { GeoareaNewComponent } from 'app/analysis/twitter-neel/components/geoarea-new/geoarea-new.component';
+import { GeoareaViewComponent } from 'app/analysis/twitter-neel/components/geoarea-view/geoarea-view.component';
 
 const viewerModes: Routes = [
     {
@@ -60,7 +62,7 @@ export const twitterNeelState: Routes = [
             {
                 path: '',
                 pathMatch: 'full',
-                redirectTo: 'upload'
+                redirectTo: 'new'
             },
             {
                 path: 'new',
@@ -69,6 +71,25 @@ export const twitterNeelState: Routes = [
             {
                 path: 'view/:analysisId',
                 component: DatasetViewComponent,
+                children: viewerModes
+            },
+        ]
+    },
+    {
+        path: 'geo-area',
+        children: [
+            {
+                path: '',
+                pathMatch: 'full',
+                redirectTo: 'new'
+            },
+            {
+                path: 'new',
+                component: GeoareaNewComponent,
+            },
+            {
+                path: 'view/:analysisId',
+                component: GeoareaViewComponent,
                 children: viewerModes
             },
         ]

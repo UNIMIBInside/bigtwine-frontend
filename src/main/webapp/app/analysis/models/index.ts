@@ -12,3 +12,5 @@ export * from './results-filter-query.model';
 export * from './document.model';
 export * from './user.model';
 export * from './option-config.model';
+export * from './bounding-box.model';
+export * from './geo-area.model';

@@ -1,12 +1,8 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { DropTargetOptions, FileItem, HttpClientUploadService, InputFileOptions, MineTypeEnum } from '@wkoza/ngx-upload';
-import { SERVER_API_URL } from 'app/app.constants';
-import { AnalysisInputType, AnalysisState, AnalysisType, CreateAnalysis, IAnalysis, IDatasetAnalysisInput, IDocument, selectCurrentAnalysis } from 'app/analysis';
+import { AnalysisInputType, AnalysisState, AnalysisType, IAnalysis, IDatasetAnalysisInput, IDocument } from 'app/analysis';
 import { select, Store } from '@ngrx/store';
-import { Observable, ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
 import { AnalysisNewComponent } from 'app/analysis/components/analysis-new.component';
 
 @Component({

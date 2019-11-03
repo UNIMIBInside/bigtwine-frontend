@@ -27,7 +27,7 @@ import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { BtwMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
 import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
-import { DEBUG_INFO_ENABLED } from 'app/app.constants';
+import { DEBUG_INFO_ENABLED, GOOGLE_API_KEY } from 'app/app.constants';
 
 @NgModule({
     imports: [
@@ -44,7 +44,10 @@ import { DEBUG_INFO_ENABLED } from 'app/app.constants';
         StoreModule.forRoot({}),
         EffectsModule.forRoot([]),
         StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !DEBUG_INFO_ENABLED }),
-        AgmCoreModule.forRoot({ apiKey: 'AIzaSyCa8K1bf4lBsJcZEuy6dQUt_DXj7K-bOt8' }),
+        AgmCoreModule.forRoot({
+            apiKey: GOOGLE_API_KEY,
+            libraries: ['places']
+        }),
         AgmJsMarkerClustererModule,
         BigtwineSharedModule.forRoot(),
         BigtwineCoreModule,

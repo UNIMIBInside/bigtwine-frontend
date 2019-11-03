@@ -35,6 +35,8 @@ import { EntityCategoryIconComponent } from './components/entity-category-icon/e
 import { ConfidenceIconComponent } from './components/confidence-icon/confidence-icon.component';
 import { LinkedEntityDetailsComponent } from './components/linked-entity-details/linked-entity-details.component';
 import { ResultsExportService } from 'app/analysis/twitter-neel/services/results-export.service';
+import { GeoareaNewComponent } from 'app/analysis/twitter-neel/components/geoarea-new/geoarea-new.component';
+import { GeoareaViewComponent } from 'app/analysis/twitter-neel/components/geoarea-view/geoarea-view.component';
 
 @NgModule({
     imports: [
@@ -65,6 +67,8 @@ import { ResultsExportService } from 'app/analysis/twitter-neel/services/results
         EntityCategoryIconComponent,
         ConfidenceIconComponent,
         LinkedEntityDetailsComponent,
+        GeoareaNewComponent,
+        GeoareaViewComponent,
     ],
     providers: [
         {

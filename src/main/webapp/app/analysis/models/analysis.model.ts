@@ -1,4 +1,5 @@
 import { IUser } from 'app/analysis/models/user.model';
+import { IBoundingBox } from 'app/analysis/models/bounding-box.model';
 
 export enum AnalysisStatus {
     Ready = 'ready',
@@ -12,6 +13,7 @@ export enum AnalysisStatus {
 export enum AnalysisInputType {
     Query = 'query',
     Dataset = 'dataset',
+    GeoArea = 'geo-area',
 }
 
 export enum AnalysisType {
@@ -46,6 +48,11 @@ export interface IDatasetAnalysisInput extends IAnalysisInput {
     documentId: string;
     name: string;
     size: number;
+}
+
+export interface IGeoAreaAnalysisInput extends IAnalysisInput {
+    description: string;
+    boundingBoxes: IBoundingBox[];
 }
 
 export interface IAnalysisStatusHistory {

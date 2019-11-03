@@ -14,6 +14,8 @@ export * from './document-details/document-details.component';
 export * from './document-uploader/document-uploader.component';
 export * from './document-library/document-library.component';
 export * from './document-picker/document-picker.component';
+export * from './geo-area-editor/geo-area-editor.component';
+export * from './geo-area-details/geo-area-details.component';
 export * from './analysis-view.component';
 export * from './stream-analysis-view-component';
 export * from './bounded-analysis-view-component';

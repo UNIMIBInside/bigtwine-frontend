@@ -294,10 +294,16 @@ toolbars
         z-index: 800;
     }
 
+    &--static {
+        position: relative;
+        z-index: 800;
+    }
+
     .form-control {
         background-color: rgba($toolbar-text-color, 0.25);
         color: $toolbar-text-color;
         border-color: $toolbar-text-color;
+        height: 32px;
 
         &::-webkit-input-placeholder {
             color: rgba($toolbar-text-color, 0.75);

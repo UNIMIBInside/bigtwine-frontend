@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TagInputModule } from 'ngx-chips';
 import { NgxUploadModule } from '@wkoza/ngx-upload';
+import { AgmCoreModule } from '@agm/core';
 import { BigtwineSharedModule } from 'app/shared';
 import {
     AnalysisInputBadgeComponent,
@@ -24,6 +25,8 @@ import {
     DocumentPickerComponent,
     DocumentLibraryComponent,
     DocumentUploaderComponent,
+    GeoAreaEditorComponent,
+    GeoAreaDetailsComponent,
 } from 'app/analysis/components';
 
 @NgModule({
@@ -33,6 +36,7 @@ import {
         RouterModule,
         TagInputModule,
         NgxUploadModule.forRoot(),
+        AgmCoreModule,
     ],
     declarations: [
         AnalysisToolbarComponent,
@@ -54,6 +58,8 @@ import {
         DocumentPickerComponent,
         DocumentLibraryComponent,
         DocumentUploaderComponent,
+        GeoAreaEditorComponent,
+        GeoAreaDetailsComponent,
     ],
     exports: [
         AnalysisToolbarComponent,
@@ -74,10 +80,13 @@ import {
         DocumentPickerComponent,
         DocumentLibraryComponent,
         DocumentUploaderComponent,
+        GeoAreaEditorComponent,
+        GeoAreaDetailsComponent,
     ],
     entryComponents: [
         AnalysisStatusHistoryComponent,
         AnalysisSettingsComponent,
+        GeoAreaEditorComponent,
     ],
 })
 export class AnalysisSharedModule {

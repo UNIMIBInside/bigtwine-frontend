@@ -52,7 +52,7 @@ import {
     faStream,
     faMapMarkerAlt,
     faCheckCircle,
-    faTimesCircle,
+    faTimesCircle, faCompass, faEdit,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -108,5 +108,7 @@ library.add(faMapMarkerAlt);
 library.add(faTwitter);
 library.add(faCheckCircle);
 library.add(faTimesCircle);
+library.add(faCompass);
+library.add(faEdit);
 
 // jhipster-needle-add-element-to-vendor - JHipster will add new menu items here
