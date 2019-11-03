@@ -105,7 +105,8 @@ export class BtwAlertErrorComponent implements OnDestroy {
             params: data,
             timeout: 5000,
             toast: this.alertService.isToast(),
-            scoped: true
+            scoped: true,
+            position: 'bottom right'
         };
 
         this.alerts.push(this.alertService.addAlert(newAlert, this.alerts));

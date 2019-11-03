@@ -28,6 +28,7 @@ export class AnalysisAlertsService {
             msg: `<strong>${alert.title}</strong><br>${alert.message}`,
             timeout: 5000,
             toast: true,
+            position: 'right bottom'
         };
 
         this.alertService.addAlert(jhiAlert, []);
