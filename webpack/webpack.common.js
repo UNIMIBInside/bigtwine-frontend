@@ -59,6 +59,7 @@ module.exports = (options) => ({
                 BUILD_TIMESTAMP: `'${new Date().getTime()}'`,
                 VERSION: JSON.stringify(require("../package.json").version),
                 DEBUG_INFO_ENABLED: options.env === 'development',
+                APIGATEWAY_DEV_URL: `'http://localhost:9000/'`,
                 ADMIN_URL: options.env === 'development' ? `'http://localhost:9000/'` : `'http://admin.bigtwine.doublerew.net/'`,
                 // The root URL for API calls, ending with a '/' - for example: `"https://www.jhipster.tech:8081/myservice/"`.
                 // If this URL is left empty (""), then it will be relative to the current context.
