@@ -26,8 +26,4 @@ export abstract class StreamAnalysisViewComponent extends AnalysisViewComponent 
 
         return this._checkAnalysisStatus(AnalysisStatus.Started);
     }
-
-    onCurrentAnalysisChange(analysis: IAnalysis) {
-        super.onCurrentAnalysisChange(analysis);
-    }
 }

@@ -1,7 +1,7 @@
 import { OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, ReplaySubject } from 'rxjs';
-import { first, take, takeUntil } from 'rxjs/operators';
+import { first, skip, take, takeUntil } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import {
     ActionTypes,
@@ -20,7 +20,7 @@ import {
     StartListenAnalysisResults,
     StopListenAnalysisChanges,
     StopListenAnalysisResults,
-    IPaginationInfo
+    IPaginationInfo, isAnalysisTerminated
 } from 'app/analysis';
 import { AccountService } from 'app/core';
 
@@ -29,16 +29,7 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
 
     currentAnalysis$: Observable<IAnalysis>;
     lastError$: Observable<any>;
-    lastAnalysisId: string = null;
-
-    get currentAnalysis(): IAnalysis {
-        let currentAnalysis: IAnalysis = null;
-        this.currentAnalysis$
-            .pipe(take(1))
-            .subscribe((analysis: IAnalysis) => currentAnalysis = analysis);
-
-        return currentAnalysis;
-    }
+    currentAnalysis: IAnalysis;
 
     get paginationInfo(): IPaginationInfo {
         let pagination = null;
@@ -83,19 +74,15 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
         protected accountService: AccountService
     ) { }
 
-    ngOnDestroy(): void {
-        this.destroyed$.next(true);
-        this.destroyed$.complete();
-    }
-
     ngOnInit() {
         this.currentAnalysis$ = this.analysisStore.select(selectCurrentAnalysis);
         this.lastError$ = this.analysisStore.pipe(select(selectLastError));
 
         this.currentAnalysis$
             .pipe(takeUntil(this.destroyed$))
+            .pipe(skip(1))
             .subscribe((analysis: IAnalysis) => {
-                this.onCurrentAnalysisChange(analysis);
+                this.onCurrentAnalysisUpdate(analysis);
             });
 
         this.lastError$
@@ -107,61 +94,68 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
 
         this.route.paramMap
             .pipe(takeUntil(this.destroyed$))
-            .subscribe(params => {
-                this.onRouteAnalysisIdChange(params.get('analysisId'));
+            .subscribe(() => {
+                this.onRouteChange();
             });
-
-        this.onRouteAnalysisIdChange(this.route.snapshot.params.analysisId);
     }
 
-    onRouteAnalysisIdChange(analysisId: string) {
-        if (analysisId) {
-            if (!this.currentAnalysis || this.currentAnalysis.id !== analysisId) {
-                this.stopListenAnalysisResults();
-                this.clearAnalysisResults();
-                this.fetchAnalysis(analysisId);
-            }
-        } else {
-            this.handleAnalysisNotFound();
+    ngOnDestroy(): void {
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
+        this.stopListenAnalysisChanges();
+        this.stopListenAnalysisResults();
+    }
+
+    onRouteChange() {
+        this.loadAnalysis();
+    }
+
+    onCurrentAnalysisUpdate(analysis: IAnalysis) {
+        if ((analysis !== this.currentAnalysis) ||
+            (analysis !== null && this.currentAnalysis !== null && analysis.id !== this.currentAnalysis.id)) {
+            const previousAnalysis = this.currentAnalysis;
+            this.currentAnalysis = analysis;
+
+            this.onCurrentAnalysisChange(this.currentAnalysis, previousAnalysis);
         }
     }
 
-    onCurrentAnalysisChange(analysis: IAnalysis) {
-        if (analysis) {
-            this.startListenAnalysisChanges();
+    onCurrentAnalysisChange(currentAnalysis: IAnalysis, previousAnalysis: IAnalysis) {
+        const path = `/analysis/${currentAnalysis.type}/${currentAnalysis.input.type}/view/${currentAnalysis.id}`;
+        if (!this.router.url.startsWith(path)) {
+            // Navigate to the correct url
+            this.router
+                .navigate([{outlets: {primary: path}}])
+                .catch(err => console.error(err));
+        } else {
+            this.clearAnalysisResults();
+            this.stopListenAnalysisChanges(previousAnalysis ? previousAnalysis.id : null);
+            this.stopListenAnalysisResults(previousAnalysis ? previousAnalysis.id : null);
+            this.startListenAnalysisChanges(currentAnalysis.id);
 
-            if (analysis.status === AnalysisStatus.Started) {
-                this.startListenAnalysisResults();
-            } else {
-                this.stopListenAnalysisResults();
-            }
-
-            const endStates = [AnalysisStatus.Completed, AnalysisStatus.Cancelled, AnalysisStatus.Failed] as string[];
-            if (endStates.indexOf(analysis.status) >= 0 && !this.paginationInfo.enabled) {
+            if (isAnalysisTerminated(currentAnalysis)) {
                 this.fetchFirstResultsPage();
-            }
-
-            if (this.lastAnalysisId !== analysis.id) {
-                this.lastAnalysisId = analysis.id;
-                this.onCurrentAnalysisIdChange(this.lastAnalysisId);
-            }
-        } else {
-            this.stopListenAnalysisChanges();
-            this.stopListenAnalysisResults();
-
-            if (this.lastAnalysisId !== null) {
-                this.lastAnalysisId = null;
-                this.onCurrentAnalysisIdChange(null);
+            } else {
+                this.startListenAnalysisResults(currentAnalysis.id);
             }
         }
     }
-
-    onCurrentAnalysisIdChange(analysisId: string) {}
 
     handleAnalysisNotFound() {
         this.router
             .navigate([`/analysis/not-found`])
             .catch(err => console.error(err));
+    }
+
+    loadAnalysis() {
+        const analysisId = this.route.snapshot.paramMap.get('analysisId');
+        if (analysisId) {
+            if (!this.currentAnalysis || this.currentAnalysis.id !== analysisId) {
+                this.fetchAnalysis(analysisId);
+            }
+        } else {
+            this.handleAnalysisNotFound();
+        }
     }
 
     fetchFirstResultsPage() {
@@ -179,29 +173,23 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
         this.analysisStore.dispatch(new GetAnalysis(analysisId));
     }
 
-    startListenAnalysisResults() {
-        if (!this.currentAnalysis || this.resultsListeningAnalysisId === this.currentAnalysis.id) {
-            return;
+    startListenAnalysisResults(analysisId: string) {
+        if (analysisId && this.resultsListeningAnalysisId !== analysisId) {
+            this.analysisStore.dispatch(new StartListenAnalysisResults(analysisId));
         }
-
-        this.analysisStore.dispatch(new StartListenAnalysisResults(this.currentAnalysis.id));
     }
 
-    stopListenAnalysisResults() {
-        const analysisId = this.currentAnalysis ? this.currentAnalysis.id : null;
+    stopListenAnalysisResults(analysisId?: string) {
         this.analysisStore.dispatch(new StopListenAnalysisResults(analysisId));
     }
 
-    startListenAnalysisChanges() {
-        if (!this.currentAnalysis || this.changesListeningAnalysisId === this.currentAnalysis.id) {
-            return;
+    startListenAnalysisChanges(analysisId: string) {
+        if (analysisId && this.changesListeningAnalysisId !== analysisId) {
+            this.analysisStore.dispatch(new StartListenAnalysisChanges(analysisId));
         }
-
-        this.analysisStore.dispatch(new StartListenAnalysisChanges(this.currentAnalysis.id));
     }
 
-    stopListenAnalysisChanges() {
-        const analysisId = this.currentAnalysis ? this.currentAnalysis.id : null;
+    stopListenAnalysisChanges(analysisId?: string) {
         this.analysisStore.dispatch(new StopListenAnalysisChanges(analysisId));
     }
 

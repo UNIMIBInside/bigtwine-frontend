@@ -9,7 +9,7 @@
             (actionBtnClick)="onToolbarActionBtnClick($event)">
             <div class="space-left">
                 <div class="px-3">
-                    <btw-query-input [query]="currentAnalysisQuery" (queryChange)="this.query = $event"></btw-query-input>
+                    <btw-query-input [query]="currentAnalysisQuery" (queryChange)="onQueryChange($event)"></btw-query-input>
                 </div>
             </div>
         </btw-analysis-toolbar>

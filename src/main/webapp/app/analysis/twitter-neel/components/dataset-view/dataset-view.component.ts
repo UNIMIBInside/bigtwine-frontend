@@ -28,8 +28,4 @@ export class DatasetViewComponent extends BoundedAnalysisViewComponent {
         protected accountService: AccountService) {
         super(router, route, analysisStore, accountService);
     }
-
-    onCurrentAnalysisIdChange(analysisId: string) {
-        super.onCurrentAnalysisIdChange(analysisId);
-    }
 }

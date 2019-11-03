@@ -263,6 +263,20 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                 ...pushLastError(state, (action as AnalysisActions.GenericAnalysisError)),
                 resultsListeningAnalysisId: null
             };
+        case AnalysisActions.ActionTypes.ClearAnalysisResults:
+            return {
+                ...state,
+                resultsFilters: {
+                    ...state.resultsFilters,
+                    pagination: {
+                        ...state.resultsFilters.pagination,
+                    }
+                },
+                resultsPagination: {
+                    ...state.resultsPagination,
+                    enabled: false
+                }
+            };
         case AnalysisActions.ActionTypes.GetAnalysisError:
         case AnalysisActions.ActionTypes.GetAnalysesError:
         case AnalysisActions.ActionTypes.CreateAnalysisError:

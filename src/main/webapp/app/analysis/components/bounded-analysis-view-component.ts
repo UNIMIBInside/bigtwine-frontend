@@ -25,8 +25,4 @@ export abstract class BoundedAnalysisViewComponent extends AnalysisViewComponent
     get showCompleteBtn(): boolean {
         return false;
     }
-
-    onCurrentAnalysisChange(analysis: IAnalysis) {
-        super.onCurrentAnalysisChange(analysis);
-    }
 }

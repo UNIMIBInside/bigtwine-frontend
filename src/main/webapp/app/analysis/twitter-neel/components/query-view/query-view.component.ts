@@ -14,6 +14,7 @@ import { AccountService } from 'app/core';
 export class QueryViewComponent extends StreamAnalysisViewComponent {
 
     query: any;
+    isQueryChanged = false;
 
     get currentAnalysisQuery(): IQueryAnalysisInput {
         return this.currentAnalysis ? this.currentAnalysis.input as IQueryAnalysisInput : null;
@@ -24,7 +25,7 @@ export class QueryViewComponent extends StreamAnalysisViewComponent {
             return false;
         }
 
-        return this.query && this.currentAnalysis && JSON.stringify(this.query) !== JSON.stringify(this.currentAnalysis.input);
+        return this.isQueryChanged;
     }
 
     constructor(
@@ -41,8 +42,14 @@ export class QueryViewComponent extends StreamAnalysisViewComponent {
         }
     }
 
-    onCurrentAnalysisIdChange(analysisId: string) {
-        super.onCurrentAnalysisIdChange(analysisId);
+    onQueryChange(newQuery) {
+        this.query = newQuery;
+        this.isQueryChanged = !this.isSameQueryInput(newQuery, this.currentAnalysisQuery);
+    }
+
+    onCurrentAnalysisChange(currentAnalysis: IAnalysis, previousAnalysis: IAnalysis) {
+        super.onCurrentAnalysisChange(currentAnalysis, previousAnalysis);
+        this.isQueryChanged = this.query && !this.isSameQueryInput(this.query, this.currentAnalysisQuery);
     }
 
     createAnalysis() {
@@ -57,5 +64,30 @@ export class QueryViewComponent extends StreamAnalysisViewComponent {
 
             this.analysisStore.dispatch(new CreateAnalysis(analysis));
         }
+    }
+
+    isSameQueryInput(q1, q2): boolean {
+        if (!q1 || !q2) {
+            return false;
+        }
+
+        if (q1.joinOperator !== q2.joinOperator) {
+            return false;
+        }
+
+        const tokens1 = new Set(q1.tokens || []);
+        const tokens2 = new Set(q2.tokens || []);
+
+        if (tokens1.size !== tokens2.size) {
+            return false;
+        }
+
+        for (const t of tokens1) {
+            if (!tokens2.has(t)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

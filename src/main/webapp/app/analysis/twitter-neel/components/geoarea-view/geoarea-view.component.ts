@@ -29,8 +29,4 @@ export class GeoareaViewComponent extends StreamAnalysisViewComponent {
         protected accountService: AccountService) {
         super(router, route, analysisStore, accountService);
     }
-
-    onCurrentAnalysisIdChange(analysisId: string) {
-        super.onCurrentAnalysisIdChange(analysisId);
-    }
 }

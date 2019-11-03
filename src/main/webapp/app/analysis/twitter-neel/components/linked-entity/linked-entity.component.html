@@ -1,10 +1,10 @@
 <div class="resource" [ngClass]="vertical ? 'resource--vertical' : ''">
-    <div class="row no-gutters" *ngIf="vertical && resource.thumb">
+    <div class="row no-gutters" *ngIf="vertical">
         <img width="100%"
              height="92"
              class="object-fit-cover mb-2"
              [defaultImage]="'content/images/img-placeholder.png'"
-             [lazyLoad]="resource.thumb"
+             [lazyLoad]="resource.thumb ? resource.thumb : 'content/images/img-placeholder.png'"
              alt="">
     </div>
     <div class="row no-gutters">

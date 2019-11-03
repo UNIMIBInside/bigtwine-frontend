@@ -17,7 +17,7 @@ export class NeelProcessedTweetLargeComponent {
     }
 
     get linkedEntities(): ILinkedEntity[] {
-        return this.tweet.entities.filter(e => !e.isNil);
+        return this.tweet.entities.filter(e => !e.isNil && e.resource);
     }
 
     constructor() { }
