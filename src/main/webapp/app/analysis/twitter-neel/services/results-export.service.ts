@@ -8,7 +8,8 @@ export class ResultsExportService implements  IResultsExportService {
         return [
             {type: 'json', label: 'JSON'},
             {type: 'tsv', label: 'TSV'},
-            {type: 'twitter-neel-challenge', label: 'NEEL Challenge'}
+            {type: 'twitter-neel-challenge', label: 'NEEL Challenge'},
+            {type: 'twitter-neel-dataset', label: 'Input dataset'}
         ];
     }
 

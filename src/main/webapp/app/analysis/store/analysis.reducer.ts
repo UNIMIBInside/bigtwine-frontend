@@ -46,7 +46,8 @@ function notifyAnalysisUpdates(state: AnalysisState, updatedAnalysis: IAnalysis)
             ];
         }
 
-        if (!state.currentAnalysis.export && updatedAnalysis.export) {
+        if ((!state.currentAnalysis.exports && updatedAnalysis.exports) ||
+            (state.currentAnalysis.exports && updatedAnalysis.exports && state.currentAnalysis.exports.length !== updatedAnalysis.exports.length)) {
             alerts = [
                 {
                     type: 'info',
@@ -56,8 +57,13 @@ function notifyAnalysisUpdates(state: AnalysisState, updatedAnalysis: IAnalysis)
             ];
         }
 
-        if (state.currentAnalysis.export && updatedAnalysis.export) {
-            if (!state.currentAnalysis.export.completed && updatedAnalysis.export) {
+        if (state.currentAnalysis.exports && updatedAnalysis.exports) {
+            const oldCompletedCount = state.currentAnalysis.exports.filter(e => e.completed).length;
+            const newCompletedCount = updatedAnalysis.exports.filter(e => e.completed).length;
+            const oldFailedCount = state.currentAnalysis.exports.filter(e => e.failed).length;
+            const newFailedCount = updatedAnalysis.exports.filter(e => e.failed).length;
+
+            if (oldCompletedCount < newCompletedCount) {
                 alerts = [
                     {
                         type: 'success',
@@ -65,12 +71,11 @@ function notifyAnalysisUpdates(state: AnalysisState, updatedAnalysis: IAnalysis)
                     },
                     ...alerts
                 ];
-            } else if (!state.currentAnalysis.export.failed && updatedAnalysis.export.failed) {
+            } else if (oldFailedCount < newFailedCount) {
                 alerts = [
                     {
                         type: 'danger',
-                        title: 'Analysis results export failed',
-                        message: updatedAnalysis.export.message
+                        title: 'Analysis results export failed'
                     },
                     ...alerts
                 ];
@@ -250,7 +255,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                 ...state,
                 currentAnalysis: {
                     ...state.currentAnalysis,
-                    export: (action as AnalysisActions.ExportAnalysisResultsSuccess).analysisExport
+                    exports: [...state.currentAnalysis.exports, (action as AnalysisActions.ExportAnalysisResultsSuccess).analysisExport]
                 }
             };
         case AnalysisActions.ActionTypes.ListeningAnalysisChangesError:
