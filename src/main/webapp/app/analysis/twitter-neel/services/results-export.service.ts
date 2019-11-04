@@ -11,4 +11,21 @@ export class ResultsExportService implements  IResultsExportService {
             {type: 'twitter-neel-challenge', label: 'NEEL Challenge'}
         ];
     }
+
+    getMissingExportFormats(analysis: IAnalysis): IAnalysisResultsExportFormat[] {
+        const formats = (analysis.exports && analysis.exports.length) ? analysis.exports.map(e => e.format) : [];
+
+        return this
+            .getSupportedExportFormats(analysis)
+            .filter(e => !formats.includes(e.type));
+    }
+
+    getExportFormatLabel(analysis: IAnalysis, formatType: string): string {
+        const formats = this
+            .getSupportedExportFormats(analysis)
+            .filter(e => e.type === formatType)
+            .map(e => e.label);
+
+        return formats[0] || formatType;
+    }
 }

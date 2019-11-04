@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { AnalysisState, ExportAnalysisResults, IAnalysis, IAnalysisResultsExportFormat } from 'app/analysis';
+import { AnalysisState, ExportAnalysisResults, IAnalysis, IAnalysisExport, IAnalysisResultsExportFormat } from 'app/analysis';
 import { Action, Store } from '@ngrx/store';
 import { AnalysisService } from 'app/analysis/services/analysis.service';
 import { IResultsExportService, RESULTS_EXPORT_SERVICE } from 'app/analysis/services/results-export.service';
@@ -12,11 +12,6 @@ import { IResultsExportService, RESULTS_EXPORT_SERVICE } from 'app/analysis/serv
 export class ResultsExportBtnComponent implements OnInit {
 
     @Input() analysis: IAnalysis;
-
-    get exportLink(): string {
-        return this.analysisService
-            .getDocumentDownloadLink(this.analysis.export.documentId);
-    }
 
     constructor(
         private analysisStore: Store<AnalysisState>,
@@ -33,6 +28,19 @@ export class ResultsExportBtnComponent implements OnInit {
     }
 
     getExportFormats(): IAnalysisResultsExportFormat[] {
-        return this.exportService.getSupportedExportFormats(this.analysis);
+        return this.exportService.getMissingExportFormats(this.analysis);
+    }
+
+    getFormatLabel(formatType: string) {
+        return this.exportService.getExportFormatLabel(this.analysis, formatType);
+    }
+
+    getExportLink(exp: IAnalysisExport): string {
+        return this.analysisService
+            .getDocumentDownloadLink(exp.documentId);
+    }
+
+    isExportRunning(exp: IAnalysisExport): boolean {
+        return !exp.failed && !exp.completed;
     }
 }

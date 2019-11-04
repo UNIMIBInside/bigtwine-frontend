@@ -104,6 +104,7 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
         this.destroyed$.complete();
         this.stopListenAnalysisChanges();
         this.stopListenAnalysisResults();
+        this.clearAnalysisResults();
     }
 
     onRouteChange() {
@@ -127,18 +128,18 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
             this.router
                 .navigate([{outlets: {primary: path}}])
                 .catch(err => console.error(err));
-        } else {
-            this.clearAnalysisResults();
-            this.stopListenAnalysisChanges(previousAnalysis ? previousAnalysis.id : null);
-            this.stopListenAnalysisResults(previousAnalysis ? previousAnalysis.id : null);
-            this.startListenAnalysisChanges(currentAnalysis.id);
+        }//  else {
+        // this.clearAnalysisResults();
+        // this.stopListenAnalysisChanges(previousAnalysis ? previousAnalysis.id : null);
+        // this.stopListenAnalysisResults(previousAnalysis ? previousAnalysis.id : null);
+        this.startListenAnalysisChanges(currentAnalysis.id);
 
-            if (isAnalysisTerminated(currentAnalysis)) {
-                this.fetchFirstResultsPage();
-            } else {
-                this.startListenAnalysisResults(currentAnalysis.id);
-            }
+        if (isAnalysisTerminated(currentAnalysis)) {
+            this.fetchFirstResultsPage();
+        } else {
+            this.startListenAnalysisResults(currentAnalysis.id);
         }
+        // }
     }
 
     handleAnalysisNotFound() {

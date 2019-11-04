@@ -48,11 +48,14 @@ import {
     faCheck,
     faSlidersH,
     faDownload,
+    faFileDownload,
     faMap,
     faStream,
     faMapMarkerAlt,
     faCheckCircle,
-    faTimesCircle, faCompass, faEdit,
+    faTimesCircle,
+    faCompass,
+    faEdit,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -102,6 +105,7 @@ library.add(faInfinity);
 library.add(faCheck);
 library.add(faSlidersH);
 library.add(faDownload);
+library.add(faFileDownload);
 library.add(faMap);
 library.add(faStream);
 library.add(faMapMarkerAlt);

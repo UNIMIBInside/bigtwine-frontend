@@ -82,7 +82,7 @@ export interface IAnalysis {
     input?: IAnalysisInput;
     progress?: number;
     settings?: {[name: string]: any};
-    export?: IAnalysisExport;
+    exports?: IAnalysisExport[];
     resultsCount?: number;
 }
 
@@ -93,6 +93,6 @@ export class Analysis implements IAnalysis {
     status: string;
     type: string;
     settings: {[name: string]: any};
-    export: IAnalysisExport;
+    exports: IAnalysisExport[];
     resultsCount: number;
 }

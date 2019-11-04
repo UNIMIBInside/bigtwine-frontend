@@ -266,6 +266,20 @@ ui bootstrap tweaks
     }
 }
 
+.dropdown-item--rich {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+
+    .dropdown-item__title {
+        flex-grow: 1;
+    }
+
+    .dropdown-item__icon {
+        flex-grow: 0;
+    }
+}
 
 /* ==========================================================================
 toolbars
