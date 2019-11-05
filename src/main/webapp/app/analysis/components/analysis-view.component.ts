@@ -20,7 +20,7 @@ import {
     StartListenAnalysisResults,
     StopListenAnalysisChanges,
     StopListenAnalysisResults,
-    IPaginationInfo, isAnalysisTerminated
+    IPaginationInfo, isAnalysisTerminated, isEndStatus
 } from 'app/analysis';
 import { AccountService } from 'app/core';
 
@@ -104,20 +104,32 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
         this.destroyed$.complete();
         this.stopListenAnalysisChanges();
         this.stopListenAnalysisResults();
-        this.clearAnalysisResults();
     }
 
     onRouteChange() {
-        this.loadAnalysis();
+        const analysisId = this.route.snapshot.paramMap.get('analysisId');
+        if (!analysisId) {
+            this.handleAnalysisNotFound();
+        } else if (!this.currentAnalysis || this.currentAnalysis.id !== analysisId) {
+            this.fetchAnalysis(analysisId);
+        }
     }
 
-    onCurrentAnalysisUpdate(analysis: IAnalysis) {
-        if ((analysis !== this.currentAnalysis) ||
-            (analysis !== null && this.currentAnalysis !== null && analysis.id !== this.currentAnalysis.id)) {
+    onCurrentAnalysisUpdate(updatedAnalysis: IAnalysis) {
+        if (!updatedAnalysis) {
+            this.handleAnalysisNotFound();
+        } else {
             const previousAnalysis = this.currentAnalysis;
-            this.currentAnalysis = analysis;
+            this.currentAnalysis = updatedAnalysis;
 
-            this.onCurrentAnalysisChange(this.currentAnalysis, previousAnalysis);
+            if ((!previousAnalysis && updatedAnalysis) ||
+                (previousAnalysis && updatedAnalysis && previousAnalysis.id !== updatedAnalysis.id)) {
+                // Different analysis id or we haven't a previous analysis
+                this.onCurrentAnalysisChange(this.currentAnalysis, previousAnalysis);
+            } else if (previousAnalysis && updatedAnalysis && previousAnalysis.status !== updatedAnalysis.status) {
+                // Same analysis id, different status
+                this.onAnalysisStatusChange(updatedAnalysis.status as AnalysisStatus, previousAnalysis.status as AnalysisStatus);
+            }
         }
     }
 
@@ -126,37 +138,38 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
         if (!this.router.url.startsWith(path)) {
             // Navigate to the correct url
             this.router
-                .navigate([{outlets: {primary: path}}])
+                .navigate([path])
                 .catch(err => console.error(err));
-        }//  else {
-        // this.clearAnalysisResults();
-        // this.stopListenAnalysisChanges(previousAnalysis ? previousAnalysis.id : null);
-        // this.stopListenAnalysisResults(previousAnalysis ? previousAnalysis.id : null);
-        this.startListenAnalysisChanges(currentAnalysis.id);
+        }
 
+        this.clearAnalysisResults();
+        if (previousAnalysis) {
+            this.stopListenAnalysisChanges(previousAnalysis.id);
+            this.stopListenAnalysisResults(previousAnalysis.id);
+        }
+
+        this.startListenAnalysisChanges(currentAnalysis.id);
         if (isAnalysisTerminated(currentAnalysis)) {
             this.fetchFirstResultsPage();
-        } else {
+        } else if (currentAnalysis.status === AnalysisStatus.Started) {
             this.startListenAnalysisResults(currentAnalysis.id);
         }
-        // }
+    }
+
+    onAnalysisStatusChange(newStatus: AnalysisStatus, oldStatus: AnalysisStatus) {
+        if (oldStatus === AnalysisStatus.Started) {
+            this.stopListenAnalysisResults(this.currentAnalysis.id);
+        } else if (newStatus === AnalysisStatus.Started) {
+            this.startListenAnalysisResults(this.currentAnalysis.id);
+        } else if (isEndStatus(newStatus)) {
+            this.fetchFirstResultsPage();
+        }
     }
 
     handleAnalysisNotFound() {
         this.router
             .navigate([`/analysis/not-found`])
             .catch(err => console.error(err));
-    }
-
-    loadAnalysis() {
-        const analysisId = this.route.snapshot.paramMap.get('analysisId');
-        if (analysisId) {
-            if (!this.currentAnalysis || this.currentAnalysis.id !== analysisId) {
-                this.fetchAnalysis(analysisId);
-            }
-        } else {
-            this.handleAnalysisNotFound();
-        }
     }
 
     fetchFirstResultsPage() {
