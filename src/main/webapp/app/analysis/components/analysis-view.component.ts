@@ -159,7 +159,9 @@ export abstract class AnalysisViewComponent implements OnInit, OnDestroy {
     onAnalysisStatusChange(newStatus: AnalysisStatus, oldStatus: AnalysisStatus) {
         if (oldStatus === AnalysisStatus.Started) {
             this.stopListenAnalysisResults(this.currentAnalysis.id);
-        } else if (newStatus === AnalysisStatus.Started) {
+        }
+
+        if (newStatus === AnalysisStatus.Started) {
             this.startListenAnalysisResults(this.currentAnalysis.id);
         } else if (isEndStatus(newStatus)) {
             this.fetchFirstResultsPage();
