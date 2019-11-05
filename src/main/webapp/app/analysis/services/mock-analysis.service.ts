@@ -80,14 +80,14 @@ export class MockAnalysisService implements IAnalysisService {
             owner: {uid: 'user-1', username: 'User1'},
             progress: -1,
             resultsCount: 1239123,
-            export: {
+            exports: [{
                 completed: true,
                 format: 'json',
                 failed: false,
                 progress: 1,
                 documentId: '123456',
                 message: null
-            }
+            }]
         };
 
         const analysis2: IAnalysis = {
@@ -120,14 +120,14 @@ export class MockAnalysisService implements IAnalysisService {
             owner: {uid: 'user-1', username: 'User1'},
             progress: 1,
             resultsCount: 229283,
-            export: {
+            exports: [{
                 completed: false,
                 format: 'json',
                 failed: true,
                 progress: 0.3,
                 documentId: '123456',
                 message: null
-            }
+            }]
         };
 
         const analysis4: IAnalysis = {
