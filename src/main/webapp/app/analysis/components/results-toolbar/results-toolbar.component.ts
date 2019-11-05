@@ -223,10 +223,7 @@ export class ResultsToolbarComponent implements OnInit, OnDestroy {
             return null;
         }
 
-        return {
-            type: this.activeSearchType.type,
-            value: this.searchQuery
-        };
+        return this.resultsFilterService.buildFullSearchQuery(this.activeSearchType.type, this.searchQuery);
     }
 
     private fetchFirstPage() {

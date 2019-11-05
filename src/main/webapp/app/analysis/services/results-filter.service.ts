@@ -26,6 +26,8 @@ export interface IResultsFilterService {
     localSearchSupportedTypes(): IResultsFilterType[];
 
     fullSearchSupportedTypes(): IResultsFilterType[];
+
+    buildFullSearchQuery(type: string, value: any): IResultsFilterQuery;
 }
 
 export const RESULTS_FILTER_SERVICE = new InjectionToken<IResultsFilterService>('results-filter.service');

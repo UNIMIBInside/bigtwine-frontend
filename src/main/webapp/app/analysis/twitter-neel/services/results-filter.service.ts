@@ -91,4 +91,28 @@ export class ResultsFilterService implements IResultsFilterService {
             {type: 'text', label: 'Text'}
         ];
     }
+
+    buildFullSearchQuery(type: string, value: any): IResultsFilterQuery {
+        let compiledQuery;
+        switch (type) {
+            case 'category':
+                compiledQuery = `
+                    {"payload.entities.category": ${JSON.stringify(value)}}
+                `;
+                break;
+            case 'rdf:type':
+                compiledQuery = `
+                    {"payload.entities.resource.extra.rdfType": {$in: [${JSON.stringify(value)}]}}
+                `;
+                break;
+            default:
+                break;
+        }
+
+        return {
+            type,
+            value,
+            compiledQuery
+        };
+    }
 }
