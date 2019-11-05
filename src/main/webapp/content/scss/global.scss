@@ -274,10 +274,14 @@ ui bootstrap tweaks
 
     .dropdown-item__title {
         flex-grow: 1;
+        margin-right: 0.5rem;
     }
 
     .dropdown-item__icon {
+        display: inline-block;
         flex-grow: 0;
+        min-width: 28px;
+        text-align: center;
     }
 }
 

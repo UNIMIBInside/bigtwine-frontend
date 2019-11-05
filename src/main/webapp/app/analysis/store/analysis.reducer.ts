@@ -255,7 +255,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                 ...state,
                 currentAnalysis: {
                     ...state.currentAnalysis,
-                    exports: [...state.currentAnalysis.exports, (action as AnalysisActions.ExportAnalysisResultsSuccess).analysisExport]
+                    exports: [...(state.currentAnalysis.exports || []), (action as AnalysisActions.ExportAnalysisResultsSuccess).analysisExport]
                 }
             };
         case AnalysisActions.ActionTypes.ListeningAnalysisChangesError:
