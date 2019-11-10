@@ -2,7 +2,7 @@ import { AnalysisState, IAnalysis, IPage, selectCurrentAnalysis } from 'app/anal
 import { filter, map, take, takeUntil, throttleTime } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { INeelProcessedTweet, selectAllTweets, TwitterNeelState } from 'app/analysis/twitter-neel';
+import { INeelProcessedTweet, selectAllTweets, TwitterNeelState, SPARQL_NS_PREFIXES } from 'app/analysis/twitter-neel';
 import { DEFAULT_RESULTS_FILTER_THROTTLE, IResultsFilterService } from 'app/analysis/services/results-filter.service';
 import { Injectable } from '@angular/core';
 import { IResultsFilterQuery } from 'app/analysis/models/results-filter-query.model';
@@ -101,6 +101,10 @@ export class ResultsFilterService implements IResultsFilterService {
                 `;
                 break;
             case 'rdf:type':
+                const parts = value.split(':');
+                if (parts.length > 0 && SPARQL_NS_PREFIXES[parts[0]]) {
+                    value = SPARQL_NS_PREFIXES[parts[0]] + parts.slice(1).join(':');
+                }
                 compiledQuery = `
                     {"payload.entities.resource.extra.rdfType": {$in: [${JSON.stringify(value)}]}}
                 `;
