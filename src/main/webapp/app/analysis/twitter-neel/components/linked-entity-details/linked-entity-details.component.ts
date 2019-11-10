@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ICoordinates, ILinkedEntity, INeelProcessedTweet, IResource } from 'app/analysis/twitter-neel';
+import { ICoordinates, ILinkedEntity, INeelProcessedTweet, IResource, SPARQL_NS_PREFIXES_REV } from 'app/analysis/twitter-neel';
 import { ALT_MAP_STYLES, ALT_MAP_BG } from 'app/shared/gmap-styles';
 import { KeyValue } from '@angular/common';
 
@@ -76,5 +76,23 @@ export class LinkedEntityDetailsComponent implements OnInit {
 
     isListExtraField(field: KeyValue<string, any>) {
         return field.value instanceof Array;
+    }
+
+    extraFieldValueFormatter(fieldKey: string, value: any) {
+        if (fieldKey === 'rdfType') {
+            let formattedValue = value;
+            for (const prefix in SPARQL_NS_PREFIXES_REV) {
+                if (value.startsWith(prefix)) {
+                    formattedValue = value.replace(prefix, SPARQL_NS_PREFIXES_REV[prefix] + ':');
+                    break;
+                }
+            }
+            return `<a target="_blank" href="${value}">${formattedValue}</a>`;
+        } else {
+            if (value.test(/^https?:\/\//)) {
+                return `<a target="_blank" href="${value}">${value}</a>`;
+            }
+            return value;
+        }
     }
 }
