@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { UserSettingsService } from 'app/analysis/services/user-settings.service';
-import { AnalysisState, AnalysisStatus, IAnalysis, NumberOptionConfig, RestoreUserSettings, SaveAnalysisSettings, selectCurrentAnalysis } from 'app/analysis';
+import { AnalysisState, IAnalysis, RestoreUserSettings, SaveAnalysisSettings, selectCurrentAnalysis } from 'app/analysis';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { skipLast, take, takeUntil } from 'rxjs/operators';
 import { AnalysisService } from 'app/analysis/services/analysis.service';
-import { AnalysisSettingType, IAnalysisSetting } from 'app/analysis/models/analysis-setting.model';
+import { IAnalysisSetting } from 'app/analysis/models/analysis-setting.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import set = Reflect.set;
 
 @Component({
     selector: 'btw-analysis-settings',

@@ -74,7 +74,7 @@ export class AnalysisToolbarComponent implements OnInit, OnDestroy {
 
     openSettings() {
         if (!this.modal.hasOpenModals()) {
-            this.modal.open(AnalysisSettingsComponent);
+            this.modal.open(AnalysisSettingsComponent, {size: 'lg'});
         }
     }
 

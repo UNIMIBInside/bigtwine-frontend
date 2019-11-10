@@ -22,22 +22,23 @@ import {
     NeelProcessedTweetLargeComponent,
     LinkedEntityComponent,
     NilEntityComponent,
+    LegendBtnComponent,
+    TweetsCounterIconComponent,
+    EntityCategoryIconComponent,
+    ConfidenceIconComponent,
+    LinkedEntityDetailsComponent,
+    LegendModalComponent,
+    GeoareaNewComponent,
+    GeoareaViewComponent,
+    TwitterNeelHomeComponent,
+    ViewModeSwitcherComponent,
 } from './';
 import { TweetEntityHighlighterService } from 'app/analysis/twitter-neel/services/tweet-entity-highlighter.service';
 import { ResultsFilterService } from 'app/analysis/twitter-neel/services/results-filter.service';
 import { RESULTS_FILTER_SERVICE } from 'app/analysis/services/results-filter.service';
 import { RESULTS_EXPORT_SERVICE } from 'app/analysis/services/results-export.service';
-import { ViewModeSwitcherComponent } from 'app/analysis/twitter-neel/components/view-mode-switcher/view-mode-switcher.component';
-import { TwitterNeelHomeComponent } from 'app/analysis/twitter-neel/components/twitter-neel-home/twitter-neel-home.component';
 import { AnalysisSharedModule } from 'app/analysis/analysis-shared.module';
-import { TweetsCounterIconComponent } from './components/tweets-counter-icon/tweets-counter-icon.component';
-import { EntityCategoryIconComponent } from './components/entity-category-icon/entity-category-icon.component';
-import { ConfidenceIconComponent } from './components/confidence-icon/confidence-icon.component';
-import { LinkedEntityDetailsComponent } from './components/linked-entity-details/linked-entity-details.component';
 import { ResultsExportService } from 'app/analysis/twitter-neel/services/results-export.service';
-import { GeoareaNewComponent } from 'app/analysis/twitter-neel/components/geoarea-new/geoarea-new.component';
-import { GeoareaViewComponent } from 'app/analysis/twitter-neel/components/geoarea-view/geoarea-view.component';
-import { LegendModalComponent } from './components/legend-modal/legend-modal.component';
 
 @NgModule({
     imports: [
@@ -71,6 +72,10 @@ import { LegendModalComponent } from './components/legend-modal/legend-modal.com
         GeoareaNewComponent,
         GeoareaViewComponent,
         LegendModalComponent,
+        LegendBtnComponent,
+    ],
+    entryComponents: [
+        LegendModalComponent
     ],
     providers: [
         {
