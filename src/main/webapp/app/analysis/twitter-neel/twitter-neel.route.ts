@@ -36,6 +36,9 @@ export const twitterNeelState: Routes = [
         path: '',
         pathMatch: 'full',
         component: TwitterNeelHomeComponent,
+        data: {
+            pageTitle: 'analysis.twitterNeel.home'
+        }
     },
     {
         path: 'query',
@@ -48,11 +51,17 @@ export const twitterNeelState: Routes = [
             {
                 path: 'new',
                 component: QueryNewComponent,
+                data: {
+                    pageTitle: 'analysis.twitterNeel.queryNew'
+                }
             },
             {
                 path: 'view/:analysisId',
                 component: QueryViewComponent,
-                children: viewerModes
+                children: viewerModes,
+                data: {
+                    pageTitle: 'analysis.twitterNeel.queryView'
+                }
             },
         ]
     },
@@ -67,11 +76,17 @@ export const twitterNeelState: Routes = [
             {
                 path: 'new',
                 component: DatasetUploadComponent,
+                data: {
+                    pageTitle: 'analysis.twitterNeel.datasetUpload'
+                }
             },
             {
                 path: 'view/:analysisId',
                 component: DatasetViewComponent,
-                children: viewerModes
+                children: viewerModes,
+                data: {
+                    pageTitle: 'analysis.twitterNeel.datasetView'
+                }
             },
         ]
     },
@@ -86,11 +101,17 @@ export const twitterNeelState: Routes = [
             {
                 path: 'new',
                 component: GeoareaNewComponent,
+                data: {
+                    pageTitle: 'analysis.twitterNeel.geoAreaNew'
+                }
             },
             {
                 path: 'view/:analysisId',
                 component: GeoareaViewComponent,
-                children: viewerModes
+                children: viewerModes,
+                data: {
+                    pageTitle: 'analysis.twitterNeel.geoAreaView'
+                }
             },
         ]
     },
