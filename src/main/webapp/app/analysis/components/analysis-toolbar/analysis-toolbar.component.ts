@@ -68,13 +68,13 @@ export class AnalysisToolbarComponent implements OnInit, OnDestroy {
 
     onStatusLabelClick() {
         if (!this.modal.hasOpenModals()) {
-            this.modal.open(AnalysisStatusHistoryComponent);
+            this.modal.open(AnalysisStatusHistoryComponent, {size: 'lg'});
         }
     }
 
     openSettings() {
         if (!this.modal.hasOpenModals()) {
-            this.modal.open(AnalysisSettingsComponent, {size: 'lg'});
+            this.modal.open(AnalysisSettingsComponent);
         }
     }
 
