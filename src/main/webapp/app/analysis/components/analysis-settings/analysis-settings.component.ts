@@ -16,8 +16,19 @@ import set = Reflect.set;
 })
 export class AnalysisSettingsComponent implements OnInit {
     currentAnalysis$: Observable<IAnalysis>;
-    settings: IAnalysisSetting[] = [];
+    _settings: IAnalysisSetting[] = [];
+    settingsModel: {[name: string]: any};
+    hasEditableSettings = false;
     isLoading = false;
+
+    get settings(): IAnalysisSetting[] {
+        return this._settings;
+    }
+
+    set settings(settings: IAnalysisSetting[]) {
+        this._settings = settings;
+        this.onSettingsChange();
+    }
 
     get currentAnalysis(): IAnalysis {
         let currentAnalysis: IAnalysis = null;
@@ -59,15 +70,19 @@ export class AnalysisSettingsComponent implements OnInit {
         }
     }
 
+    onSettingsChange() {
+        const values = {};
+        this.settings.forEach(setting => {
+            values[setting.name] = (setting.currentValue == null) ? setting.defaultValue : setting.currentValue;
+            this.hasEditableSettings = this.hasEditableSettings || setting.editable;
+        });
+        this.settingsModel = values;
+    }
+
     save() {
         const analysis = this.currentAnalysis;
         if (analysis) {
-            const values = {};
-            this.settings.forEach(setting => {
-                values[setting.name] = setting.currentValue;
-            });
-
-            this.store.dispatch(new SaveAnalysisSettings(analysis.id, values));
+            this.store.dispatch(new SaveAnalysisSettings(analysis.id, this.settingsModel));
         }
     }
 }

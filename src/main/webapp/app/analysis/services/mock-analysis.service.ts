@@ -288,6 +288,7 @@ export class MockAnalysisService implements IAnalysisService {
         const settings: IAnalysisSetting[] = [
             {
                 name: 'twitter-stream-sampling',
+                label: 'twitter stream sampling',
                 type: AnalysisSettingType.Number,
                 editable: true,
                 description: null,
@@ -297,6 +298,7 @@ export class MockAnalysisService implements IAnalysisService {
             },
             {
                 name: 'ner-recognizer',
+                label: 'ner recognizer',
                 type: AnalysisSettingType.SingleChoice,
                 editable: true,
                 description: 'Descrizione di prova ner',
@@ -309,6 +311,7 @@ export class MockAnalysisService implements IAnalysisService {
             },
             {
                 name: 'nel-linker',
+                label: 'nel linker',
                 type: AnalysisSettingType.SingleChoice,
                 editable: false,
                 description: 'Descrizione di prova nel',
@@ -321,6 +324,7 @@ export class MockAnalysisService implements IAnalysisService {
             },
             {
                 name: 'geo-decoder',
+                label: 'geo decoder',
                 type: AnalysisSettingType.MultipleChoices,
                 editable: false,
                 description: null,
@@ -333,6 +337,7 @@ export class MockAnalysisService implements IAnalysisService {
             },
             {
                 name: 'text-field',
+                label: 'text field',
                 type: AnalysisSettingType.Text,
                 editable: true,
                 description: null,

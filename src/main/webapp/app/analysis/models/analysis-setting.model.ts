@@ -14,6 +14,7 @@ export interface IAnalysisSettingChoice {
 
 export interface IAnalysisSetting {
     name: string;
+    label: string;
     type: AnalysisSettingType;
     editable: boolean;
     description?: string;

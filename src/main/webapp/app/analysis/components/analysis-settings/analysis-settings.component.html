@@ -12,14 +12,15 @@
             <ng-template #ready>
                 <form>
                     <div class="form-group" *ngFor="let setting of settings">
-                        <label [for]="setting.name" class="form-control-label">{{setting.name}}</label>
+                        <label [for]="setting.name" class="form-control-label">{{setting.label}}</label>
 
                         <!-- Number field -->
                         <input
                             *ngIf="setting.type === 'number'"
                             [id]="setting.name"
                             [name]="setting.name"
-                            [(ngModel)]="setting.currentValue"
+                            [(ngModel)]="settingsModel[setting.name]"
+                            [readOnly]="!setting.editable"
                             class="form-control"
                             type="number">
 
@@ -28,7 +29,8 @@
                             *ngIf="setting.type === 'string'"
                             [id]="setting.name"
                             [name]="setting.name"
-                            [(ngModel)]="setting.currentValue"
+                            [(ngModel)]="settingsModel[setting.name]"
+                            [readOnly]="!setting.editable"
                             class="form-control"
                             type="text">
 
@@ -36,7 +38,8 @@
                         <input *ngIf="setting.type === 'boolean'"
                                [name]="setting.name"
                                [id]="setting.name"
-                               [(ngModel)]="setting.currentValue"
+                               [(ngModel)]="settingsModel[setting.name]"
+                               [readOnly]="!setting.editable"
                                class="form-check"
                                type="checkbox">
 
@@ -44,7 +47,8 @@
                         <textarea *ngIf="setting.type === 'text'"
                                   [name]="setting.name"
                                   [id]="setting.name"
-                                  [(ngModel)]="setting.currentValue"
+                                  [(ngModel)]="settingsModel[setting.name]"
+                                  [readOnly]="!setting.editable"
                                   class="form-control"></textarea>
 
                         <!-- Select -->
@@ -52,7 +56,8 @@
                                 [name]="setting.name"
                                 [id]="setting.name"
                                 [attr.multiple]="setting.type === 'multiple-choices' ? 'multiple' : null"
-                                [(ngModel)]="setting.currentValue"
+                                [(ngModel)]="settingsModel[setting.name]"
+                                [disabled]="!setting.editable"
                                 class="form-control">
                             <option *ngFor="let choice of setting.choices"
                                     [ngValue]="choice.value">{{choice.name}}</option>
@@ -60,7 +65,7 @@
                         <small class="form-text text-muted" *ngIf="setting.description">{{setting.description}}</small>
                     </div>
                     <div *btwHasNotAuthority="'ROLE_DEMO'" class="text-right">
-                        <button class="btn btn-outline-light" (click)="save()">Save</button>
+                        <button *ngIf="hasEditableSettings" class="btn btn-outline-light" (click)="save()">Save</button>
                     </div>
                 </form>
 
