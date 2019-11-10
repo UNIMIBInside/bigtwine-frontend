@@ -91,18 +91,17 @@ const reduceNewTweets = (oldState: TwitterNeelState, tweets: INeelProcessedTweet
         .map(e => e.resource)
         .filter(removeResourceDuplicates);
 
-    const statuses = tweets.map(t => t.status);
-    const statusesLocations = statuses
-        .filter(t => t.coordinates)
-        .map(t => new Location(t.coordinates, LocationSource.Status, t.id))
+    const statusesLocations = tweets
+        .filter(t => t.status.coordinates)
+        .map(t => new Location(t.status.coordinates, LocationSource.Status, t.status.id, t))
         .filter(removeLocationDuplicates);
-    const usersLocations = statuses
-        .filter(t => t.user && t.user.coordinates)
-        .map(t => new Location(t.user.coordinates, LocationSource.TwitterUser, t.user.id))
+    const usersLocations = tweets
+        .filter(t => t.status.user && t.status.user.coordinates)
+        .map(t => new Location(t.status.user.coordinates, LocationSource.TwitterUser, t.status.user.id, t))
         .filter(removeLocationDuplicates);
     const resourcesLocations = linkedEntities
         .filter(e => e.resource && e.resource.coordinates)
-        .map(e => new Location(e.resource.coordinates, LocationSource.Resource, e.resource.url))
+        .map(e => new Location(e.resource.coordinates, LocationSource.Resource, e.resource.url, e.resource))
         .filter(removeLocationDuplicates);
 
     return {

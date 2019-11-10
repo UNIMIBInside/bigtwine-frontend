@@ -191,6 +191,14 @@ export class MapResultsViewerComponent extends ResultsViewerComponent implements
         }
     }
 
+    onMarkerClick(l: ILocation) {
+        if (l.source === LocationSource.Status || l.source === LocationSource.TwitterUser) {
+            this.selectedTweet = l.object;
+        } else if (l.source === LocationSource.Resource) {
+            this.selectedResource = l.object;
+        }
+    }
+
     onTweetsFilterQueryChange(query: IResultsFilterQuery) {
         this.filterQuery = query;
 

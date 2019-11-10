@@ -10,11 +10,13 @@ export interface ILocation {
     coordinates: ICoordinates;
     source: LocationSource;
     ref: string;
+    object: any;
 }
 
 export class Location implements ILocation {
     constructor(
         public coordinates: ICoordinates,
         public source: LocationSource,
-        public ref: string) {}
+        public ref: string,
+        public object: any) {}
 }

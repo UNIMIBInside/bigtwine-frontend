@@ -13,7 +13,7 @@
                             </li>
                         </ng-container>
                         <ng-template #filteredTweetsList>
-                            <li *ngFor="let tweet of filteredTweets$ | async" class="item-list__item">
+                            <li *ngFor="let tweet of filteredTweets$ | async" (click)="onTweetClick(tweet)" class="item-list__item">
                                 <btw-neel-processed-tweet [tweet]="tweet"></btw-neel-processed-tweet>
                             </li>
                         </ng-template>
@@ -75,7 +75,7 @@
             [styles]="mapStyles"
             [backgroundColor]="mapBg">
 
-            <ng-container *ngIf="selectedTweet === null; else selectedTweetMarkers">
+            <ng-container *ngIf="selectedTweet === null && selectedResource === null; else selectedMarkers">
                 <agm-marker-cluster
                     [styles]="getClusterStyles('tweets')"
                     title="Tweets marker cluster">
@@ -85,6 +85,7 @@
                             [latitude]="l.coordinates.latitude"
                             [longitude]="l.coordinates.longitude"
                             [markerDraggable]="false"
+                            (markerClick)="onMarkerClick(l)"
                             iconUrl="content/images/markers/tweets.svg"
                             label=""
                             title="Tweet location">
@@ -100,6 +101,7 @@
                         [latitude]="l.coordinates.latitude"
                         [longitude]="l.coordinates.longitude"
                         [markerDraggable]="false"
+                        (markerClick)="onMarkerClick(l)"
                         iconUrl="content/images/markers/users.svg"
                         label=""
                         title="Twitter user location">
@@ -114,39 +116,58 @@
                         [latitude]="l.coordinates.latitude"
                         [longitude]="l.coordinates.longitude"
                         [markerDraggable]="false"
+                        (markerClick)="onMarkerClick(l)"
                         iconUrl="content/images/markers/resources.svg"
                         label=""
                         title="Resource location">
                     </agm-marker>
                 </agm-marker-cluster>
             </ng-container>
-            <ng-template #selectedTweetMarkers>
-                <agm-marker
-                    *ngIf="selectedTweet.status.coordinates"
-                    [latitude]="selectedTweet.status.coordinates.latitude"
-                    [longitude]="selectedTweet.status.coordinates.longitude"
-                    [markerDraggable]="false"
-                    iconUrl="content/images/markers/tweets.svg"
-                    label=""
-                    title="Tweet location">
-                </agm-marker>
-
-                <agm-marker
-                    *ngIf="selectedTweet.status.user.coordinates"
-                    [latitude]="selectedTweet.status.user.coordinates.latitude"
-                    [longitude]="selectedTweet.status.user.coordinates.longitude"
-                    [markerDraggable]="false"
-                    iconUrl="content/images/markers/users.svg"
-                    label=""
-                    title="Twitter user location">
-                </agm-marker>
-
-                <ng-container *ngFor="let entity of selectedTweet.entities">
+            <ng-template #selectedMarkers>
+                <ng-container *ngIf="selectedTweet !== null">
                     <agm-marker
-                        *ngIf="entity.resource && entity.resource.coordinates"
-                        [latitude]="entity.resource.coordinates.latitude"
-                        [longitude]="entity.resource.coordinates.longitude"
+                        *ngIf="selectedTweet.status.coordinates"
+                        [latitude]="selectedTweet.status.coordinates.latitude"
+                        [longitude]="selectedTweet.status.coordinates.longitude"
                         [markerDraggable]="false"
+                        (markerClick)="selectedTweet = null"
+                        iconUrl="content/images/markers/tweets.svg"
+                        label=""
+                        title="Tweet location">
+                    </agm-marker>
+
+                    <agm-marker
+                        *ngIf="selectedTweet.status.user.coordinates"
+                        [latitude]="selectedTweet.status.user.coordinates.latitude"
+                        [longitude]="selectedTweet.status.user.coordinates.longitude"
+                        [markerDraggable]="false"
+                        (markerClick)="selectedTweet = null"
+                        iconUrl="content/images/markers/users.svg"
+                        label=""
+                        title="Twitter user location">
+                    </agm-marker>
+
+                    <ng-container *ngFor="let entity of selectedTweet.entities">
+                        <agm-marker
+                            *ngIf="entity.resource && entity.resource.coordinates"
+                            [latitude]="entity.resource.coordinates.latitude"
+                            [longitude]="entity.resource.coordinates.longitude"
+                            [markerDraggable]="false"
+                            (markerClick)="selectedTweet = null"
+                            iconUrl="content/images/markers/resources.svg"
+                            label=""
+                            title="Resource location">
+                        </agm-marker>
+                    </ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="selectedResource !== null">
+                    <agm-marker
+                        *ngIf="selectedResource && selectedResource.coordinates"
+                        [latitude]="selectedResource.coordinates.latitude"
+                        [longitude]="selectedResource.coordinates.longitude"
+                        [markerDraggable]="false"
+                        (markerClick)="selectedResource = null"
                         iconUrl="content/images/markers/resources.svg"
                         label=""
                         title="Resource location">
