@@ -113,7 +113,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                 ...clearLastError(state),
                 analyses: {
                     ...state.analyses,
-                    all: [...state.analyses.all, analysis],
+                    all: [analysis, ...state.analyses.all],
                     byId: {...state.analyses.byId, ...{[analysis.id]: analysis}}
                 },
                 currentAnalysis: analysis
@@ -275,6 +275,7 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                     ...state.resultsFilters,
                     pagination: {
                         ...state.resultsFilters.pagination,
+                        enabled: false
                     }
                 },
                 resultsPagination: {

@@ -37,6 +37,7 @@ import { LinkedEntityDetailsComponent } from './components/linked-entity-details
 import { ResultsExportService } from 'app/analysis/twitter-neel/services/results-export.service';
 import { GeoareaNewComponent } from 'app/analysis/twitter-neel/components/geoarea-new/geoarea-new.component';
 import { GeoareaViewComponent } from 'app/analysis/twitter-neel/components/geoarea-view/geoarea-view.component';
+import { LegendModalComponent } from './components/legend-modal/legend-modal.component';
 
 @NgModule({
     imports: [
@@ -69,6 +70,7 @@ import { GeoareaViewComponent } from 'app/analysis/twitter-neel/components/geoar
         LinkedEntityDetailsComponent,
         GeoareaNewComponent,
         GeoareaViewComponent,
+        LegendModalComponent,
     ],
     providers: [
         {
