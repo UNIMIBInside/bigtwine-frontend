@@ -1,4 +1,4 @@
-export const DEFAULTS = {
+export const CIRCLE_PROGRESS_DEFAULTS = {
     'backgroundPadding': 0,
     'radius': 14,
     'space': -2,
@@ -17,5 +17,3 @@ export const DEFAULTS = {
     'showUnits': false,
     'showBackground': false,
 };
-
-export default DEFAULTS;

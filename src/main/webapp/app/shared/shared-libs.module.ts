@@ -8,7 +8,7 @@ import { CookieModule } from 'ngx-cookie';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import CIRCLE_PROGRESS_DEFAULTS from './config/circle-progress-defaults';
+import { CIRCLE_PROGRESS_DEFAULTS } from './config/circle-progress-defaults';
 
 @NgModule({
     imports: [
