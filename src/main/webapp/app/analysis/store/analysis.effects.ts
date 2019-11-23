@@ -79,7 +79,7 @@ export class AnalysisEffects {
         ofType(AnalysisActions.ActionTypes.CancelAnalysis),
         mergeMap((action: AnalysisActions.CancelAnalysis) => this.analysisService.cancelAnalysis(action.analysisId)
             .pipe(
-                map(analysis => new AnalysisActions.CancelAnalysisSuccess(analysis)),
+                map(() => new AnalysisActions.CancelAnalysisSuccess()),
                 catchError(e => of(new AnalysisActions.CancelAnalysisError(e)))
             ))
     );

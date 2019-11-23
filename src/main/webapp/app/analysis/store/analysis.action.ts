@@ -178,10 +178,10 @@ export class CancelAnalysis implements Action {
     constructor(readonly analysisId: string) {}
 }
 
-export class CancelAnalysisSuccess implements Action, ActionWithAnalysis {
+export class CancelAnalysisSuccess implements Action {
     readonly type = ActionTypes.CancelAnalysisSuccess;
 
-    constructor(readonly analysis: IAnalysis) {}
+    constructor() {}
 }
 
 export class CancelAnalysisError extends GenericAnalysisError {

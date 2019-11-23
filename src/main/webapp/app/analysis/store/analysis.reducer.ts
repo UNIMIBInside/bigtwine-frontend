@@ -118,10 +118,13 @@ export function AnalysisReducer(state = initialState, action: AnalysisActions.Al
                 },
                 currentAnalysis: analysis
             };
+        case AnalysisActions.ActionTypes.CancelAnalysisSuccess:
+            return {
+                ...notifyAnalysisUpdates(clearLastError(state), state.currentAnalysis),
+            };
         case AnalysisActions.ActionTypes.StartAnalysisSuccess:
         case AnalysisActions.ActionTypes.StopAnalysisSuccess:
         case AnalysisActions.ActionTypes.CompleteAnalysisSuccess:
-        case AnalysisActions.ActionTypes.CancelAnalysisSuccess:
         case AnalysisActions.ActionTypes.AnalysisChangeReceived:
         case AnalysisActions.ActionTypes.UpdateAnalysisSuccess:
             const updatedAnalysis = (action as AnalysisActions.ActionWithAnalysis).analysis;
